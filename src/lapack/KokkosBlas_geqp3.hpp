@@ -1,13 +1,13 @@
-#ifndef KOKKOSLAPACK_GEQP3_HPP_
-#define KOKKOSLAPACK_GEQP3_HPP_
+#ifndef KOKKOSBLAS_GEQP3_HPP_
+#define KOKKOSBLAS_GEQP3_HPP_
 
 #include <KokkosKernels_Macros.hpp>
-#include <KokkosLapack_geqp3_spec.hpp>
+#include <KokkosBlas_geqp3_spec.hpp>
 #include <KokkosKernels_helpers.hpp>
 #include <sstream>
 #include <type_traits>
 
-namespace KokkosLapack {
+namespace KokkosBlas {
 /* 
  * \brief Dense QR with column pivoting: AP = QR
  * \tparam AViewType Input matrix, as a 2-D Kokkos::View
@@ -15,12 +15,13 @@ namespace KokkosLapack {
  * \tparam TauViewType Output,     as a 1-D Kokkos::View
  * 
  * \param A [in/out] Input matrix, as a 2-D Kokkos::View. Overwritten by factorization.
- * \param p [in/out] Input vector, as a 1-D Kokkos::View.
- *  On entry if p[i-1] != 0, then it is moved to beginning of AP before computation. 
- *  Overwritten to show output permutation. 
+ * \param p [in/out] Input vector, as a 1-D Kokkos::View (Integer Type).
+ *  On input if p[i-1] != 0, then column i is moved to beginning of AP before computation.
+ *  Otherwise the column is able to be permuted freely. 
+ *  p is overwritten to give the output permutation. 
  *
  * \param tau [out] Output vector, as a 1-D Kokkos::View
- *  
+ *  Gives the scalar factors of the reflectors. 
  * 
  */
 
@@ -70,6 +71,6 @@ namespace KokkosLapack {
 
     }
 
-} //namespace KokkosLapack
+} //namespace KokkosBlas
 
-#endif //KOKKOS_LAPACK_GEQP3_HPP_
+#endif //KOKKOSBLAS_GEQP3_HPP_

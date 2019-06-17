@@ -1,14 +1,14 @@
-#ifndef KOKKOS_LAPACK_GEQP3_SPEC_HPP_
-#define KOKKOS_LAPACK_GEQP3_SPEC_HPP_
+#ifndef KOKKOSBLAS_GEQP3_SPEC_HPP_
+#define KOKKOSBLAS_GEQP3_SPEC_HPP_
 
 #include "KokkosKernels_config.h"
 #include "Kokkos_Core.hpp"
 
 #if !defined(KOKKOSKERNELS_ETI_ONLY) || KOKKOSKERNELS_IMPL_COMILE_LIBRARY
-#include <Kokkos_Lapack_geqp3_impl.hpp>
+#include <KokkosBlas_geqp3_impl.hpp>
 #endif
 
-namespace KokkosLapack {
+namespace KokkosBlas {
     namespace Impl {
         
         template<class AVT, class PVT, class TVT>
@@ -40,7 +40,7 @@ namespace KokkosLapack {
         #endif
 
     } //namespace Impl
-} //namespace KokkosLapack
+} //namespace KokkosBlas
 
 
 #endif

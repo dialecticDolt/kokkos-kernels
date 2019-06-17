@@ -6,10 +6,10 @@
 #ifdef KOKKOSKERNELS_ENABLE_TPL_LAPACK
 #include "KokkosLapack_host_tpl.hpp"
 
-namespace KokkosLapack {
+namespace KokkosBlas {
     namespace Impl {
 
-    #define KOKKOSLAPACK_DGEQP3_LAPACK(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_DGEQP3_BLAS(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct GEQP3< \
         Kokkos::View<double**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
@@ -37,7 +37,7 @@ namespace KokkosLapack {
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
             if(!A_is_lr){ \
                 HostLapack<double>::geqp3(   \
-                        Kokkos::LayoutLeft, \
+                        A_is_lr, \
                         M, N,                \
                         A.data(), LDA        \
                         p.data(),            \
@@ -46,7 +46,7 @@ namespace KokkosLapack {
             } \
             else{ \
                 HostLapack<double>::geqp3(   \
-                        Kokkos::LayoutRight, \
+                        A_is_lr, \
                         M, N,                \
                         A.data(), LDA        \
                         p.data(),            \
@@ -59,7 +59,7 @@ namespace KokkosLapack {
 
 
 
-    #define KOKKOSLAPACK_SGEQP3_LAPACK(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_SGEQP3_BLAS(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct GEQP3< \
         Kokkos::View<float**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
@@ -87,7 +87,7 @@ namespace KokkosLapack {
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
             if(!A_is_lr){ \
                 HostLapack<float>::geqp3(   \
-                        Kokkos::LayoutLeft, \
+                        A_is_lr, \
                         M, N,                \
                         A.data(), LDA        \
                         p.data(),            \
@@ -96,7 +96,7 @@ namespace KokkosLapack {
             } \
             else{ \
                 HostLapack<float>::geqp3(   \
-                        Kokkos::LayoutRight, \
+                        A_is_lr, \
                         M, N,                \
                         A.data(), LDA        \
                         p.data(),            \
@@ -108,7 +108,7 @@ namespace KokkosLapack {
     };
 
 
-    #define KOKKOSLAPACK_ZGEQP3_LAPACK(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_ZGEQP3_BLAS(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct GEQP3< \
         Kokkos::View<Kokkos::complex<double>**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
@@ -136,7 +136,7 @@ namespace KokkosLapack {
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
             if(!A_is_lr){ \
                 HostLapack<std::complex<double>>::geqp3(   \
-                        Kokkos::LayoutLeft, \
+                        A_is_lr, \
                         M, N,                \
                         reinterpret_cast<std::complex<double>*>(A.data()), LDA        \
                         p.data(),            \
@@ -145,7 +145,7 @@ namespace KokkosLapack {
             } \
             else{ \
                 HostLapack<std::complex<double>>::geqp3(   \
-                        Kokkos::LayoutRight, \
+                        A_is_lr, \
                         M, N,                \
                         reinterpret_cast<std::complex<double>*>(A.data()), LDA        \
                         p.data(),            \
@@ -157,7 +157,7 @@ namespace KokkosLapack {
     };
 
 
-    #define KOKKOSLAPACK_CGEQP3_LAPACK(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_CGEQP3_BLAS(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct GEQP3< \
         Kokkos::View<Kokkos::complex<float>**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
@@ -185,7 +185,7 @@ namespace KokkosLapack {
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
             if(!A_is_lr){ \
                 HostLapack<std::complex<float>>::geqp3(   \
-                        Kokkos::LayoutLeft, \
+                        A_is_lr, \
                         M, N,                \
                         reinterpret_cast<std::complex<float>*>(A.data()), LDA        \
                         p.data(),            \
@@ -194,7 +194,7 @@ namespace KokkosLapack {
             } \
             else{ \
                 HostLapack<std::complex<float>>::geqp3(   \
-                        Kokkos::LayoutRight, \
+                        A_is_lr, \
                         M, N,                \
                         reinterpret_cast<std::complex<float>*>(A.data()), LDA        \
                         p.data(),            \
@@ -205,47 +205,33 @@ namespace KokkosLapack {
         } \
     };
 
-    KOKKOSLAPACK_DGEQP3_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
-    KOKKOSLAPACK_DGEQP3_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
-    KOKKOSLAPACK_DGEQP3_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
-    KOKKOSLAPACK_DGEQP3_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+    KOKKOSBLAS_DGEQP3_BLAS(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
+    KOKKOSBLAS_DGEQP3_BLAS(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
+    KOKKOSBLAS_DGEQP3_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_DGEQP3_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
 
 
-    KOKKOSLAPACK_SGEQP3_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
-    KOKKOSLAPACK_SGEQP3_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
-    KOKKOSLAPACK_SGEQP3_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
-    KOKKOSLAPACK_SGEQP3_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+    KOKKOSBLAS_SGEQP3_BLAS(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
+    KOKKOSBLAS_SGEQP3_BLAS(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
+    KOKKOSBLAS_SGEQP3_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_SGEQP3_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
 
 
-    KOKKOSLAPACK_ZGEQP3_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
-    KOKKOSLAPACK_ZGEQP3_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
-    KOKKOSLAPACK_ZGEQP3_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
-    KOKKOSLAPACK_ZGEQP3_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+    KOKKOSBLAS_ZGEQP3_BLAS(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
+    KOKKOSBLAS_ZGEQP3_BLAS(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
+    KOKKOSBLAS_ZGEQP3_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_ZGEQP3_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
 
 
-    KOKKOSLAPACK_CGEQP3_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
-    KOKKOSLAPACK_CGEQP3_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
-    KOKKOSLAPACK_CGEQP3_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
-    KOKKOSLAPACK_CGEQP3_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+    KOKKOSBLAS_CGEQP3_BLAS(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
+    KOKKOSBLAS_CGEQP3_BLAS(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
+    KOKKOSBLAS_CGEQP3_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_CGEQP3_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
 
     } // namespace Impl
-} //namespace KokkosLapack
+} //namespace KokkosBlas
 #endif
 
-//cuBLAS
-/*
-#ifdef KOKKOSKERNELS_ENABLE_TPL_CUBLAS
-#include<KokkosBlas_tpl_spec.hpp>
-
-namespace KokkosLapack{
-    namespace Impl{
-
-    #define KOKKOSLAPACK_DGEQP3_CUBLAS(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) 
-
-
-    } //namespace Impl
-} //namespace KokkosLapack
-*/
 
 //Magma
 
@@ -253,13 +239,13 @@ namespace KokkosLapack{
 #ifdef KOKKOSKERNELS_ENABLE_TPL_MAGMA
 #include<KokkosMagma_tpl_spec.hpp>
 
-namespace KokkosLapack{
+namespace KokkosBlas{
     namespace Impl{
 
-    #define KOKKOSLAPACK_DGEQP3_MAGMA(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL)
+    #define KOKKOSBLAS_DGEQP3_MAGMA(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL)
 
 
     } //namespace Impl
-} //namespace KokkosLapack
+} //namespace KokkosBlas
 
 */

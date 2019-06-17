@@ -1,10 +1,10 @@
-#ifndef KOKKOS_LAPACK_GEQP3_HPP_
-#define KOKKOS_LAPACK_GEQP3_HPP_
+#ifndef KOKKOSBLAS_GEQP3_HPP_
+#define KOKKOSBLAS_GEQP3_HPP_
 
 #include <Kokkos_Core.hpp>
 #include <sstream>
 
-namespace KokkosLapack {
+namespace KokkosBlas {
     namespace Impl{
         //Put non TPL implementation here
         
@@ -15,7 +15,7 @@ namespace KokkosLapack {
             Kokkos::Impl::throw_runtime_exceptions(os.str());
         }
 
-    }
-}
+    } //namespace Impl
+} //namespace KokkosBlas
 
 #endif
