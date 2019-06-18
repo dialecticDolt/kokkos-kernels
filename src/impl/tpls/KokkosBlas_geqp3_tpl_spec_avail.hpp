@@ -1,7 +1,7 @@
 #ifndef KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_HPP_
 #define KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_HPP_
 
-namespace KokkosBLAS {
+namespace KokkosBlas {
     namespace Impl {
 
         template<class AVT, class PVT, class TVT>
@@ -9,10 +9,10 @@ namespace KokkosBLAS {
             enum : bool {value = false};
         };
 
-        //Hostspace lapack(netlib) or MKL
+        //Hostspace LAPACKE(netlib) or MKL
         //TODO: Check if these have the same syntax
 
-        #ifdef KOKKOSKERNELS_ENABLE_TPL_LAPACK
+        #ifdef KOKKOSKERNELS_ENABLE_TPL_BLAS
 
         #define KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(ORDINAL, SCALAR, LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE) \
         template<class ExecSpace> \
@@ -65,7 +65,7 @@ namespace KokkosBLAS {
         KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(int, Kokkos::complex<float>, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
         #endif
         
-        #endif //if lapack
+        #endif //if BLAS/LAPACK
 
 
         //MAGMA
@@ -130,4 +130,4 @@ namespace KokkosBLAS {
     } //namespace Impl
 } //namespace KokkosLapack
 
-#endif
+#endif // KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_HPP_

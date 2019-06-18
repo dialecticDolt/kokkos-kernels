@@ -62,7 +62,8 @@
 
 
 #include<KokkosBlas2_gemv.hpp>
-
-
 #include<KokkosBlas3_gemm.hpp>
+#include<KokkosBlas_gesv.hpp>
+#include<KokkosBlas_geqp3.hpp>
+
 #endif

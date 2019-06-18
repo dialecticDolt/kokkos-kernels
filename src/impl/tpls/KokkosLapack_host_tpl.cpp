@@ -59,4 +59,4 @@ namespace KokkosBlas {
     } //namespace Impl
 } //namespace KokkosBlas
 
-#endif 
+#endif //ENABLE BLAS/LAPACK 

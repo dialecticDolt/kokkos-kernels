@@ -1,4 +1,4 @@
-#ifndef KOKKOSLAPACK_HOST_TPL_HPP_
+#ifndef KOKKOSBLAS_HOST_TPL_HPP_
 #define KOKKOSBLAS_HOST_TPL_HPP_
 
 #include "KokkkosKernels_config.h"
@@ -27,3 +27,7 @@ namespace KokkosBlas{
 
     } //namespace Impl
 } //namespace KokkosBlas
+
+#endif //ENABLE BLAS/LAPACK
+
+#endif //KOKKOSBLAS_HOST_TPL_HPP_

@@ -1,13 +1,17 @@
-#ifndef KOKKOS_LAPACK_GEQP3_TPL_SPEC_DECL_HPP_
-#define KOKKOS_LAPACK_GEQP3_TPL_SPEC_DECL_HPP_
+#ifndef KOKKOSBLAS_GEQP3_TPL_SPEC_DECL_HPP_
+#define KOKKOSBLAS_GEQP3_TPL_SPEC_DECL_HPP_
+
+
 
 #ifdef KOKKOSKERNELES_ENABLE_TPL_BLAS
 #include "KokkosBlas_host_tpl.hpp"
-#ifdef KOKKOSKERNELS_ENABLE_TPL_LAPACK
+//#ifdef KOKKOSKERNELS_ENABLE_TPL_LAPACK
 #include "KokkosLapack_host_tpl.hpp"
+
 
 namespace KokkosBlas {
     namespace Impl {
+
 
     #define KOKKOSBLAS_DGEQP3_BLAS(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
@@ -20,7 +24,7 @@ namespace KokkosBlas {
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef double SCALAR; \
-        typedef int ORDINAl; \
+        typedef int ORDINAL; \
         typedef Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
         typedef Kokkos::View<ORDINAL*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE, \
@@ -58,7 +62,6 @@ namespace KokkosBlas {
     };
 
 
-
     #define KOKKOSBLAS_SGEQP3_BLAS(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct GEQP3< \
@@ -70,7 +73,7 @@ namespace KokkosBlas {
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef float SCALAR; \
-        typedef int ORDINAl; \
+        typedef int ORDINAL; \
         typedef Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
         typedef Kokkos::View<ORDINAL*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE, \
@@ -119,7 +122,7 @@ namespace KokkosBlas {
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef Kokkos::complex<double> SCALAR; \
-        typedef int ORDINAl; \
+        typedef int ORDINAL; \
         typedef Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
         typedef Kokkos::View<ORDINAL*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE, \
@@ -168,7 +171,7 @@ namespace KokkosBlas {
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef Kokkos::complex<float> SCALAR; \
-        typedef int ORDINAl; \
+        typedef int ORDINAL; \
         typedef Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
         typedef Kokkos::View<ORDINAL*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE, \
@@ -228,9 +231,11 @@ namespace KokkosBlas {
     KOKKOSBLAS_CGEQP3_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
     KOKKOSBLAS_CGEQP3_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
 
+
     } // namespace Impl
 } //namespace KokkosBlas
-#endif
+
+#endif //ENABLE_BLAS/LAPACK
 
 
 //Magma
@@ -249,3 +254,6 @@ namespace KokkosBlas{
 } //namespace KokkosBlas
 
 */
+
+#endif //KOKKOSBLAS_GEQP3_TPL_SPEC_DECL_HPP_
+
