@@ -1,12 +1,16 @@
 #include "KokkosKernels_config.h"
+
+
+#if defined( KOKKOSKERNELS_ENABLE_TPL_BLAS ) && defined( KOKKOSKERNELS_ENABLE_TPL_LAPACK )
+
 #include "KokkosBlas_Host_tpl.hpp"
-
-
-#if defined (KOKKOSKERNELS_ENABLE_TPL_BLAS)
+#include "KokkosLapack_Host_tpl.hpp"
+#include <lapacke.h>
+#include <cblas.h>
 
 namespace KokkosBlas {
     namespace Impl {
-
+    /*
         //float
         template<>
         void
@@ -15,11 +19,11 @@ namespace KokkosBlas {
                                  float* a, lapack_int lda, 
                                  lapack_int* jpvt, 
                                  float* tau){
-            LAPACKE_sgeqp3(&matrix_layout, m, n, a, lda, jpvt, tau);
+            LAPACKE_sgeqp3(matrix_layout, m, n, a, lda, jpvt, tau);
         }
 
         //double
-        
+         
         template<>
         void
         HostLapack<double>::geqp3(int matrix_layout, 
@@ -27,9 +31,26 @@ namespace KokkosBlas {
                                  double* a, lapack_int lda, 
                                  lapack_int* jpvt, 
                                  double* tau){
-            LAPACKE_dgeqp3(&matrix_layout, m, n, a, lda, jpvt, tau);
+            LAPACKE_dgeqp3(matrix_layout, m, n, a, lda, jpvt, tau);
+        }
+    */
+
+        template<>
+        void
+        HostLapack<double>::geqp3(bool matrix_layout, 
+                                 int m, int n,
+                                 double* a, int lda, 
+                                 int* jpvt, 
+                                 double* tau){
+            if (matrix_layout){
+                LAPACKE_dgeqp3(LAPACK_ROW_MAJOR, m, n, a, lda, jpvt, tau);
+            }
+            else{
+                LAPACKE_dgeqp3(LAPACK_COL_MAJOR, m, n, a, lda, jpvt, tau);
+            }
         }
 
+    /*
         //std::complex<float>
 
         template<>
@@ -39,7 +60,7 @@ namespace KokkosBlas {
                                  std::complex<float>* a, lapack_int lda, 
                                  lapack_int* jpvt, 
                                  std::complex<float>* tau){
-            LAPACKE_cgeqp3(&matrix_layout, m, n, a, lda, jpvt, tau);
+            LAPACKE_cgeqp3(matrix_layout, m, n, a, lda, jpvt, tau);
         }
 
 
@@ -52,10 +73,12 @@ namespace KokkosBlas {
                                  std::complex<double>* a, lapack_int lda, 
                                  lapack_int* jpvt, 
                                  std::complex<double>* tau){
-            LAPACKE_zgeqp3(&matrix_layout, m, n, a, lda, jpvt, tau);
+            LAPACKE_zgeqp3(matrix_layout, m, n, a, lda, jpvt, tau);
         }
         
+    */
 
+    
     } //namespace Impl
 } //namespace KokkosBlas
 

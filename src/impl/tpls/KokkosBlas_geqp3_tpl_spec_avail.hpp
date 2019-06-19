@@ -14,55 +14,55 @@ namespace KokkosBlas {
 
         #ifdef KOKKOSKERNELS_ENABLE_TPL_BLAS
 
-        #define KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(ORDINAL, SCALAR, LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE) \
+        #define KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(SCALAR, LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE) \
         template<class ExecSpace> \
         struct geqp3_tpl_spec_avail< \
             Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-            Kokkos::View<ORDINAL*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+            Kokkos::View<int*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
             Kokkos::View<SCALAR*, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
-                        Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+                        Kokkos::MemoryTraits<Kokkos::Unmanaged> > \
             > {enum : bool {value = true}; };
 
         #if defined (KOKKOSKERNELS_INST_DOUBLE)\
          && defined (KOKKOSKERNELS_INST_LAYOUTLEFT)
-        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(int, double, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
+        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(double, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_FLOAT) \
          && defined (KOKKOSKERNELS_INST_LAYOUTLEFT) 
-        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(int, float, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
+        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(float, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_DOUBLE_) \
          && defined (KOKKOSKERNELS_INST_LAYOUTLEFT)
-        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(int, Kokkos::complex<double>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
+        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<double>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_FLOAT_) \
          && defined (KOKKOSKERNELS_INST_LAYOUTLEFT)
-        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(int, Kokkos::complex<float>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
+        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<float>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_DOUBLE)\
          && defined (KOKKOSKERNELS_INST_LAYOUTRIGHT)
-        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(int, double, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
+        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(double, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_FLOAT) \
          && defined (KOKKOSKERNELS_INST_LAYOUTRIGHT) 
-        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(int, float, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
+        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(float, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_DOUBLE_) \
          && defined (KOKKOSKERNELS_INST_LAYOUTRIGHT)
-        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(int, Kokkos::complex<double>, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
+        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<double>, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_FLOAT_) \
          && defined (KOKKOSKERNELS_INST_LAYOUTRIGHT)
-        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(int, Kokkos::complex<float>, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
+        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<float>, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
         #endif
         
         #endif //if BLAS/LAPACK

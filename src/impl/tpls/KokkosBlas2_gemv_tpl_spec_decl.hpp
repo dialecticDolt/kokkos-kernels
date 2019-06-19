@@ -46,6 +46,7 @@
 
 #ifdef KOKKOSKERNELS_ENABLE_TPL_BLAS
 #include "KokkosBlas_Host_tpl.hpp"
+#include <stdio.h>
 
 namespace KokkosBlas {
 namespace Impl {
