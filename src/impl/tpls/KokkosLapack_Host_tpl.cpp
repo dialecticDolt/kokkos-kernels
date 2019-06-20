@@ -10,31 +10,59 @@
 
 namespace KokkosBlas {
     namespace Impl {
-    /*
-        //float
+    
+        //float 
+
         template<>
         void
-        HostLapack<float>::geqp3(int matrix_layout, 
-                                 lapack_int m, lapack_int n,
-                                 float* a, lapack_int lda, 
-                                 lapack_int* jpvt, 
+        HostLapack<float>::geqp3(bool matrix_layout, 
+                                 int m, int n,
+                                 float* a, int lda, 
+                                 int* jpvt, 
                                  float* tau){
-            LAPACKE_sgeqp3(matrix_layout, m, n, a, lda, jpvt, tau);
+            if (matrix_layout){
+                LAPACKE_sgeqp3(LAPACK_ROW_MAJOR, m, n, a, lda, jpvt, tau);
+            }
+            else{
+                LAPACKE_sgeqp3(LAPACK_COL_MAJOR, m, n, a, lda, jpvt, tau);
+            }
         }
 
+        template<>
+        void 
+        HostLapack<float>::unmqr(bool matrix_layout,
+                                  char side, char trans,
+                                  int m, int n, int k,
+                                  const float* a, int lda,
+                                  const float* tau, 
+                                  float* c, int ldc){
+            if(matrix_layout) {
+                LAPACKE_sormqr(LAPACK_ROW_MAJOR, side, trans, m, n, k, a, lda, tau, c, ldc);
+            }
+            else {
+                LAPACKE_sormqr(LAPACK_COL_MAJOR, side, trans, m, n, k, a, lda, tau, c, ldc);
+            }
+        }
+
+        template<>
+        void 
+        HostLapack<float>::ormqr(bool matrix_layout,
+                                  char side, char trans,
+                                  int m, int n, int k,
+                                  const float* a, int lda,
+                                  const float* tau, 
+                                  float* c, int ldc){
+            if(matrix_layout) {
+                LAPACKE_sormqr(LAPACK_ROW_MAJOR, side, trans, m, n, k, a, lda, tau, c, ldc);
+            }
+            else {
+                LAPACKE_sormqr(LAPACK_COL_MAJOR, side, trans, m, n, k, a, lda, tau, c, ldc);
+            }
+        }
+        
+        
         //double
          
-        template<>
-        void
-        HostLapack<double>::geqp3(int matrix_layout, 
-                                 lapack_int m, lapack_int n,
-                                 double* a, lapack_int lda, 
-                                 lapack_int* jpvt, 
-                                 double* tau){
-            LAPACKE_dgeqp3(matrix_layout, m, n, a, lda, jpvt, tau);
-        }
-    */
-
         template<>
         void
         HostLapack<double>::geqp3(bool matrix_layout, 
@@ -50,33 +78,169 @@ namespace KokkosBlas {
             }
         }
 
-    /*
-        //std::complex<float>
+        template<>
+        void 
+        HostLapack<double>::unmqr(bool matrix_layout,
+                                  char side, char trans,
+                                  int m, int n, int k,
+                                  const double* a, int lda,
+                                  const double* tau, 
+                                  double* c, int ldc){
+            if(matrix_layout) {
+                LAPACKE_dormqr(LAPACK_ROW_MAJOR, side, trans, m, n, k, a, lda, tau, c, ldc);
+            }
+            else {
+                LAPACKE_dormqr(LAPACK_COL_MAJOR, side, trans, m, n, k, a, lda, tau, c, ldc);
+            }
+        }
 
         template<>
-        void
-        HostLapack<std::complex<float>>::geqp3(int matrix_layout, 
-                                 lapack_int m, lapack_int n,
-                                 std::complex<float>* a, lapack_int lda, 
-                                 lapack_int* jpvt, 
-                                 std::complex<float>* tau){
-            LAPACKE_cgeqp3(matrix_layout, m, n, a, lda, jpvt, tau);
+        void 
+        HostLapack<double>::ormqr(bool matrix_layout,
+                                  char side, char trans,
+                                  int m, int n, int k,
+                                  const double* a, int lda,
+                                  const double* tau, 
+                                  double* c, int ldc){
+            if(matrix_layout) {
+                LAPACKE_dormqr(LAPACK_ROW_MAJOR, side, trans, m, n, k, a, lda, tau, c, ldc);
+            }
+            else {
+                LAPACKE_dormqr(LAPACK_ROW_MAJOR, side, trans, m, n, k, a, lda, tau, c, ldc);
+            }
         }
 
 
+        //std::complex<float>
+
+
+        template<>
+        void
+        HostLapack<std::complex<float>>::geqp3(bool matrix_layout, 
+                                 int m, int n,
+                                 std::complex<float>* a, int lda, 
+                                 int* jpvt, 
+                                 std::complex<float>* tau){
+            if (matrix_layout){
+                LAPACKE_cgeqp3(LAPACK_ROW_MAJOR, m, n, 
+                        reinterpret_cast < __complex__ float*>(a), lda, jpvt, 
+                        reinterpret_cast < __complex__ float*>(tau));
+            }
+            else{
+                LAPACKE_cgeqp3(LAPACK_COL_MAJOR, m, n, 
+                        reinterpret_cast < __complex__ float*>(a), lda, jpvt, 
+                        reinterpret_cast < __complex__ float*>(tau));
+            }
+        }
+
+        template<>
+        void 
+        HostLapack<std::complex<float>>::unmqr(bool matrix_layout,
+                                  char side, char trans,
+                                  int m, int n, int k,
+                                  const std::complex<float>* a, int lda,
+                                  const std::complex<float>* tau, 
+                                  std::complex<float>* c, int ldc){
+            if(matrix_layout) {
+                LAPACKE_cunmqr(LAPACK_ROW_MAJOR, side, trans, m, n, k, 
+                        reinterpret_cast <const __complex__ float*>(a), lda, 
+                        reinterpret_cast <const __complex__ float*>(tau), 
+                        reinterpret_cast < __complex__ float*>(c), ldc);
+            }
+            else {
+                LAPACKE_cunmqr(LAPACK_COL_MAJOR, side, trans, m, n, k, 
+                        reinterpret_cast <const __complex__ float*>(a), lda, 
+                        reinterpret_cast <const __complex__ float*>(tau), 
+                        reinterpret_cast < __complex__ float*>(c), ldc);
+            }
+        }
+
+        template<>
+        void 
+        HostLapack<std::complex<float>>::ormqr(bool matrix_layout,
+                                  char side, char trans,
+                                  int m, int n, int k,
+                                  const std::complex<float>* a, int lda,
+                                  const std::complex<float>* tau, 
+                                  std::complex<float>* c, int ldc){
+            if(matrix_layout) {
+                LAPACKE_cunmqr(LAPACK_ROW_MAJOR, side, trans, m, n, k, 
+                        reinterpret_cast <const __complex__ float*>(a), lda, 
+                        reinterpret_cast <const __complex__ float*>(tau), 
+                        reinterpret_cast < __complex__ float*>(c), ldc);
+            }
+            else {
+                LAPACKE_cunmqr(LAPACK_COL_MAJOR, side, trans, m, n, k, 
+                        reinterpret_cast <const __complex__ float*>(a), lda, 
+                        reinterpret_cast <const __complex__ float*>(tau), 
+                        reinterpret_cast < __complex__ float*>(c), ldc);
+            }
+        }
+    
         //std::complex<double>
 
         template<>
         void
-        HostLapack<std::complex<double>>::geqp3(int matrix_layout, 
-                                 lapack_int m, lapack_int n,
-                                 std::complex<double>* a, lapack_int lda, 
-                                 lapack_int* jpvt, 
+        HostLapack<std::complex<double>>::geqp3(bool matrix_layout, 
+                                 int m, int n,
+                                 std::complex<double>* a, int lda, 
+                                 int* jpvt, 
                                  std::complex<double>* tau){
-            LAPACKE_zgeqp3(matrix_layout, m, n, a, lda, jpvt, tau);
+            if (matrix_layout){
+                LAPACKE_zgeqp3(LAPACK_ROW_MAJOR, m, n, 
+                        reinterpret_cast < __complex__ double*>(a), lda, jpvt, 
+                        reinterpret_cast < __complex__ double*>(tau));
+            }
+            else{
+                LAPACKE_zgeqp3(LAPACK_COL_MAJOR, m, n, 
+                        reinterpret_cast < __complex__ double*>(a), lda, jpvt, 
+                        reinterpret_cast < __complex__ double*>(tau));
+            }
         }
-        
-    */
+
+        template<>
+        void 
+        HostLapack<std::complex<double>>::unmqr(bool matrix_layout,
+                                  char side, char trans,
+                                  int m, int n, int k,
+                                  const std::complex<double>* a, int lda,
+                                  const std::complex<double>* tau, 
+                                  std::complex<double>* c, int ldc){
+            if(matrix_layout) {
+                LAPACKE_zunmqr(LAPACK_ROW_MAJOR, side, trans, m, n, k, 
+                        reinterpret_cast <const __complex__ double*>(a), lda, 
+                        reinterpret_cast <const __complex__ double*>(tau), 
+                        reinterpret_cast <__complex__ double*>(c), ldc);
+            }
+            else {
+                LAPACKE_zunmqr(LAPACK_COL_MAJOR, side, trans, m, n, k, 
+                        reinterpret_cast <const __complex__ double*>(a), lda, 
+                        reinterpret_cast <const __complex__ double*>(tau), 
+                        reinterpret_cast <__complex__ double*>(c), ldc);
+            }
+        }
+
+        template<>
+        void 
+        HostLapack<std::complex<double>>::ormqr(bool matrix_layout,
+                                  char side, char trans,
+                                  int m, int n, int k,
+                                  const std::complex<double>* a, int lda,
+                                  const std::complex<double>* tau, 
+                                  std::complex<double>* c, int ldc){
+            if(matrix_layout) {
+                LAPACKE_zunmqr(LAPACK_ROW_MAJOR, side, trans, m, n, k, 
+                        reinterpret_cast <const __complex__ double*>(a), lda, 
+                        reinterpret_cast <const __complex__ double*>(tau),
+                        reinterpret_cast <__complex__ double*>(c), ldc);
+            }
+            else {
+                LAPACKE_zunmqr(LAPACK_COL_MAJOR, side, trans, m, n, k, 
+                        reinterpret_cast <const __complex__ double*>(a), lda, 
+                        reinterpret_cast <const __complex__ double*>(tau), 
+                        reinterpret_cast <__complex__ double*>(c), ldc);
+            }
+        }
 
     
     } //namespace Impl

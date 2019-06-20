@@ -84,4 +84,5 @@ ${KOKKOSKERNELS_PATH}/scripts/generate_specialization_function.bash gesv KokkosB
 #geqp3
 ${KOKKOSKERNELS_PATH}/scripts/generate_specialization_function.bash geqp3 KokkosBlas_geqp3 KokkosBlas_geqp3_spec.hpp KokkosBlas ${KOKKOSKERNELS_PATH}
 
-
+#unmqr
+${KOKKOSKERNELS_PATH}/scripts/generate_specialization_function.bash unmqr KokkosBlas_unmqr KokkosBlas_unmqr_spec.hpp KokkosBlas ${KOKKOSKERNELS_PATH}

@@ -1,8 +1,6 @@
 #ifndef KOKKOSBLAS_GEQP3_TPL_SPEC_DECL_HPP_
 #define KOKKOSBLAS_GEQP3_TPL_SPEC_DECL_HPP_
 
-
-
 #if defined( KOKKOSKERNELS_ENABLE_TPL_BLAS ) && defined( KOKKOSKERNELS_ENABLE_TPL_LAPACK )
 #include "KokkosBlas_Host_tpl.hpp"
 #include "KokkosLapack_Host_tpl.hpp"
@@ -35,12 +33,9 @@ namespace KokkosBlas {
         Kokkos::Profiling::pushRegion("KokkosLapack::geqp3[TPL_BLAS, double]");\
         int M = A.extent(0); \
         int N = A.extent(1); \
-        double F = 2.3;\
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
-        \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
-        HostLapack<double>::geqp3(A_is_lr, F, N,A.data(), LDA, p.data(), tau.data()); \
-        printf("Here\n");\
+        HostLapack<double>::geqp3(A_is_lr, M, N, A.data(), LDA, p.data(), tau.data()); \
         Kokkos::Profiling::popRegion(); \
         } \
     };
@@ -66,7 +61,7 @@ namespace KokkosBlas {
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
         \
         static void geqp3(AViewType& A, PViewType& p, TauViewType& tau){ \
-        Kokkos::Profiling::pushRegion("KokkosLapack::geqp3[TPL_BLAS, double]");\
+        Kokkos::Profiling::pushRegion("KokkosLapack::geqp3[TPL_BLAS, float]");\
         const int M = A.extent(0); \
         const int N = A.extent(1); \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
@@ -150,7 +145,6 @@ namespace KokkosBlas {
     KOKKOSBLAS_DGEQP3_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
     KOKKOSBLAS_DGEQP3_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
 
-/*
     KOKKOSBLAS_SGEQP3_BLAS(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
     KOKKOSBLAS_SGEQP3_BLAS(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
     KOKKOSBLAS_SGEQP3_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
@@ -167,12 +161,11 @@ namespace KokkosBlas {
     KOKKOSBLAS_CGEQP3_BLAS(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
     KOKKOSBLAS_CGEQP3_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
     KOKKOSBLAS_CGEQP3_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
-*/
+
     } // namespace Impl
 } //namespace KokkosBlas
 
 #endif //ENABLE BLAS/LAPACK
-
 
 //Magma
 

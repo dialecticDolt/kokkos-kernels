@@ -65,5 +65,6 @@
 #include<KokkosBlas3_gemm.hpp>
 #include<KokkosBlas_gesv.hpp>
 #include<KokkosBlas_geqp3.hpp>
+#include<KokkosBlas_unmqr.hpp>
 
 #endif

@@ -22,6 +22,23 @@ namespace KokkosBlas{
                         T* a, int lda, 
                         int* jpvt,
                         T* tau);
+
+            static
+            void unmqr(bool matrix_layout,
+                       char side, char trans,
+                       int m, int n, int k,
+                       const T* a, int lda, 
+                       const T* tau,
+                       T* c, int ldc);
+
+            static
+            void ormqr(bool matrix_layout, 
+                       char side, char trans,
+                       int m, int n, int k,
+                       const T* a, int lda,
+                       const T* tau, 
+                       T*c, int ldc);
+
         };
 
     } //namespace Impl
