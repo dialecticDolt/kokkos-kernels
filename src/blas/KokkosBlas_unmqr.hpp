@@ -23,30 +23,75 @@ namespace KokkosBlas {
  */
 
     template<class AViewType, class TauViewType, class CViewType>
-    void unmqr(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C){
+    void unmqr(const char side[], const char trans[], int k, AViewType& A, TauViewType& tau, CViewType& C){
 
         #if (KOKKOSKERNELS_DEBUG_LEVEL >0)
-        static_assert(Kokkos::Impl::is_view<AViewType>::value, "AViewType must be a Kokkos::View");
-        static_assert(Kokkos::Impl::is_view<TauViewType>::value, "TauViewType must be a Kokkos::View");
-        static_assert(Kokkos::Impl::is_view<CViewType>::value, "CViewType must be a Kokkos::View");
-        static_assert(static_cast<int> (AViewType::rank)==2, "AViewType must have rank 2");
-        static_assert(static_cast<int> (TauViewType::rank)==1, "TauViewType must have rank 1");
-        static_assert(static_cast<int> (CViewType::rank)==2, "CViewType must have rank 2");
+        static_assert(Kokkos::Impl::is_view<AViewType>::value, "KokkosBlas::umnqr: A must be a Kokkos::View");
+        static_assert(Kokkos::Impl::is_view<TauViewType>::value, "KokkosBlas::unmqr: Tau must be a Kokkos::View");
+        static_assert(Kokkos::Impl::is_view<CViewType>::value, "KokkosBlas::unmqr: C must be a Kokkos::View");
+        static_assert(static_cast<int> (AViewType::rank)==2, "KokkosBlas::unmqr: A must have rank 2");
+        static_assert(static_cast<int> (TauViewType::rank)==1, "KokkosBlas::unmqr: Tau must have rank 1");
+        static_assert(static_cast<int> (CViewType::rank)==2, "KokkosBlas::unmqr: C must have rank 2");
+       
+        //Check validity of side argument
+        bool valid_side = (side[0] == 'L') || (side[0]=='l') || 
+                          (side[0] == 'R') || (side[0]=='r');
+        
+        if(!(valid_side)) {
+            std::ostringstream os;
+            os << "KokkosBlas::unmqr: side[0] = '" << side[0] << "'. " <<
+            "Valid values include 'L' or 'l' (Left), 'R' or 'r' (Right).";
+            Kokkos::Impl::throw_runtime_exception (os.str ());
+        }
+
+
+        bool valid_trans = (trans[0] == 'T') || (side[0]=='t') || 
+                           (side[0] == 'N') || (side[0]=='n');
+        
+        if(!(valid_trans)) {
+            std::ostringstream os;
+            os << "KokkosBlas::unmqr: trans[0] = '" << trans[0] << "'. " <<
+            "Valid values include 'T' or 't' (Transpose), 'N' or 'n' (No transpose).";
+            Kokkos::Impl::throw_runtime_exception (os.str ());
+        }
+
         int64_t A0 = A.extent(0);
         int64_t A1 = A.extent(1);
         int64_t C0 = C.extent(0);
         int64_t C1 = C.extent(1);
         int64_t tau0 = tau.extent(0); 
 
-        /* TODO: How to use assert with error message in c++
-        assert(p0>=A1, "Permutation vector is not long enough. Should be = A.cols");
-        if(A0>A1){
-            assert(tau0>=A0, "Tau vector must be longer than max(A.cols, A.rows)");
+        //Check validity of Tau
+        if (tau0 < k){
+            std::ostringstream os;
+            os  << "KokkosBlas::unmqr: Dimensions of Tau and k do not match (require tau >=k ): "
+                << "k: " << k
+                << "Tau: " << tau0;
+            Kokkos::Impl::throw_runtime_exception(os.str());
+        }
+
+        //Check validity of k
+        if( (side[0] == 'L') || (side[0] == 'l') ){
+            if( (k>A0) || (k<0) ){
+                std::ostringstream os;
+                os  << "KokkosBlas::unmqr: Number of reflectors k must not exceed M: "
+                    << "A: " << A0 << " x " << A1
+                    << "k: " << k;
+                Kokkos::Impl::throw_runtime_exception(os.str());
+            }
         }
         else{
-            assert(tau0>=A1, "Tau vector must be longer than max(A.cols, A.rows)");
+            if( (k>A1) || (k<0) ){
+                std::ostringstream os;
+                os  << "KokkosBlas::unmqr: Number of reflectors k must not exceed N: "
+                    << "A: " << A0 << " x " << A1
+                    << "k: " << k;
+                Kokkos::Impl::throw_runtime_exception(os.str());
+            }
         }
-        */
+
+        //TODO: Check LDA, N, M
+
         #endif //KOKKOSKERNELS_DEBUG_LEVEL > 0 
 
         //return if degenerate matrix provided
@@ -73,7 +118,7 @@ namespace KokkosBlas {
         TVT tau_i = tau;
         CVT C_i = C;
         typedef KokkosBlas::Impl::UNMQR<AVT, TVT, CVT> impl_type;
-        impl_type::unmqr(side, trans, k, A_i, tau_i, C_i);
+        impl_type::unmqr(side[0], trans[0], k, A_i, tau_i, C_i);
 
 
     }

@@ -2,7 +2,7 @@
 #define KOKKOSBLAS_GEQP3_HPP_
 
 #include <KokkosKernels_Macros.hpp>
-#include <KokkosBlas_geqp3_spec.hpp>
+#include "KokkosBlas_geqp3_spec.hpp"
 #include <KokkosKernels_helpers.hpp>
 #include <sstream>
 #include <type_traits>
@@ -39,6 +39,7 @@ namespace KokkosBlas {
         int64_t A1 = A.extent(1);
         int64_t p0 = p.extent(0);
         int64_t tau0 = tau.extent(0);
+        /* TODO: How to use assert with error message in c++
         assert(p0>=A1, "Permutation vector is not long enough. Should be = A.cols");
         if(A0>A1){
             assert(tau0>=A0, "Tau vector must be longer than max(A.cols, A.rows)");
@@ -46,6 +47,7 @@ namespace KokkosBlas {
         else{
             assert(tau0>=A1, "Tau vector must be longer than max(A.cols, A.rows)");
         }
+        */
         #endif //KOKKOSKERNELS_DEBUG_LEVEL > 0 
 
         //return if degenerate matrix provided
@@ -65,8 +67,12 @@ namespace KokkosBlas {
                 typename TauViewType::array_layout,
                 typename TauViewType::device_type,
                 Kokkos::MemoryTraits<Kokkos::Unmanaged> > TVT;
-        typedef Impl::GEQP3<AVT, PVT, TVT> impl_type;
-        impl_type::geqp3(A, p, tau);
+       
+        AVT A_i = A;
+        PVT p_i = p;
+        TVT tau_i = tau;
+        typedef KokkosBlas::Impl::GEQP3<AVT, PVT, TVT> impl_type;
+        impl_type::geqp3(A_i, p_i, tau_i);
 
 
     }

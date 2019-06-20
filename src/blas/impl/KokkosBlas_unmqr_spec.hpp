@@ -47,7 +47,7 @@ namespace KokkosBlas {
             bool eti_spec_avail = unmqr_eti_spec_avail<AVT, TVT, CVT>::value
         >
         struct UNMQR{
-            static void unmqr(char side, char trans, int k, AVT& A, TVT& tau, CVT& C);
+            static void unmqr(const char side, const char trans, int k, AVT& A, TVT& tau, CVT& C);
         };
 
 
@@ -56,7 +56,7 @@ namespace KokkosBlas {
         //specialization layer for no TPL
         template<class AVT, class TVT, class CVT>
         struct UNMQR<AVT, TVT, CVT, false, KOKKOSKERNELS_IMPL_COMPILE_LIBRARY>{
-            static void unmqr(char side, char trans, int k, AVT& A, TVT& tau, CVT& C){
+            static void unmqr(const char side, const char trans, int k, AVT& A, TVT& tau, CVT& C){
                 execute_unmqr<AVT, TVT, CVT>(side, trans, k, A, tau, C);
             }
         };
