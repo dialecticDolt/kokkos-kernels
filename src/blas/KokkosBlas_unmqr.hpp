@@ -45,8 +45,8 @@ namespace KokkosBlas {
         }
 
 
-        bool valid_trans = (trans[0] == 'T') || (side[0]=='t') || 
-                           (side[0] == 'N') || (side[0]=='n');
+        bool valid_trans = (trans[0] == 'T') || (trans[0]=='t') || 
+                           (trans[0] == 'N') || (trans[0]=='n');
         
         if(!(valid_trans)) {
             std::ostringstream os;
