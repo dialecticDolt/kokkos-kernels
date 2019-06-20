@@ -63,6 +63,12 @@ namespace KokkosBlas {
                 /* */ T *b, int ldb);
 
       static 
+      void trsv(bool matrix_layout, const char uplo, const char transa, const char diag, 
+                int m, 
+                const T *a, int lda,
+                /* */ T *b, int ldb);
+
+      static 
       void gemm(const char transa, const char transb, 
                 int m, int n, int k,
                 const T alpha, 

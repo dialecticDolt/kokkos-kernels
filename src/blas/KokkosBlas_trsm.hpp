@@ -1,82 +1,72 @@
-#ifndef KOKKOSBLAS_GEQP3_HPP_
-#define KOKKOSBLAS_GEQP3_HPP_
+#ifndef KOKKOSBLAS_TRSM_HPP_
+#define KOKKOSBLAS_TRSM_HPP_
 
 #include <KokkosKernels_Macros.hpp>
-#include "KokkosBlas_geqp3_spec.hpp"
+#include "KokkosBlas_trsm_spec.hpp"
 #include <KokkosKernels_helpers.hpp>
 #include <sstream>
 #include <type_traits>
 
 namespace KokkosBlas {
 /* 
- * \brief Dense QR with column pivoting: AP = QR
- * \tparam AViewType Input matrix, as a 2-D Kokkos::View
- * \tparam PViewType Input vector, as a 1-D Kokkos::View
- * \tparam TauViewType Output,     as a 1-D Kokkos::View
+ * \brief Dense TRSM (Device Level) Triangular Solve Multiple RHS
+ * \tparam side 'L' ( AX = alpha*B ) or 'R' (XA = alpha*B)
+ * \tparam Uplo (Given as Upper or Lower portion of Matrix A)
+ * \tparam Trans (Transpose A)
+ * \tparam diag (Is A unit trangular)
+ * \tparam A Input matrix, as a 2-D Kokkos::View
+ * \tparam B Input matrix, as a 2-D Kokkos::View
  * 
- * \param A [in/out] Input matrix, as a 2-D Kokkos::View. Overwritten by factorization.
- * \param p [in/out] Input vector, as a 1-D Kokkos::View (Integer Type).
- *  On input if p[i-1] != 0, then column i is moved to beginning of AP before computation.
- *  Otherwise the column is able to be permuted freely. 
- *  p is overwritten to give the output permutation. 
- *
- * \param tau [out] Output vector, as a 1-D Kokkos::View
- *  Gives the scalar factors of the reflectors. 
+ * \param A [in] Input matrix, as a 2-D Kokkos::View. 
+ * \param B [in/out] Input/Output Matrix, as a 2-D Kokkos::View 
  * 
  */
 
-    template<class AViewType, class PViewType, class TauViewType>
-    void geqp3(AViewType& A, PViewType& p, TauViewType& tau){
+    template<class AViewType, class BViewType>
+    void trsm(const char[] side, const char[] uplo, const char[] transa, const char[] diag,
+              AViewType::non_const_value_type a, AViewType& A, BViewType& B){
 
         #if (KOKKOSKERNELS_DEBUG_LEVEL >0)
-        static_assert(Kokkos::Impl::is_view<AViewType>::value, "AViewType must be a Kokkos::View");
-        static_assert(Kokkos::Impl::is_view<PViewType>::value, "PViewType must be a Kokkos::View");
-        static_assert(Kokkos::Impl::is_view<TauViewType>::value, "TauViewType must be a Kokkos::View");
-        static_assert(static_cast<int> (AViewType::rank)==2, "AViewType must have rank 2");
-        static_assert(static_cast<int> (PViewType::rank)==1, "PViewType must have rank 1");
-        static_assert(static_cast<int> (TauViewType::rank)==1, "TauViewType must have rank 1");
+        static_assert(Kokkos::Impl::is_view<AViewType>::value, "KokkosBlas::trsm: A must be a Kokkos::View");
+        static_assert(Kokkos::Impl::is_view<BViewType>::value, "KokkosBlas::trsm: B  must be a Kokkos::View");
+        static_assert(static_cast<int> (AViewType::rank)==2, "KokkosBlas::trsm: A must have rank 2");
+        
+        static_assert(static_cast<int> (AViewType::rank)==2, "KokkosBlas::trsm: B must have rank 2");
+        
         int64_t A0 = A.extent(0);
         int64_t A1 = A.extent(1);
-        int64_t p0 = p.extent(0);
-        int64_t tau0 = tau.extent(0);
-        /* TODO: How to use assert with error message in c++
-        assert(p0>=A1, "Permutation vector is not long enough. Should be = A.cols");
-        if(A0>A1){
-            assert(tau0>=A0, "Tau vector must be longer than max(A.cols, A.rows)");
-        }
-        else{
-            assert(tau0>=A1, "Tau vector must be longer than max(A.cols, A.rows)");
-        }
-        */
+        int64_t B0 = B.extent(0);
+        int64_t B1 = B.extent(1);
+
+        //TODO: Add runtime checking of flags
+        //TODO: Add runtime dimension checks
+
         #endif //KOKKOSKERNELS_DEBUG_LEVEL > 0 
 
         //return if degenerate matrix provided
         if((A.extent(0)==0) || (A.extent(1)==0))
             return;
 
-        //stanardize of particulat View specializations
+        //particular View specializations
         typedef Kokkos::View<typename AViewType::non_const_value_type**,
                 typename AViewType::array_layout,
                 typename AViewType::device_type,
                 Kokkos::MemoryTraits<Kokkos::Unmanaged> > AVT;
-        typedef Kokkos::View<typename PViewType::non_const_value_type*,
-                typename PViewType::array_layout,
-                typename PViewType::device_type,
-                Kokkos::MemoryTraits<Kokkos::Unmanaged> > PVT;
-        typedef Kokkos::View<typename TauViewType::non_const_value_type*,
-                typename TauViewType::array_layout,
-                typename TauViewType::device_type,
-                Kokkos::MemoryTraits<Kokkos::Unmanaged> > TVT;
+
+        typedef Kokkos::View<typename BViewType::non_const_value_type**,
+                typename AViewType::array_layout,
+                typename AViewType::device_type,
+                Kokkos::MemoryTraits<Kokkos::Unmanaged> > BVT;
        
         AVT A_i = A;
-        PVT p_i = p;
-        TVT tau_i = tau;
-        typedef KokkosBlas::Impl::GEQP3<AVT, PVT, TVT> impl_type;
-        impl_type::geqp3(A_i, p_i, tau_i);
+        BVT B_i = B;
+        
+        typedef KokkosBlas::Impl::TRSM<AVT, BVT> impl_type;
+        impl_type::trsm(side[0], uplo[0], transa[0], diag[0], alpha, A_i, B_i);
 
 
     }
 
 } //namespace KokkosBlas
 
-#endif //KOKKOSBLAS_GEQP3_HPP_
+#endif //KOKKOSBLAS_TRSM_HPP_

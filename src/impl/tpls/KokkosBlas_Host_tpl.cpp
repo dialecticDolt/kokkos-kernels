@@ -6,6 +6,7 @@
 #include "KokkosBlas_Host_tpl.hpp"
 
 #if defined( KOKKOSKERNELS_ENABLE_TPL_BLAS )
+#include<cblas.h>
 
 /// Fortran headers
 extern "C" {
@@ -561,6 +562,26 @@ namespace KokkosBlas {
                      a, &lda,
                      b, &ldb);
     }
+
+
+    template<>
+    void
+    HostBlas<double>::trsm(bool matrix_layout,
+                           const char side, const char uplo, 
+                           const char transa, const char diag, 
+                           int m, int n,
+                           const double alpha, 
+                           const double *a, int lda, 
+                           /* */ double *b, int ldb) {
+        if(matrix_layout){
+            cblas_dstrm(cblasRowMajor, side, uplo, transa, diag, m, n, alpha, a, lda, b, ldb);
+        }
+        else{
+            cblas_dstrm(cblasColMajor, side, uplo, transa, diag, m, n, alpha, a, lda, b, ldb);
+        }
+
+    }
+
 
     /// 
     /// std::complex<float>

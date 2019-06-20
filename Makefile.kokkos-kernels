@@ -12,8 +12,8 @@ KOKKOSKERNELS_SPACES ?= $(KOKKOS_DEVICES),HostSpace
 KOKKOSKERNELS_ORDINALS ?= int,int64_t
 KOKKOSKERNELS_OFFSETS ?= int,size_t
 
-# mkl, blas, yaml, magma
-KOKKOSKERNELS_ENABLE_TPLS ?= ""
+# mkl, blas, yaml, magma, lapack
+KOKKOSKERNELS_ENABLE_TPLS ?= "blas, lapack"
 
 # eti-only
 KOKKOSKERNELS_OPTIONS ?= ""
@@ -24,12 +24,16 @@ KOKKOSKERNELS_INTERNAL_ENABLE_MKL := $(strip $(shell echo $(KOKKOSKERNELS_ENABLE
 KOKKOSKERNELS_INTERNAL_ENABLE_CUSPARSE := $(strip $(shell echo $(KOKKOSKERNELS_ENABLE_TPLS) | grep "cusparse" | wc -l))
 KOKKOSKERNELS_INTERNAL_ENABLE_CUBLAS := $(strip $(shell echo $(KOKKOSKERNELS_ENABLE_TPLS) | grep "cublas" | wc -l))
 KOKKOSKERNELS_INTERNAL_ENABLE_MAGMA := $(strip $(shell echo $(KOKKOSKERNELS_ENABLE_TPLS) | grep "magma" | wc -l))
+KOKKOSKERNELS_INTERNAL_ENABLE_LAPACK := $(strip $(shell echo $(KOKKOSKERNELS_ENABLE_TPLS) | grep "lapack" | wc -l))
 
 YAML_PATH ?= ${HOME}/yaml-cpp/install
 YAML_LIBS ?= -L${YAML_PATH}/lib -lyaml-cpp
 
-BLAS_PATH ?= /usr
-BLAS_LIBS ?= -L${BLAS_PATH}/lib64 $(BLAS_LIBRARIES) -lgfortran -lgomp
+BLAS_PATH ?= /usr/include/openblas
+BLAS_LIBS ?= -L${BLAS_PATH} $(BLAS_LIBRARIES) -lgfortran -lgomp
+
+LAPACK_PATH ?= /usr/include/openblas
+LAPACK_LIBS ?= -L${LAPACK_PATH} -llapack -llapacke -lgfortran $(BLAS_LIBRARIES)
 
 MKL_PATH ?= ${SEMS_INTEL_ROOT}/mkl
 MKL_LIBS ?= -L${MKL_PATH}/lib/intel64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl -L${MKL_PATH}/../compiler/lib/intel64
@@ -39,14 +43,15 @@ MAGMA_PATH     ?= ${MAGMADIR}
 default-kokkos-kernels: kokkoskernels-build-lib
 	echo "Start Build"
 
+WARNING_FLAGS = -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default -Wundef -Werror -Wno-unused 
 
-CXXFLAGS ?= -g -O3
-LINKFLAGS ?= -g -O3
+CXXFLAGS ?= -g -O3 ${WARNING_FLAGS} 
+LINKFLAGS ?= -g -O3 ${WARNING_FLAGS}
 KOKKOSKERNELS_INTERNAL_LIBRARY = libkokkos_kernels.a
 KOKKOSKERNELS_LIBS = -lkokkos_kernels
 KOKKOSKERNELS_LDFLAGS = -L./
 
-KOKKOSKERNELSCOMMON_CPPFLAGS= -I$(KOKKOSKERNELS_PATH)/src/common
+KOKKOSKERNELSCOMMON_CPPFLAGS= -I$(KOKKOSKERNELS_PATH)/src/common -I/usr/include/openblas #TODO Fix this
 KOKKOSBLAS_CPPFLAGS= -I$(KOKKOSKERNELS_PATH)/src/blas -I$(KOKKOSKERNELS_PATH)/src/blas/impl
 KOKKOSSPARSE_CPPFLAGS= -I$(KOKKOSKERNELS_PATH)/src/sparse -I$(KOKKOSKERNELS_PATH)/src/sparse/impl
 KOKKOSGRAPH_CPPFLAGS= -I$(KOKKOSKERNELS_PATH)/src/graph -I$(KOKKOSKERNELS_PATH)/src/graph/impl 
@@ -288,6 +293,11 @@ ifeq (${KOKKOSKERNELS_INTERNAL_ENABLE_YAML}, 1)
   KOKKOSKERNELS_CPPFLAGS += -I${YAML_PATH}/include
   KOKKOSKERNELS_LIBS += ${YAML_LIBS}
   tmp := $(shell echo "\#define KOKKOSKERNELS_ENABLE_TPL_YAML" >> KokkosKernels_config.tmp )
+endif
+
+
+ifeq (${KOKKOSKERNELS_INTERNAL_ENABLE_LAPACK}, 1)
+  tmp := $(shell echo "\#define KOKKOSKERNELS_ENABLE_TPL_LAPACK" >> KokkosKernels_config.tmp)
 endif
 
 ifeq (${KOKKOSKERNELS_INTERNAL_ENABLE_BLAS}, 1)
