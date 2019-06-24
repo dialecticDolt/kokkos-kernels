@@ -37,12 +37,12 @@ namespace KokkosBlas {
 
         #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_DOUBLE_) \
          && defined (KOKKOSKERNELS_INST_LAYOUTLEFT)
-        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<double>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
+        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<double>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_FLOAT_) \
          && defined (KOKKOSKERNELS_INST_LAYOUTLEFT)
-        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<float>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
+        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<float>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_DOUBLE)\
@@ -57,12 +57,12 @@ namespace KokkosBlas {
 
         #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_DOUBLE_) \
          && defined (KOKKOSKERNELS_INST_LAYOUTRIGHT)
-        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<double>, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
+        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<double>, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_FLOAT_) \
          && defined (KOKKOSKERNELS_INST_LAYOUTRIGHT)
-        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<float>, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
+        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<float>,Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
         #endif
         
         #endif //if BLAS/LAPACK

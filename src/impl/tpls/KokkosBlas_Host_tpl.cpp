@@ -445,6 +445,28 @@ namespace KokkosBlas {
                      b, &ldb);
     }
 
+
+    template<>
+    void
+    HostBlas<float>::trsm(bool matrix_layout,
+                           const char side, const char uplo, 
+                           const char transa, const char diag, 
+                           int m, int n,
+                           const float alpha, 
+                           const float *a, int lda, 
+                           /* */ float *b, int ldb) {
+
+        CBLAS_ORDER layout = (matrix_layout) ? CblasRowMajor : CblasColMajor;
+        CBLAS_SIDE s = (side == 'L' || side == 'l') ? CblasLeft : CblasRight;
+        CBLAS_UPLO ul = (uplo == 'U' || uplo == 'u') ? CblasUpper : CblasLower;
+        CBLAS_TRANSPOSE tr = (transa == 'N' || transa == 'n') ? CblasNoTrans : CblasTrans;
+        CBLAS_DIAG d = (diag == 'N' || diag =='n') ? CblasNonUnit : CblasUnit;
+
+        cblas_strsm(layout, s, ul, 
+                    tr, d, m, n, alpha, a, lda, b, ldb);
+
+    }
+
     ///
     /// double
     ///
@@ -710,7 +732,34 @@ namespace KokkosBlas {
                      (const std::complex<float>*)a, &lda,
                      (      std::complex<float>*)b, &ldb);
     }
-    
+   
+
+    template<>
+    void
+    HostBlas<std::complex<float>>::trsm(bool matrix_layout,
+                           const char side, const char uplo, 
+                           const char transa, const char diag, 
+                           int m, int n,
+                           const std::complex<float> alpha, 
+                           const std::complex<float> *a, int lda, 
+                           /* */ std::complex<float> *b, int ldb) {
+
+        CBLAS_ORDER layout = (matrix_layout) ? CblasRowMajor : CblasColMajor;
+        CBLAS_SIDE s = (side == 'L' || side == 'l') ? CblasLeft : CblasRight;
+        CBLAS_UPLO ul = (uplo == 'U' || uplo == 'u') ? CblasUpper : CblasLower;
+        CBLAS_TRANSPOSE tr = (transa == 'N' || transa == 'n') ? CblasNoTrans : CblasTrans;
+        CBLAS_DIAG d = (diag == 'N' || diag =='n') ? CblasNonUnit : CblasUnit;
+
+        cblas_ctrsm(layout, s, ul, 
+                    tr, d, m, n, 
+                    reinterpret_cast<const __complex__ float*>( &alpha ),
+                    reinterpret_cast<const __complex__ float*>( a ), lda, 
+                    reinterpret_cast</* */ __complex__ float*>( b ), ldb);
+    }
+
+
+
+
     ///
     /// std::complex<double>
     ///
@@ -836,6 +885,34 @@ namespace KokkosBlas {
                      (const std::complex<double>*)a, &lda,
                      (      std::complex<double>*)b, &ldb);
     }
+
+
+    template<>
+    void
+    HostBlas<std::complex<double>>::trsm(bool matrix_layout,
+                           const char side, const char uplo, 
+                           const char transa, const char diag, 
+                           int m, int n,
+                           const std::complex<double> alpha, 
+                           const std::complex<double>* a, int lda, 
+                           /* */ std::complex<double>* b, int ldb) {
+
+        CBLAS_ORDER layout = (matrix_layout) ? CblasRowMajor : CblasColMajor;
+        CBLAS_SIDE s = (side == 'L' || side == 'l') ? CblasLeft : CblasRight;
+        CBLAS_UPLO ul = (uplo == 'U' || uplo == 'u') ? CblasUpper : CblasLower;
+        CBLAS_TRANSPOSE tr = (transa == 'N' || transa == 'n') ? CblasNoTrans : CblasTrans;
+        CBLAS_DIAG d = (diag == 'N' || diag =='n') ? CblasNonUnit : CblasUnit;
+
+        cblas_ztrsm(layout, s, ul, 
+                    tr, d, m, n,
+                    reinterpret_cast<const __complex__ double*>( &alpha ),
+                    reinterpret_cast<const __complex__ double*>( a ), lda, 
+                    reinterpret_cast</* */ __complex__ double*>( b ), ldb);
+
+    }
+
+
+
 
   }
 }
