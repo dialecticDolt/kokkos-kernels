@@ -8,29 +8,29 @@ namespace KokkosBlas {
         struct trsm_tpl_spec_avail {
             enum : bool {value = false};
         };
-
+        
         //Hostspace LAPACKE(netlib) or MKL
         //TODO: Check if these have the same syntax
 
         #ifdef KOKKOSKERNELS_ENABLE_TPL_BLAS
 
-        #define KOKKOSBLAS_TRSM_TPL_SPEC_AVAIL_BLAS(SCALAR, LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE) \
+        #define KOKKOSBLAS_TRSM_TPL_SPEC_AVAIL_BLAS(SCALAR, LAYOUTA, LAYOUTB, MEMSPACE) \
         template<class ExecSpace> \
         struct trsm_tpl_spec_avail< \
             Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-            Kokkos::View<SCALAR**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+            Kokkos::View<SCALAR**, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> > \
             > {enum : bool {value = true}; };
 
         #if defined (KOKKOSKERNELS_INST_DOUBLE)\
          && defined (KOKKOSKERNELS_INST_LAYOUTLEFT)
-        KOKKOSBLAS_TRSM_TPL_SPEC_AVAIL_BLAS(double, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
+        KOKKOSBLAS_TRSM_TPL_SPEC_AVAIL_BLAS(double, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_FLOAT) \
          && defined (KOKKOSKERNELS_INST_LAYOUTLEFT) 
-        KOKKOSBLAS_TRSM_TPL_SPEC_AVAIL_BLAS(float, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
+        KOKKOSBLAS_TRSM_TPL_SPEC_AVAIL_BLAS(float, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_DOUBLE_) \
@@ -45,12 +45,12 @@ namespace KokkosBlas {
 
         #if defined (KOKKOSKERNELS_INST_DOUBLE)\
          && defined (KOKKOSKERNELS_INST_LAYOUTRIGHT)
-        KOKKOSBLAS_TRSM_TPL_SPEC_AVAIL_BLAS(double, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
+        KOKKOSBLAS_TRSM_TPL_SPEC_AVAIL_BLAS(double, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_FLOAT) \
          && defined (KOKKOSKERNELS_INST_LAYOUTRIGHT) 
-        KOKKOSBLAS_TRSM_TPL_SPEC_AVAIL_BLAS(float, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
+        KOKKOSBLAS_TRSM_TPL_SPEC_AVAIL_BLAS(float, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_DOUBLE_) \
@@ -125,6 +125,6 @@ namespace KokkosBlas {
         */
 
     } //namespace Impl
-} //namespace KokkosLapack
+} //namespace KokkosBlas
 
 #endif // KOKKOSBLAS_TRSM_TPL_SPEC_AVAIL_HPP_

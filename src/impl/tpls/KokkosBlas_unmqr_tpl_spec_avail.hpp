@@ -19,7 +19,7 @@ namespace KokkosBlas {
         struct unmqr_tpl_spec_avail< \
             Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-            Kokkos::View<const SCALAR*, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+            Kokkos::View<const SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
             Kokkos::View<SCALAR**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> > \
@@ -37,12 +37,12 @@ namespace KokkosBlas {
 
         #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_DOUBLE_) \
          && defined (KOKKOSKERNELS_INST_LAYOUTLEFT)
-        KOKKOSBLAS_UNMQR_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<double>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
+        KOKKOSBLAS_UNMQR_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<double>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_FLOAT_) \
          && defined (KOKKOSKERNELS_INST_LAYOUTLEFT)
-        KOKKOSBLAS_UNMQR_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<float>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
+        KOKKOSBLAS_UNMQR_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<float>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_DOUBLE)\
@@ -57,12 +57,12 @@ namespace KokkosBlas {
 
         #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_DOUBLE_) \
          && defined (KOKKOSKERNELS_INST_LAYOUTRIGHT)
-        KOKKOSBLAS_UNMQR_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<double>, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
+        KOKKOSBLAS_UNMQR_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<double>, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
         #endif
 
         #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_FLOAT_) \
          && defined (KOKKOSKERNELS_INST_LAYOUTRIGHT)
-        KOKKOSBLAS_UNMQR_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<float>, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
+        KOKKOSBLAS_UNMQR_TPL_SPEC_AVAIL_BLAS(Kokkos::complex<float>, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace)
         #endif
         
         #endif //if BLAS/LAPACK

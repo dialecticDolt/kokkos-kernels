@@ -23,8 +23,8 @@ namespace KokkosBlas {
  */
 
     template<class AViewType, class BViewType>
-    void trsm(const char[] side, const char[] uplo, const char[] transa, const char[] diag,
-              AViewType::non_const_value_type a, AViewType& A, BViewType& B){
+    void trsm(const char side[], const char uplo[], const char transa[], const char diag[],
+              typename AViewType::const_value_type& alpha, AViewType& A, BViewType& B){
 
         #if (KOKKOSKERNELS_DEBUG_LEVEL >0)
         static_assert(Kokkos::Impl::is_view<AViewType>::value, "KokkosBlas::trsm: A must be a Kokkos::View");
@@ -48,7 +48,7 @@ namespace KokkosBlas {
             return;
 
         //particular View specializations
-        typedef Kokkos::View<typename AViewType::non_const_value_type**,
+        typedef Kokkos::View<typename AViewType::const_value_type**,
                 typename AViewType::array_layout,
                 typename AViewType::device_type,
                 Kokkos::MemoryTraits<Kokkos::Unmanaged> > AVT;
@@ -63,7 +63,6 @@ namespace KokkosBlas {
         
         typedef KokkosBlas::Impl::TRSM<AVT, BVT> impl_type;
         impl_type::trsm(side[0], uplo[0], transa[0], diag[0], alpha, A_i, B_i);
-
 
     }
 

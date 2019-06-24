@@ -1,42 +1,42 @@
 #ifndef KOKKOSBLAS_TRSM_TPL_SPEC_DECL_HPP_
 #define KOKKOSBLAS_TRSM_TPL_SPEC_DECL_HPP_
 
-#if defined( KOKKOSKERNELS_ENABLE_TPL_BLAS ) && defined( KOKKOSKERNELS_ENABLE_TPL_LAPACK )
+#if defined( KOKKOSKERNELS_ENABLE_TPL_BLAS )
 #include "KokkosBlas_Host_tpl.hpp"
-#include "KokkosLapack_Host_tpl.hpp"
 #include <stdio.h>
 
 namespace KokkosBlas {
     namespace Impl {
 
-    #define KOKKOSBLAS_DTRSM_BLAS(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_DTRSM_BLAS(LAYOUTA, LAYOUTB, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct TRSM< \
         Kokkos::View<const double**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-        Kokkos::View<double**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        Kokkos::View<double**, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef double SCALAR; \
         typedef int ORDINAL; \
         typedef Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
-        typedef Kokkos::View<SCALAR**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR**, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > BViewType; \
         \
         static void trsm(const char side, const char uplo, \
                          const char transa, const char diag, \
-                         SCALAR alpha, AViewType& A, BViewType& B){ \
-        Kokkos::Profiling::pushRegion("KokkosLapack::trsm[TPL_BLAS, double]");\
-        int M = A.extent(0); \
-        int N = A.extent(1); \
-        bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
-        bool B_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTB>::value; \
-        const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
-        const int BST = B_is_lr?B.stride(0):B.stride(1), LDB = BST == 0 ? 1:BST; \
-        HostBlas<double>::trsm(A_is_lr, side, uplo, transa, diag, M, N, alpha, \
-                               A, LDA, B, LDB) \
-        Kokkos::Profiling::popRegion(); \
+                         typename AViewType::const_value_type& alpha,\
+                         AViewType& A, BViewType& B){ \
+            Kokkos::Profiling::pushRegion("KokkosBlas::trsm[TPL_BLAS, double]");\
+            int M = A.extent(0); \
+            int N = A.extent(1); \
+            bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
+            bool B_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTB>::value; \
+            const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
+            const int BST = B_is_lr?B.stride(0):B.stride(1), LDB = BST == 0 ? 1:BST; \
+            HostBlas<double>::trsm(A_is_lr, side, uplo, transa, diag, M, N, alpha, \
+                                   A, LDA, B, LDB); \
+            Kokkos::Profiling::popRegion(); \
         } \
     };
 
@@ -148,10 +148,10 @@ namespace KokkosBlas {
         } \
     };
  
-    KOKKOSBLAS_DTRSM_BLAS(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
-    KOKKOSBLAS_DTRSM_BLAS(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
-    KOKKOSBLAS_DTRSM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
-    KOKKOSBLAS_DTRSM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+    KOKKOSBLAS_DTRSM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, true)
+    KOKKOSBLAS_DTRSM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, false)
+    KOKKOSBLAS_DTRSM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_DTRSM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
 /*
     KOKKOSBLAS_STRSM_BLAS(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
     KOKKOSBLAS_STRSM_BLAS(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)

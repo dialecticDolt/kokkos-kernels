@@ -573,12 +573,15 @@ namespace KokkosBlas {
                            const double alpha, 
                            const double *a, int lda, 
                            /* */ double *b, int ldb) {
-        if(matrix_layout){
-            cblas_dstrm(cblasRowMajor, side, uplo, transa, diag, m, n, alpha, a, lda, b, ldb);
-        }
-        else{
-            cblas_dstrm(cblasColMajor, side, uplo, transa, diag, m, n, alpha, a, lda, b, ldb);
-        }
+
+        CBLAS_ORDER layout = (matrix_layout) ? CblasRowMajor : CblasColMajor;
+        CBLAS_SIDE s = (side == 'L' || side == 'l') ? CblasLeft : CblasRight;
+        CBLAS_UPLO ul = (uplo == 'U' || uplo == 'u') ? CblasUpper : CblasLower;
+        CBLAS_TRANSPOSE tr = (transa == 'N' || transa == 'n') ? CblasNoTrans : CblasTrans;
+        CBLAS_DIAG d = (diag == 'N' || diag =='n') ? CblasNonUnit : CblasUnit;
+
+        cblas_dtrsm(layout, s, ul, 
+                    tr, d, m, n, alpha, a, lda, b, ldb);
 
     }
 

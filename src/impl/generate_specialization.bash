@@ -86,3 +86,6 @@ ${KOKKOSKERNELS_PATH}/scripts/generate_specialization_function.bash geqp3 Kokkos
 
 #unmqr
 ${KOKKOSKERNELS_PATH}/scripts/generate_specialization_function.bash unmqr KokkosBlas_unmqr KokkosBlas_unmqr_spec.hpp KokkosBlas ${KOKKOSKERNELS_PATH}
+
+#trsm
+${KOKKOSKERNELS_PATH}/scripts/generate_specialization_function.bash trsm KokkosBlas_trsm KokkosBlas_trsm_spec.hpp KokkosBlas ${KOKKOSKERNELS_PATH}

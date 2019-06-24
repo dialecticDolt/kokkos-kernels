@@ -301,7 +301,7 @@ ifeq (${KOKKOSKERNELS_INTERNAL_ENABLE_LAPACK}, 1)
 endif
 
 ifeq (${KOKKOSKERNELS_INTERNAL_ENABLE_BLAS}, 1)
-  KOKKOSKERNELS_LIBS += ${BLAS_LIBS} -lblas -llapack -llapacke -lgfortran
+  KOKKOSKERNELS_LIBS += ${BLAS_LIBS} -lblas -lopenblas -llapack -llapacke -lgfortran
   tmp := $(shell echo "\#define KOKKOSKERNELS_ENABLE_TPL_BLAS" >> KokkosKernels_config.tmp )
 endif
 

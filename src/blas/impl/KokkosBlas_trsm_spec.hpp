@@ -20,7 +20,7 @@ namespace KokkosBlas {
     } //namespace Impl
 } //namespace KokkosBlas
 
-#define KOKKOSBLAS_UNMQR_ETI_SPEC_AVAIL(SCALAR_TYPE, LAYOUT_TYPE, EXEC_SPACE_TYPE, MEM_SPACE_TYPE)\
+#define KOKKOSBLAS_TRSM_ETI_SPEC_AVAIL(SCALAR_TYPE, LAYOUT_TYPE, EXEC_SPACE_TYPE, MEM_SPACE_TYPE)\
     template<> \
     struct trsm_eti_spec_avail< \
         Kokkos::View<const SCALAR_TYPE**, LAYOUT_TYPE, \
@@ -44,9 +44,9 @@ namespace KokkosBlas {
             bool eti_spec_avail = trsm_eti_spec_avail<AVT, BVT>::value
         >
         struct TRSM{
-            static void TRSM(const char side, const char uplo,
+            static void trsm(const char side, const char uplo,
                              const char transa, const char diag,
-                             AVT::const_value_type alpha,
+                             typename AVT::const_value_type& alpha,
                              AVT& A, BVT& B);
 
         };
@@ -57,9 +57,9 @@ namespace KokkosBlas {
         //specialization layer for no TPL
         template<class AVT, class BVT>
         struct TRSM<AVT, BVT, false, KOKKOSKERNELS_IMPL_COMPILE_LIBRARY>{
-            static void TRSM(const char side, const char uplo,
+            static void trsm(const char side, const char uplo,
                              const char transa, const char diag,
-                             AVT::const_value_type alpha,
+                             typename AVT::const_value_type& alpha,
                              AVT& A, BVT& B){
                 execute_trsm<AVT, BVT>(side, uplo, transa, diag, 
                                        alpha, A, B);

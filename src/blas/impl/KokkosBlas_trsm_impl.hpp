@@ -12,13 +12,13 @@ namespace KokkosBlas {
         //Put non TPL implementation here
 
         template<class AVT, class BVT>
-        void execute_unmqr(const char side, const char uplo,
+        void execute_trsm(const char side, const char uplo,
                            const char transa, const char diag, 
-                           AVT::non_const_value_type a,
+                           typename AVT::const_value_type& a,
                            AVT& A, BVT& B){
 
             std::ostringstream os;
-            os << "There is no kokkos implementation of Device level TRSM. \n
+            os << "There is no kokkos implementation of Device level TRSM. \n \
                    Use Team/Single Level or Compile with TPL (LAPACK or MAGMA).\n";
             Kokkos::Impl::throw_runtime_exception(os.str());
         }
