@@ -72,12 +72,12 @@ namespace KokkosBlas {
  
         #ifdef KOKKOSKERNELS_ENABLE_TPL_MAGMA
 
-        #define KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_MAGMA(ORDINAL, SCALAR, LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE) \
+        #define KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_MAGMA(SCALAR, LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE) \
         template<class ExecSpace> \
         struct geqp3_tpl_spec_avail< \
             Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-            Kokkos::View<ORDINAL*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+            Kokkos::View<int*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
             Kokkos::View<SCALAR*, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
@@ -85,7 +85,7 @@ namespace KokkosBlas {
 
         #if defined (KOKKOSKERNELS_INST_DOUBLE)\
          && defined (KOKKOSKERNELS_INST_LAYOUTLEFT)
-        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_MAGMA(int, double, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace)
+        KOKKOSBLAS_GEQP3_TPL_SPEC_AVAIL_MAGMA(double, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace)
         #endif
 
         #endif //if MAGMA
