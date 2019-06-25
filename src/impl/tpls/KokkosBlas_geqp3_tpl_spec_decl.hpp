@@ -1,10 +1,11 @@
 #ifndef KOKKOSBLAS_GEQP3_TPL_SPEC_DECL_HPP_
 #define KOKKOSBLAS_GEQP3_TPL_SPEC_DECL_HPP_
 
+#include <stdio.h>
+
 #if defined( KOKKOSKERNELS_ENABLE_TPL_BLAS ) && defined( KOKKOSKERNELS_ENABLE_TPL_LAPACK )
 #include "KokkosBlas_Host_tpl.hpp"
 #include "KokkosLapack_Host_tpl.hpp"
-#include <stdio.h>
 
 namespace KokkosBlas {
     namespace Impl {
@@ -169,20 +170,63 @@ namespace KokkosBlas {
 
 //Magma
 
-/*
 #ifdef KOKKOSKERNELS_ENABLE_TPL_MAGMA
-#include<KokkosMagma_tpl_spec.hpp>
+#include<KokkosBlas_tpl_spec.hpp>
 
 namespace KokkosBlas{
     namespace Impl{
 
-    #define KOKKOSBLAS_DGEQP3_MAGMA(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL)
+    #define KOKKOSBLAS_DGEQP3_MAGMA(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    template<class ExecSpace> \
+    struct GEQP3< \
+        Kokkos::View<double**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<int*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<double*, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        true, ETI_SPEC_AVAIL> { \
+        typedef double SCALAR; \
+        typedef int ORDINAL; \
+        typedef Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
+        typedef Kokkos::View<int*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > PViewType; \
+        typedef Kokkos::View<SCALAR*, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
+        \
+        static void geqp3(AViewType& A, PViewType& p, TauViewType& tau){ \
+        Kokkos::Profiling::pushRegion("KokkosLapack::geqp3[TPL_MAGMA, double]"); \
+        magma_int_t N = static_cast<magma_int_t>( A.extent(0) ); \
+        magma_int_t M = static_cast<magma_int_t>( A.extent(1) ); \
+        magma_int_t AST = static_cast<magma_int_t>( A.stride(1) ); \
+        magma_int_t LDA = (AST == 0) ? 1: AST; \
+        int NB = 8; \
+        magma_int_t lwork = (N+1)*8 + 2*N; \
+        Kokkos::View<SCALAR*, Kokkos::Device<ExecSpace, MEMSPACE> > dwork("dWork", lwork); \
+        magma_int_t info = 0; \
+        KokkosBlas::Impl::MagmaSingleton & s = KokkosBlas::Impl::MagmaSingleton::singleton();\
+        \
+        magma_dgeqp3_gpu(M, N, \
+                         reinterpret_cast<magmaDouble_ptr>( A.data() ), LDA,\
+                         reinterpret_cast<magma_int_t*>( p.data() ), \
+                         reinterpret_cast<double*>( tau.data() ), \
+                         reinterpret_cast<magmaDouble_ptr>( dwork.data() ), lwork, \
+                         &info);\
+        \
+        Kokkos::Profiling::popRegion(); \
+        } \
+    };
 
+/*
+    KOKKOSBLAS_DGEQP3_MAGMA(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos:CudaSpace, true);
+    KOKKOSBLAS_DGEQP3_MAGMA(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos:CudaSpace, false);
+*/
 
     } //namespace Impl
 } //namespace KokkosBlas
 
-*/
+#endif //If MAGMA
 
 #endif //KOKKOSBLAS_GEQP3_TPL_SPEC_DECL_HPP_
 
