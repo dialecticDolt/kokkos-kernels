@@ -12,8 +12,13 @@ KOKKOSKERNELS_SPACES ?= $(KOKKOS_DEVICES),HostSpace
 KOKKOSKERNELS_ORDINALS ?= int,int64_t
 KOKKOSKERNELS_OFFSETS ?= int,size_t
 
+<<<<<<< Updated upstream
 # mkl, blas, yaml, magma, lapack
 KOKKOSKERNELS_ENABLE_TPLS ?= "blas, lapack"
+=======
+# mkl, blas, yaml, magma
+KOKKOSKERNELS_ENABLE_TPLS ?= "blas, lapack, magma"
+>>>>>>> Stashed changes
 
 # eti-only
 KOKKOSKERNELS_OPTIONS ?= ""
@@ -336,8 +341,8 @@ ifeq (${KOKKOSKERNELS_INTERNAL_ENABLE_MAGMA}, 1)
   KOKKOS_INTERNAL_NVCC_PATH := $(shell which nvcc)
   CUDA_PATH ?= $(KOKKOS_INTERNAL_NVCC_PATH:/bin/nvcc=)
   KOKKOSKERNELS_CPPFLAGS += -D${MAGMA_FORTRAN_MANGLING} -I${MAGMA_PATH}/include -I${MAGMA_PATH}/sparse/include -I${CUDA_PATH}/include
-  KOKKOSKERNELS_LDFLAGS += -L${MAGMA_PATH}/lib -L${CUDA_PATH}/lib64
-  KOKKOSKERNELS_LIBS += -lmagma_sparse -lmagma -lcublas -lcudart -lcusparse -fopenmp -lblas -llapack -lblas -lgfortran
+  KOKKOSKERNELS_LDFLAGS += -L${MAGMA_PATH}/lib -L${CUDA_PATH}/lib64 -L${BLAS_PATH}
+  KOKKOSKERNELS_LIBS += -lmagma_sparse -lmagma -lcublas -lcudart -lcusparse -fopenmp -lblas -llapack -lgfortran
 
   tmp := $(shell echo "\#define KOKKOSKERNELS_ENABLE_TPL_MAGMA" >> KokkosKernels_config.tmp )
 endif

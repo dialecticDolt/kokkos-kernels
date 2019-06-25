@@ -111,8 +111,8 @@ template<class AMatrix,
 struct GESV< AMatrix, BXMV, false, KOKKOSKERNELS_IMPL_COMPILE_LIBRARY>{
   static void
   gesv (const char pivot[],
-        const AMatrix& A,
-        const BXMV& B)
+        AMatrix& A,
+        BXMV& B)
   {
    //NOTE: Might add the implementation of KokkosBlas::gesv later
   }

@@ -70,8 +70,8 @@ namespace KokkosBlas {
 template <class AMatrix, class BXMV>
 void
 gesv (const char pivot[],
-      const AMatrix& A,
-      const BXMV& B)
+      AMatrix& A,
+      BXMV& B)
 {
 
   static_assert (Kokkos::Impl::is_view<AMatrix>::value,
