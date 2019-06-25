@@ -29,7 +29,7 @@ KOKKOSKERNELS_INTERNAL_ENABLE_LAPACK := $(strip $(shell echo $(KOKKOSKERNELS_ENA
 YAML_PATH ?= ${HOME}/yaml-cpp/install
 YAML_LIBS ?= -L${YAML_PATH}/lib -lyaml-cpp
 
-BLAS_PATH ?= /usr/include/openblas
+BLAS_PATH ?= /ascldap/users/projects/ppc64le-pwr8/openblas/0.3.4/gcc/7.4.0/lib
 BLAS_LIBS ?= -L${BLAS_PATH} $(BLAS_LIBRARIES) -lgfortran -lgomp
 
 LAPACK_PATH ?= /usr/include/openblas
@@ -337,7 +337,7 @@ ifeq (${KOKKOSKERNELS_INTERNAL_ENABLE_MAGMA}, 1)
   CUDA_PATH ?= $(KOKKOS_INTERNAL_NVCC_PATH:/bin/nvcc=)
   KOKKOSKERNELS_CPPFLAGS += -D${MAGMA_FORTRAN_MANGLING} -I${MAGMA_PATH}/include -I${MAGMA_PATH}/sparse/include -I${CUDA_PATH}/include
   KOKKOSKERNELS_LDFLAGS += -L${MAGMA_PATH}/lib -L${CUDA_PATH}/lib64
-  KOKKOSKERNELS_LIBS += -lmagma_sparse -lmagma -lcublas -lcudart -lcusparse -fopenmp
+  KOKKOSKERNELS_LIBS += -lmagma_sparse -lmagma -lcublas -lcudart -lcusparse -fopenmp -lblas -llapack -lblas -lgfortran
 
   tmp := $(shell echo "\#define KOKKOSKERNELS_ENABLE_TPL_MAGMA" >> KokkosKernels_config.tmp )
 endif
