@@ -54,7 +54,6 @@ struct gesv_tpl_spec_avail {
 };
 
 // MAGMA
-
 #ifdef KOKKOSKERNELS_ENABLE_TPL_MAGMA
 
 #define KOKKOSBLAS_GESV_TPL_SPEC_AVAIL_MAGMA( SCALAR, LAYOUT, MEMSPACE ) \
