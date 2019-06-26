@@ -60,7 +60,20 @@ namespace KokkosBlas {
             }
         }
         
-        
+        template<>
+        void
+        HostLapack<float>::potrf(bool matrix_layout, 
+                                 char uplo, int n, 
+                                 float* a, int lda){
+            if(matrix_layout) {
+                LAPACKE_spotrf(LAPACK_ROW_MAJOR, uplo, n, a, lda);
+            }
+            else {
+                LAPACKE_spotrf(LAPACK_COL_MAJOR, uplo, n, a, lda);
+            }
+        }
+
+
         //double
          
         template<>
@@ -107,6 +120,20 @@ namespace KokkosBlas {
             }
             else {
                 LAPACKE_dormqr(LAPACK_ROW_MAJOR, side, trans, m, n, k, a, lda, tau, c, ldc);
+            }
+        }
+
+
+        template<>
+        void
+        HostLapack<double>::potrf(bool matrix_layout, 
+                                 char uplo, int n, 
+                                 double* a, int lda){
+            if(matrix_layout) {
+                LAPACKE_dpotrf(LAPACK_ROW_MAJOR, uplo, n, a, lda);
+            }
+            else {
+                LAPACKE_dpotrf(LAPACK_COL_MAJOR, uplo, n, a, lda);
             }
         }
 
@@ -176,7 +203,24 @@ namespace KokkosBlas {
                         reinterpret_cast < __complex__ float*>(c), ldc);
             }
         }
-    
+
+
+        template<>
+        void
+        HostLapack<std::complex<float>>::potrf(bool matrix_layout, 
+                                 char uplo, int n, 
+                                 std::complex<float>* a, int lda){
+            if(matrix_layout) {
+                LAPACKE_cpotrf(LAPACK_ROW_MAJOR, uplo, n, 
+                        reinterpret_cast<__complex__ float*>( a ), lda);
+            }
+            else {
+                LAPACKE_cpotrf(LAPACK_COL_MAJOR, uplo, n, 
+                        reinterpret_cast<__complex__ float*>( a ), lda);
+            }
+        }
+
+
         //std::complex<double>
 
         template<>
@@ -243,6 +287,21 @@ namespace KokkosBlas {
         }
 
     
+        template<>
+        void
+        HostLapack<std::complex<double>>::potrf(bool matrix_layout, 
+                                 char uplo, int n, 
+                                 std::complex<double>* a, int lda){
+            if(matrix_layout) {
+                LAPACKE_cpotrf(LAPACK_ROW_MAJOR, uplo, n, 
+                        reinterpret_cast<__complex__ double*>( a ), lda);
+            }
+            else {
+                LAPACKE_cpotrf(LAPACK_COL_MAJOR, uplo, n, 
+                        reinterpret_cast<__complex__ double*>( a ), lda);
+            }
+        }
+
     } //namespace Impl
 } //namespace KokkosBlas
 

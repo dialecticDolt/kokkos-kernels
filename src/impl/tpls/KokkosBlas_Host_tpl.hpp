@@ -86,6 +86,25 @@ namespace KokkosBlas {
                 /* */ T *c, int ldc);
 
       static 
+      void syrk(bool matrix_layout, 
+                const char uplo, const char transa, 
+                int n, int k,
+                const T alpha, 
+                const T *a, int lda,
+                const T beta,
+                /* */ T *c, int ldc);
+
+
+      static 
+      void herk(bool matrix_layout, 
+                const char uplo, const char transa, 
+                int n, int k,
+                const typename T::value_type alpha, 
+                const T *a, int lda,
+                const typename T::value_type beta,
+                /* */ T *c, int ldc);
+
+      static 
       void trsm(const char side, const char uplo, const char transa, const char diag,
                 int m, int n, 
                 const T alpha, 

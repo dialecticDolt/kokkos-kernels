@@ -77,7 +77,7 @@ namespace KokkosBlas {
         struct geqp3_tpl_spec_avail< \
             Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-            Kokkos::View<int*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+            Kokkos::View<int*, Kokkos::HostSpace, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
             Kokkos::View<SCALAR*, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \

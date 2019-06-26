@@ -16,6 +16,12 @@ namespace KokkosBlas{
             typedef Kokkos::ArithTraits<T> ats;
             typedef typename ats::mag_type mag_type;
 
+            static
+            void
+            potrf(bool matrix_layout,
+                  char uplo, int n, 
+                  T* a, int lda);
+
             static 
             void geqp3(bool matrix_layout,
                         int m, int n, 

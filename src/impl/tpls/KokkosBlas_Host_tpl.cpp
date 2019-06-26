@@ -467,6 +467,23 @@ namespace KokkosBlas {
 
     }
 
+
+    template<>
+    void 
+    HostBlas<float>::syrk(bool matrix_layout, 
+                          const char uplo, const char transa, 
+                          const int m, const int k, const float alpha, 
+                          const float *a, int lda, const float beta, 
+                          /* */ float *c, ind ldb){
+        CBLAS_ORDER layout = (matrix_layout) ? CblasRowMajor : CblasColMajor;
+        CBLAS_UPLO ul = (uplo == 'U' || uplo == 'u') ? CblasUpper : CblasLower;
+        CBLAS_TRANSPOSE tr = (transa == 'N' || transa == 'n') ? CblasNoTrans : CblasTrans;
+
+        cblas_ssyrk(layout, ul, tr, n, k, alpha, a, lda, beta, c, ldc);
+    }
+
+
+
     ///
     /// double
     ///
@@ -608,6 +625,19 @@ namespace KokkosBlas {
     }
 
 
+    template<>
+    void 
+    HostBlas<double>::syrk(bool matrix_layout, 
+                          const char uplo, const char transa, 
+                          const int m, const int k, const double alpha, 
+                          const double *a, int lda, const double beta, 
+                          /* */ double *c, int ldb){
+        CBLAS_ORDER layout = (matrix_layout) ? CblasRowMajor : CblasColMajor;
+        CBLAS_UPLO ul = (uplo == 'U' || uplo == 'u') ? CblasUpper : CblasLower;
+        CBLAS_TRANSPOSE tr = (transa == 'N' || transa == 'n') ? CblasNoTrans : CblasTrans;
+
+        cblas_dsyrk(layout, ul, tr, n, k, alpha, a, lda, beta, c, ldc);
+    }
     /// 
     /// std::complex<float>
     ///
@@ -758,6 +788,21 @@ namespace KokkosBlas {
     }
 
 
+    template<>
+    void 
+    HostBlas<std::complex<float>>::herk(bool matrix_layout, 
+                          const char uplo, const char transa, 
+                          const int m, const int k, const float alpha, 
+                          const std::complex<float> *a, int lda, const float beta, 
+                          /* */ std::complex<float> *c, int ldb){
+        CBLAS_ORDER layout = (matrix_layout) ? CblasRowMajor : CblasColMajor;
+        CBLAS_UPLO ul = (uplo == 'U' || uplo == 'u') ? CblasUpper : CblasLower;
+        CBLAS_TRANSPOSE tr = (transa == 'N' || transa == 'n') ? CblasNoTrans : CblasTrans;
+
+        cblas_dsyrk(layout, ul, tr, n, k, alpha, 
+                reinterpret_cast<const __complex__ float*>( a ), lda, beta, 
+                reinterpret_cast</* */ __complex__ float*>( c ), ldc);
+    }
 
 
     ///
@@ -912,6 +957,21 @@ namespace KokkosBlas {
     }
 
 
+    template<>
+    void 
+    HostBlas<std::complex<double>>::herk(bool matrix_layout, 
+                          const char uplo, const char transa, 
+                          const int m, const int k, const double alpha, 
+                          const std::complex<double> *a, int lda, const double beta, 
+                          /* */ std::complex<double> *c, int ldb){
+        CBLAS_ORDER layout = (matrix_layout) ? CblasRowMajor : CblasColMajor;
+        CBLAS_UPLO ul = (uplo == 'U' || uplo == 'u') ? CblasUpper : CblasLower;
+        CBLAS_TRANSPOSE tr = (transa == 'N' || transa == 'n') ? CblasNoTrans : CblasTrans;
+
+        cblas_zherk(layout, ul, tr, n, k, alpha, 
+                reinterpret_cast<const __complex__ double*>( a ), lda, beta, 
+                reinterpret_cast</* */ __complex__ double*>( c ), ldc);
+    }
 
 
   }

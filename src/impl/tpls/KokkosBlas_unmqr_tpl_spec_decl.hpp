@@ -179,20 +179,110 @@ namespace KokkosBlas {
 
 //Magma
 
-/*
 #ifdef KOKKOSKERNELS_ENABLE_TPL_MAGMA
-#include<KokkosMagma_tpl_spec.hpp>
+#include<KokkosBlas_tpl_spec.hpp>
 
 namespace KokkosBlas{
     namespace Impl{
 
-    #define KOKKOSBLAS_DUNMQR_MAGMA(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL)
+    #define KOKKOSBLAS_DUNMQR_MAGMA(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    template<class ExecSpace> \
+    struct UNMQR< \
+        Kokkos::View<const double**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<const double*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<double**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        true, ETI_SPEC_AVAIL> { \
+        typedef double SCALAR; \
+        typedef int ORDINAL; \
+        typedef Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
+        typedef Kokkos::View<const SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
+        typedef Kokkos::View<SCALAR**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > CViewType; \
+        \
+        static void unmqr(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C){ \
+        Kokkos::Profiling::pushRegion("KokkosLapack::unmqr[TPL_MAGMA, double]");\
+        magma_int_t info = 0; \
+        int M = A.extent(0);  \
+        int N = A.extent(1);  \
+        bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
+        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
+        const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
+        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
+        magma_side_t m_side   = (side  == 'L' || side  == 'l') ? MagmaLeft : MagmaRight;\
+        magma_trans_t m_trans = (trans == 'T' || trans == 't') ? MagmaTrans: MagmaNoTrans; \
+        auto wA = Kokkos::create_mirror_view( A ); \
+        Kokkos::deep_copy(wA, A); \
+        auto h_tau = Kokkos::create_mirror_view( tau ); \
+        Kokkos::deep_copy(h_tau, tau); \
+        magma_dormqr2_gpu(m_side, m_trans, M, N, k, \
+                const_cast<magmaDouble_ptr>( reinterpret_cast<magmaDouble_const_ptr>( A.data() ) ), LDA,  \
+                const_cast<SCALAR*>( reinterpret_cast<const SCALAR*>( h_tau.data() ) ),             \
+                reinterpret_cast<magmaDouble_ptr>( C.data() ), LDC,        \
+                reinterpret_cast<SCALAR*>( wA.data() ), LDA, &info); \
+        Kokkos::Profiling::popRegion(); \
+        } \
+    };
 
+
+    #define KOKKOSBLAS_SUNMQR_MAGMA(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    template<class ExecSpace> \
+    struct UNMQR< \
+        Kokkos::View<const float**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<const float*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<float**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        true, ETI_SPEC_AVAIL> { \
+        typedef float SCALAR; \
+        typedef int ORDINAL; \
+        typedef Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
+        typedef Kokkos::View<const SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
+        typedef Kokkos::View<SCALAR**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > CViewType; \
+        \
+        static void unmqr(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C){ \
+        Kokkos::Profiling::pushRegion("KokkosLapack::unmqr[TPL_MAGMA, float]");\
+        magma_int_t info = 0; \
+        int M = A.extent(0);  \
+        int N = A.extent(1);  \
+        bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
+        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
+        const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
+        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
+        magma_side_t m_side   = (side  == 'L' || side  == 'l') ? MagmaLeft : MagmaRight;\
+        magma_trans_t m_trans = (trans == 'T' || trans == 't') ? MagmaTrans: MagmaNoTrans; \
+        auto wA = Kokkos::create_mirror_view( A ); \
+        Kokkos::deep_copy(wA, A); \
+        auto h_tau = Kokkos::create_mirror_view( tau ); \
+        Kokkos::deep_copy(h_tau, tau); \
+        magma_sormqr2_gpu(m_side, m_trans, M, N, k, \
+                const_cast<magmaFloat_ptr>( reinterpret_cast<magmaFloat_const_ptr>( A.data() ) ), LDA,  \
+                const_cast<SCALAR*>( reinterpret_cast<const SCALAR*>( h_tau.data() ) ),             \
+                reinterpret_cast<magmaFloat_ptr>( C.data() ), LDC,        \
+                reinterpret_cast<SCALAR*>( wA.data() ), LDA, &info); \
+        Kokkos::Profiling::popRegion(); \
+        } \
+    };
+
+    KOKKOSBLAS_DUNMQR_MAGMA(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
+    KOKKOSBLAS_DUNMQR_MAGMA(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
+
+
+    KOKKOSBLAS_SUNMQR_MAGMA(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
+    KOKKOSBLAS_SUNMQR_MAGMA(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
 
     } //namespace Impl
 } //namespace KokkosBlas
 
-*/
+#endif //IF MAGMA
 
 #endif //KOKKOSBLAS_UNMQR_TPL_SPEC_DECL_HPP_
 

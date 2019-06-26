@@ -60,8 +60,7 @@ namespace KokkosBlas {
                 typename AViewType::device_type,
                 Kokkos::MemoryTraits<Kokkos::Unmanaged> > AVT;
         typedef Kokkos::View<typename PViewType::non_const_value_type*,
-                typename PViewType::array_layout,
-                typename PViewType::device_type,
+                Kokkos::HostSpace,
                 Kokkos::MemoryTraits<Kokkos::Unmanaged> > PVT;
         typedef Kokkos::View<typename TauViewType::non_const_value_type*,
                 typename TauViewType::array_layout,
