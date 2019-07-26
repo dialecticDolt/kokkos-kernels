@@ -69,5 +69,6 @@
 #include<KokkosBlas_trsm.hpp>
 #include<KokkosBlas_potrf.hpp>
 #include<KokkosBlas_herk.hpp>
+//#include<KokkosBlas_potrf_batched.hpp>
 
 #endif

@@ -13,7 +13,6 @@ namespace KokkosBlas {
 
         template<class AVT, class CVT>
         void execute_herk(const char uplo, const char trans,
-                          const int n, const int k, 
                           typename AVT::const_value_type& alpha,
                           AVT& A, 
                           typename CVT::const_value_type& beta, 

@@ -99,10 +99,19 @@ namespace KokkosBlas {
       void herk(bool matrix_layout, 
                 const char uplo, const char transa, 
                 int n, int k,
-                const typename T::value_type alpha, 
+                const double alpha, 
                 const T *a, int lda,
-                const typename T::value_type beta,
-                /* */ T *c, int ldc);
+                const double beta,
+                T *c, int ldc);
+
+      static 
+      void herk(bool matrix_layout, 
+                const char uplo, const char transa, 
+                int n, int k,
+                const float alpha, 
+                const T *a, int lda,
+                const float beta,
+                T *c, int ldc);
 
       static 
       void trsm(const char side, const char uplo, const char transa, const char diag,

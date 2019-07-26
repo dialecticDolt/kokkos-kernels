@@ -110,7 +110,7 @@ namespace KokkosBlas {
         static void herk(const char uplo, const char trans, \
                          typename AViewType::const_value_type& alpha,\
                          AViewType& A,\
-                         typename BViewType::const_value_type& beta, \
+                         typename CViewType::const_value_type& beta, \
                          CViewType& C){ \
             Kokkos::Profiling::pushRegion("KokkosBlas::herk[TPL_BLAS, Kokkos:complex<float>]");\
             int N, k; \
@@ -127,14 +127,14 @@ namespace KokkosBlas {
             const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
             const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
             HostBlas<std::complex<float>>::herk(A_is_lr, uplo, trans, N, k, alpha, \
-                            reinterpret_cast<const std::complex<float>>( A.data() ), LDA, beta, \
-                            reinterpret_cast<std::complex<float>>( C.data() ), LDC); \
+                            reinterpret_cast<const std::complex<float>*>( A.data() ), LDA, beta, \
+                            reinterpret_cast<std::complex<float>*>( C.data() ), LDC); \
             Kokkos::Profiling::popRegion(); \
         } \
     };
 
 
-    #define KOKKOSBLAS_CHERK_BLAS(LAYOUTA, LAYOUTB, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_ZHERK_BLAS(LAYOUTA, LAYOUTB, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct HERK< \
         Kokkos::View<const Kokkos::complex<double>**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
@@ -152,7 +152,7 @@ namespace KokkosBlas {
         static void herk(const char uplo, const char trans, \
                          typename AViewType::const_value_type& alpha,\
                          AViewType& A,\
-                         typename BViewType::const_value_type& beta, \
+                         typename CViewType::const_value_type& beta, \
                          CViewType& C){ \
             Kokkos::Profiling::pushRegion("KokkosBlas::herk[TPL_BLAS, Kokkos:complex<double>]");\
             int N, k; \
@@ -169,8 +169,8 @@ namespace KokkosBlas {
             const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
             const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
             HostBlas<std::complex<double>>::herk(A_is_lr, uplo, trans, N, k, alpha, \
-                            reinterpret_cast<const std::complex<double>>( A.data() ), LDA, beta, \
-                            reinterpret_cast<std::complex<double>>( C.data() ), LDC); \
+                            reinterpret_cast<const std::complex<double>*>( A.data() ), LDA, beta, \
+                            reinterpret_cast<std::complex<double>*>( C.data() ), LDC); \
             Kokkos::Profiling::popRegion(); \
         } \
     };

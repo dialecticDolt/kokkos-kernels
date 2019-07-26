@@ -293,11 +293,11 @@ namespace KokkosBlas {
                                  char uplo, int n, 
                                  std::complex<double>* a, int lda){
             if(matrix_layout) {
-                LAPACKE_cpotrf(LAPACK_ROW_MAJOR, uplo, n, 
+                LAPACKE_zpotrf(LAPACK_ROW_MAJOR, uplo, n, 
                         reinterpret_cast<__complex__ double*>( a ), lda);
             }
             else {
-                LAPACKE_cpotrf(LAPACK_COL_MAJOR, uplo, n, 
+                LAPACKE_zpotrf(LAPACK_COL_MAJOR, uplo, n, 
                         reinterpret_cast<__complex__ double*>( a ), lda);
             }
         }

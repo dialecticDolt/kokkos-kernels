@@ -53,8 +53,8 @@ namespace KokkosBlas {
                 Kokkos::MemoryTraits<Kokkos::Unmanaged> > AVT;
 
         typedef Kokkos::View<typename CViewType::non_const_value_type**,
-                typename AViewType::array_layout,
-                typename AViewType::device_type,
+                typename CViewType::array_layout,
+                typename CViewType::device_type,
                 Kokkos::MemoryTraits<Kokkos::Unmanaged> > CVT;
        
         AVT A_i = A;

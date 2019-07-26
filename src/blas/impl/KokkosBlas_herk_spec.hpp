@@ -45,7 +45,6 @@ namespace KokkosBlas {
         >
         struct HERK{
             static void herk(const char uplo, const char trans,
-                             const int n, const int k, 
                              typename AVT::const_value_type& alpha,
                              AVT& A,
                              typename CVT::const_value_type& beta, 
@@ -60,12 +59,11 @@ namespace KokkosBlas {
         template<class AVT, class CVT>
         struct HERK<AVT, CVT, false, KOKKOSKERNELS_IMPL_COMPILE_LIBRARY>{
             static void herk(const char uplo, const char trans,
-                             const int n, const int k, 
                              typename AVT::const_value_type& alpha,
                              AVT& A,
                              typename CVT::const_value_type& beta, 
                              CVT& C){
-                execute_herk<AVT, CVT>(uplo, trans, n, k, alpha, A, beta, C);
+                execute_herk<AVT, CVT>(uplo, trans, alpha, A, beta, C);
             }
         };
         #endif
