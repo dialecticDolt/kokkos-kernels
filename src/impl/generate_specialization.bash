@@ -90,6 +90,9 @@ ${KOKKOSKERNELS_PATH}/scripts/generate_specialization_function.bash unmqr Kokkos
 #trsm
 ${KOKKOSKERNELS_PATH}/scripts/generate_specialization_function.bash trsm KokkosBlas_trsm KokkosBlas_trsm_spec.hpp KokkosBlas ${KOKKOSKERNELS_PATH}
 
+#trmm
+${KOKKOSKERNELS_PATH}/scripts/generate_specialization_function.bash trmm KokkosBlas_trmm KokkosBlas_trmm_spec.hpp KokkosBlas ${KOKKOSKERNELS_PATH}
+
 #potrf
 ${KOKKOSKERNELS_PATH}/scripts/generate_specialization_function.bash potrf KokkosBlas_potrf KokkosBlas_potrf_spec.hpp KokkosBlas ${KOKKOSKERNELS_PATH}
 

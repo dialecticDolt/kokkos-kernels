@@ -196,8 +196,8 @@ namespace KokkosBlas{
         static void geqp3(AViewType& A, PViewType& p, TauViewType& tau){ \
             Kokkos::Profiling::pushRegion("KokkosLapack::geqp3[TPL_MAGMA, double]"); \
             KokkosBlas::Impl::MagmaSingleton & s = KokkosBlas::Impl::MagmaSingleton::singleton();\
-            magma_int_t N = static_cast<magma_int_t>( A.extent(0) ); \
-            magma_int_t M = static_cast<magma_int_t>( A.extent(1) ); \
+            magma_int_t M = static_cast<magma_int_t>( A.extent(0) ); \
+            magma_int_t N = static_cast<magma_int_t>( A.extent(1) ); \
             magma_int_t AST = static_cast<magma_int_t>( A.stride(1) ); \
             magma_int_t LDA = (AST == 0) ? 1: AST; \
             magma_int_t nb = magma_get_dgeqp3_nb(M, N); \
@@ -234,8 +234,8 @@ namespace KokkosBlas{
         static void geqp3(AViewType& A, PViewType& p, TauViewType& tau){ \
             Kokkos::Profiling::pushRegion("KokkosLapack::geqp3[TPL_MAGMA, float]"); \
             KokkosBlas::Impl::MagmaSingleton & s = KokkosBlas::Impl::MagmaSingleton::singleton();\
-            magma_int_t N = static_cast<magma_int_t>( A.extent(0) ); \
-            magma_int_t M = static_cast<magma_int_t>( A.extent(1) ); \
+            magma_int_t M = static_cast<magma_int_t>( A.extent(0) ); \
+            magma_int_t N = static_cast<magma_int_t>( A.extent(1) ); \
             magma_int_t AST = static_cast<magma_int_t>( A.stride(1) ); \
             magma_int_t LDA = (AST == 0) ? 1: AST; \
             magma_int_t nb = magma_get_sgeqp3_nb(M, N); \

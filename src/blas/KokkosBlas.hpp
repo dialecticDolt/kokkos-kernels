@@ -67,8 +67,10 @@
 #include<KokkosBlas_geqp3.hpp>
 #include<KokkosBlas_unmqr.hpp>
 #include<KokkosBlas_trsm.hpp>
+#include<KokkosBlas_trmm.hpp>
 #include<KokkosBlas_potrf.hpp>
 #include<KokkosBlas_herk.hpp>
+
 //#include<KokkosBlas_potrf_batched.hpp>
 
 #endif

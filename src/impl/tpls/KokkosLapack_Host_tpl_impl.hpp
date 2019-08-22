@@ -1,3 +1,6 @@
+#ifndef LAPACK_HOST_TPL_CPP
+#define LAPACK_HOST_TPL_CPP
+
 #include "KokkosKernels_config.h"
 
 
@@ -13,7 +16,7 @@ namespace KokkosBlas {
     
         //float 
 
-        template<>
+        template<> inline
         void
         HostLapack<float>::geqp3(bool matrix_layout, 
                                  int m, int n,
@@ -28,7 +31,7 @@ namespace KokkosBlas {
             }
         }
 
-        template<>
+        template<> inline
         void 
         HostLapack<float>::unmqr(bool matrix_layout,
                                   char side, char trans,
@@ -44,7 +47,7 @@ namespace KokkosBlas {
             }
         }
 
-        template<>
+        template<> inline
         void 
         HostLapack<float>::ormqr(bool matrix_layout,
                                   char side, char trans,
@@ -60,7 +63,7 @@ namespace KokkosBlas {
             }
         }
         
-        template<>
+        template<> inline
         void
         HostLapack<float>::potrf(bool matrix_layout, 
                                  char uplo, int n, 
@@ -76,7 +79,7 @@ namespace KokkosBlas {
 
         //double
          
-        template<>
+        template<> inline
         void
         HostLapack<double>::geqp3(bool matrix_layout, 
                                  int m, int n,
@@ -91,7 +94,7 @@ namespace KokkosBlas {
             }
         }
 
-        template<>
+        template<> inline
         void 
         HostLapack<double>::unmqr(bool matrix_layout,
                                   char side, char trans,
@@ -107,7 +110,7 @@ namespace KokkosBlas {
             }
         }
 
-        template<>
+        template<> inline
         void 
         HostLapack<double>::ormqr(bool matrix_layout,
                                   char side, char trans,
@@ -124,16 +127,17 @@ namespace KokkosBlas {
         }
 
 
-        template<>
+        template<> inline
         void
         HostLapack<double>::potrf(bool matrix_layout, 
                                  char uplo, int n, 
                                  double* a, int lda){
+            int info;
             if(matrix_layout) {
-                LAPACKE_dpotrf(LAPACK_ROW_MAJOR, uplo, n, a, lda);
+                info = LAPACKE_dpotrf(LAPACK_ROW_MAJOR, uplo, n, a, lda);
             }
             else {
-                LAPACKE_dpotrf(LAPACK_COL_MAJOR, uplo, n, a, lda);
+                info = LAPACKE_dpotrf(LAPACK_COL_MAJOR, uplo, n, a, lda);
             }
         }
 
@@ -141,7 +145,7 @@ namespace KokkosBlas {
         //std::complex<float>
 
 
-        template<>
+        template<> inline
         void
         HostLapack<std::complex<float>>::geqp3(bool matrix_layout, 
                                  int m, int n,
@@ -160,7 +164,7 @@ namespace KokkosBlas {
             }
         }
 
-        template<>
+        template<> inline
         void 
         HostLapack<std::complex<float>>::unmqr(bool matrix_layout,
                                   char side, char trans,
@@ -182,7 +186,7 @@ namespace KokkosBlas {
             }
         }
 
-        template<>
+        template<> inline
         void 
         HostLapack<std::complex<float>>::ormqr(bool matrix_layout,
                                   char side, char trans,
@@ -205,7 +209,7 @@ namespace KokkosBlas {
         }
 
 
-        template<>
+        template<> inline
         void
         HostLapack<std::complex<float>>::potrf(bool matrix_layout, 
                                  char uplo, int n, 
@@ -223,7 +227,7 @@ namespace KokkosBlas {
 
         //std::complex<double>
 
-        template<>
+        template<> inline
         void
         HostLapack<std::complex<double>>::geqp3(bool matrix_layout, 
                                  int m, int n,
@@ -242,7 +246,7 @@ namespace KokkosBlas {
             }
         }
 
-        template<>
+        template<> inline
         void 
         HostLapack<std::complex<double>>::unmqr(bool matrix_layout,
                                   char side, char trans,
@@ -264,7 +268,7 @@ namespace KokkosBlas {
             }
         }
 
-        template<>
+        template<> inline
         void 
         HostLapack<std::complex<double>>::ormqr(bool matrix_layout,
                                   char side, char trans,
@@ -287,7 +291,7 @@ namespace KokkosBlas {
         }
 
     
-        template<>
+        template<> inline
         void
         HostLapack<std::complex<double>>::potrf(bool matrix_layout, 
                                  char uplo, int n, 
@@ -305,4 +309,6 @@ namespace KokkosBlas {
     } //namespace Impl
 } //namespace KokkosBlas
 
-#endif //ENABLE BLAS/LAPACK 
+#endif //ENABLE BLAS/LAPACK
+
+#endif //DEF

@@ -1,5 +1,5 @@
-#ifndef KOKKOSBLAS_TRSM_TPL_SPEC_DECL_HPP_
-#define KOKKOSBLAS_TRSM_TPL_SPEC_DECL_HPP_
+#ifndef KOKKOSBLAS_TRMM_TPL_SPEC_DECL_HPP_
+#define KOKKOSBLAS_TRMM_TPL_SPEC_DECL_HPP_
 
 #if defined( KOKKOSKERNELS_ENABLE_TPL_BLAS )
 #include "KokkosBlas_Host_tpl.hpp"
@@ -8,9 +8,9 @@
 namespace KokkosBlas {
     namespace Impl {
 
-    #define KOKKOSBLAS_DTRSM_BLAS(LAYOUTA, LAYOUTB, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_DTRMM_BLAS(LAYOUTA, LAYOUTB, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
-    struct TRSM< \
+    struct TRMM< \
         Kokkos::View<const double**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         Kokkos::View<double**, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
@@ -23,27 +23,27 @@ namespace KokkosBlas {
         typedef Kokkos::View<SCALAR**, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > BViewType; \
         \
-        static void trsm(const char side, const char uplo, \
+        static void trmm(const char side, const char uplo, \
                          const char transa, const char diag, \
                          typename AViewType::const_value_type& alpha,\
                          AViewType& A, BViewType& B){ \
-            Kokkos::Profiling::pushRegion("KokkosBlas::trsm[TPL_BLAS, double]");\
-            int M = B.extent(0); \
-            int N = B.extent(1); \
+            Kokkos::Profiling::pushRegion("KokkosBlas::trmm[TPL_BLAS, double]");\
+            int M = A.extent(0); \
+            int N = A.extent(1); \
             bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
             bool B_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTB>::value; \
             const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
             const int BST = B_is_lr?B.stride(0):B.stride(1), LDB = BST == 0 ? 1:BST; \
-            HostBlas<double>::trsm(A_is_lr, side, uplo, transa, diag, M, N, alpha, \
+            HostBlas<double>::trmm(A_is_lr, side, uplo, transa, diag, M, N, alpha, \
                                    A.data(), LDA, B.data(), LDB); \
             Kokkos::Profiling::popRegion(); \
         } \
     };
 
 
-    #define KOKKOSBLAS_STRSM_BLAS(LAYOUTA, LAYOUTB, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_STRMM_BLAS(LAYOUTA, LAYOUTB, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
-    struct TRSM< \
+    struct TRMM< \
         Kokkos::View<const float**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         Kokkos::View<float**, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
@@ -56,27 +56,27 @@ namespace KokkosBlas {
         typedef Kokkos::View<SCALAR**, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > BViewType; \
         \
-        static void trsm(const char side, const char uplo, \
+        static void trmm(const char side, const char uplo, \
                          const char transa, const char diag, \
                          typename AViewType::const_value_type& alpha,\
                          AViewType& A, BViewType& B){ \
-            Kokkos::Profiling::pushRegion("KokkosBlas::trsm[TPL_BLAS, float]");\
+            Kokkos::Profiling::pushRegion("KokkosBlas::trmm[TPL_BLAS, float]");\
             int M = A.extent(0); \
             int N = A.extent(1); \
             bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
             bool B_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTB>::value; \
             const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
             const int BST = B_is_lr?B.stride(0):B.stride(1), LDB = BST == 0 ? 1:BST; \
-            HostBlas<double>::trsm(A_is_lr, side, uplo, transa, diag, M, N, alpha, \
+            HostBlas<double>::trmm(A_is_lr, side, uplo, transa, diag, M, N, alpha, \
                                    A.data(), LDA, B.data(), LDB); \
             Kokkos::Profiling::popRegion(); \
         } \
     };
     
 
-    #define KOKKOSBLAS_ZTRSM_BLAS(LAYOUTA, LAYOUTB, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_ZTRMM_BLAS(LAYOUTA, LAYOUTB, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
-    struct TRSM< \
+    struct TRMM< \
         Kokkos::View<const Kokkos::complex<double>**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         Kokkos::View<Kokkos::complex<double>**, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
@@ -89,18 +89,18 @@ namespace KokkosBlas {
         typedef Kokkos::View<SCALAR**, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > BViewType; \
         \
-        static void trsm(const char side, const char uplo, \
+        static void trmm(const char side, const char uplo, \
                          const char transa, const char diag, \
                          typename AViewType::const_value_type& alpha,\
                          AViewType& A, BViewType& B){ \
-            Kokkos::Profiling::pushRegion("KokkosBlas::trsm[TPL_BLAS, complex<double>]");\
+            Kokkos::Profiling::pushRegion("KokkosBlas::trmm[TPL_BLAS, complex<double>]");\
             int M = A.extent(0); \
             int N = A.extent(1); \
             bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
             bool B_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTB>::value; \
             const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
             const int BST = B_is_lr?B.stride(0):B.stride(1), LDB = BST == 0 ? 1:BST; \
-            HostBlas<std::complex<double>>::trsm(A_is_lr, side, uplo, transa, diag, M, N, alpha, \
+            HostBlas<std::complex<double>>::trmm(A_is_lr, side, uplo, transa, diag, M, N, alpha, \
                                    reinterpret_cast<const std::complex<double>*>( A.data() ), LDA,  \
                                    reinterpret_cast<const std::complex<double>*>( B.data() ), LDB); \
             Kokkos::Profiling::popRegion(); \
@@ -108,9 +108,9 @@ namespace KokkosBlas {
     };
 
 
-    #define KOKKOSBLAS_CTRSM_BLAS(LAYOUTA, LAYOUTB, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_CTRMM_BLAS(LAYOUTA, LAYOUTB, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
-    struct TRSM< \
+    struct TRMM< \
         Kokkos::View<const Kokkos::complex<float>**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         Kokkos::View<Kokkos::complex<float>**, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
@@ -123,18 +123,18 @@ namespace KokkosBlas {
         typedef Kokkos::View<SCALAR**, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > BViewType; \
         \
-        static void trsm(const char side, const char uplo, \
+        static void trmm(const char side, const char uplo, \
                          const char transa, const char diag, \
                          typename AViewType::const_value_type& alpha,\
                          AViewType& A, BViewType& B){ \
-            Kokkos::Profiling::pushRegion("KokkosBlas::trsm[TPL_BLAS, complex<double>]");\
+            Kokkos::Profiling::pushRegion("KokkosBlas::trmm[TPL_BLAS, complex<double>]");\
             int M = A.extent(0); \
             int N = A.extent(1); \
             bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
             bool B_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTB>::value; \
             const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
             const int BST = B_is_lr?B.stride(0):B.stride(1), LDB = BST == 0 ? 1:BST; \
-            HostBlas<std::complex<float>>::trsm(A_is_lr, side, uplo, transa, diag, M, N, alpha, \
+            HostBlas<std::complex<float>>::trmm(A_is_lr, side, uplo, transa, diag, M, N, alpha, \
                                    reinterpret_cast<const std::complex<float>*>( A.data() ), LDA,  \
                                    reinterpret_cast<const std::complex<float>*>( B.data() ), LDB); \
             Kokkos::Profiling::popRegion(); \
@@ -142,27 +142,27 @@ namespace KokkosBlas {
     };
 
 
-    KOKKOSBLAS_DTRSM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, true)
-    KOKKOSBLAS_DTRSM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, false)
-    KOKKOSBLAS_DTRSM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
-    KOKKOSBLAS_DTRSM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+    KOKKOSBLAS_DTRMM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, true)
+    KOKKOSBLAS_DTRMM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, false)
+    KOKKOSBLAS_DTRMM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_DTRMM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
 
-    KOKKOSBLAS_STRSM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, true)
-    KOKKOSBLAS_STRSM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, false)
-    KOKKOSBLAS_STRSM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
-    KOKKOSBLAS_STRSM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
-
-
-    KOKKOSBLAS_ZTRSM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, true)
-    KOKKOSBLAS_ZTRSM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, false)
-    KOKKOSBLAS_ZTRSM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
-    KOKKOSBLAS_ZTRSM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+    KOKKOSBLAS_STRMM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, true)
+    KOKKOSBLAS_STRMM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, false)
+    KOKKOSBLAS_STRMM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_STRMM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
 
 
-    KOKKOSBLAS_CTRSM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, true)
-    KOKKOSBLAS_CTRSM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, false)
-    KOKKOSBLAS_CTRSM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
-    KOKKOSBLAS_CTRSM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+    KOKKOSBLAS_ZTRMM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, true)
+    KOKKOSBLAS_ZTRMM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, false)
+    KOKKOSBLAS_ZTRMM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_ZTRMM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+
+
+    KOKKOSBLAS_CTRMM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, true)
+    KOKKOSBLAS_CTRMM_BLAS(Kokkos::LayoutLeft,  Kokkos::LayoutLeft,  Kokkos::HostSpace, false)
+    KOKKOSBLAS_CTRMM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_CTRMM_BLAS(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
 
     } // namespace Impl
 } //namespace KokkosBlas
@@ -178,9 +178,9 @@ namespace KokkosBlas {
 namespace KokkosBlas{
     namespace Impl{
 
-    #define KOKKOSBLAS_DTRSM_MAGMA(LAYOUTA, LAYOUTB, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_DTRMM_MAGMA(LAYOUTA, LAYOUTB, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
-    struct TRSM< \
+    struct TRMM< \
         Kokkos::View<const double**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         Kokkos::View<double**, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
@@ -193,11 +193,11 @@ namespace KokkosBlas{
         typedef Kokkos::View<SCALAR**, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > BViewType; \
         \
-        static void trsm(const char side, const char uplo, \
+        static void trmm(const char side, const char uplo, \
                          const char transa, const char diag, \
                          typename AViewType::const_value_type& alpha,\
                          AViewType& A, BViewType& B){ \
-            Kokkos::Profiling::pushRegion("KokkosBlas::trsm[TPL_MAGMA, double]");\
+            Kokkos::Profiling::pushRegion("KokkosBlas::trmm[TPL_MAGMA, double]");\
             KokkosBlas::Impl::MagmaSingleton & s = KokkosBlas::Impl::MagmaSingleton::singleton(); \
             int M = A.extent(0); \
             int N = A.extent(1); \
@@ -212,7 +212,7 @@ namespace KokkosBlas{
             magma_uplo_t m_uplo  = (uplo   == 'U' || uplo   == 'u' ) ? MagmaUpper : MagmaLower; \
             magma_trans_t m_transa = (transa == 'T' || transa == 't' ) ? MagmaTrans : MagmaNoTrans; \
             magma_diag_t m_diag  = (diag   == 'N' || transa == 'n' ) ? MagmaNonUnit : MagmaUnit; \
-            magma_dtrsm(m_side, m_uplo, m_transa, m_diag, M, N, alpha, \
+            magma_dtrmm(m_side, m_uplo, m_transa, m_diag, M, N, alpha, \
                     reinterpret_cast<magmaDouble_const_ptr>( A.data() ), LDA,  \
                     reinterpret_cast<magmaDouble_ptr>( B.data() ), LDB, queue); \
             magma_queue_destroy(queue);\
@@ -220,9 +220,9 @@ namespace KokkosBlas{
         } \
     };
 
-    #define KOKKOSBLAS_STRSM_MAGMA(LAYOUTA, LAYOUTB, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_STRMM_MAGMA(LAYOUTA, LAYOUTB, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
-    struct TRSM< \
+    struct TRMM< \
         Kokkos::View<const float**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         Kokkos::View<float**, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
@@ -235,11 +235,11 @@ namespace KokkosBlas{
         typedef Kokkos::View<SCALAR**, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > BViewType; \
         \
-        static void trsm(const char side, const char uplo, \
+        static void trmm(const char side, const char uplo, \
                          const char transa, const char diag, \
                          typename AViewType::const_value_type& alpha,\
                          AViewType& A, BViewType& B){ \
-            Kokkos::Profiling::pushRegion("KokkosBlas::trsm[TPL_MAGMA, float]");\
+            Kokkos::Profiling::pushRegion("KokkosBlas::trmm[TPL_MAGMA, float]");\
             KokkosBlas::Impl::MagmaSingleton & s = KokkosBlas::Impl::MagmaSingleton::singleton(); \
             int M = A.extent(0); \
             int N = A.extent(1); \
@@ -254,7 +254,7 @@ namespace KokkosBlas{
             magma_uplo_t m_uplo  = (uplo   == 'U' || uplo   == 'u' ) ? MagmaUpper : MagmaLower; \
             magma_trans_t m_transa = (transa == 'T' || transa == 't' ) ? MagmaTrans : MagmaNoTrans; \
             magma_diag_t m_diag  = (diag   == 'N' || transa == 'n' ) ? MagmaNonUnit : MagmaUnit; \
-            magma_strsm(m_side, m_uplo, m_transa, m_diag, M, N, alpha, \
+            magma_strmm(m_side, m_uplo, m_transa, m_diag, M, N, alpha, \
                     reinterpret_cast<magmaFloat_const_ptr>( A.data() ), LDA,  \
                     reinterpret_cast<magmaFloat_ptr>( B.data() ), LDB, queue); \
             magma_queue_destroy(queue);\
@@ -262,16 +262,16 @@ namespace KokkosBlas{
         } \
     };
 
-    KOKKOSBLAS_DTRSM_MAGMA(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true) 
-    KOKKOSBLAS_DTRSM_MAGMA(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
+    KOKKOSBLAS_DTRMM_MAGMA(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true) 
+    KOKKOSBLAS_DTRMM_MAGMA(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
 
-    KOKKOSBLAS_STRSM_MAGMA(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true) 
-    KOKKOSBLAS_STRSM_MAGMA(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
+    KOKKOSBLAS_STRMM_MAGMA(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true) 
+    KOKKOSBLAS_STRMM_MAGMA(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
 
     } //namespace Impl
 } //namespace KokkosBlas
 
 #endif //IF MAGMA
 
-#endif //KOKKOSBLAS_TRSM_TPL_SPEC_DECL_HPP_
+#endif //KOKKOSBLAS_TRMM_TPL_SPEC_DECL_HPP_
 

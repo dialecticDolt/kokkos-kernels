@@ -129,6 +129,16 @@ namespace KokkosBlas {
            const T alpha, 
            const T* a, int lda, 
            /* */ T* b, int ldb);
+
+      static
+      void
+      trmm(bool matrix_layout,
+           const char side, const char uplo, 
+           const char transa, const char diag, 
+           int m, int n,
+           const T alpha, 
+           const T* a, int lda, 
+           /* */ T* b, int ldb);
     };
 
   }

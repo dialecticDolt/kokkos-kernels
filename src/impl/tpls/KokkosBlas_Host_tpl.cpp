@@ -469,6 +469,27 @@ namespace KokkosBlas {
 
 
     template<>
+    void
+    HostBlas<float>::trmm(bool matrix_layout,
+                           const char side, const char uplo, 
+                           const char transa, const char diag, 
+                           int m, int n,
+                           const float alpha, 
+                           const float *a, int lda, 
+                           /* */ float *b, int ldb) {
+
+        CBLAS_ORDER layout = (matrix_layout) ? CblasRowMajor : CblasColMajor;
+        CBLAS_SIDE s = (side == 'L' || side == 'l') ? CblasLeft : CblasRight;
+        CBLAS_UPLO ul = (uplo == 'U' || uplo == 'u') ? CblasUpper : CblasLower;
+        CBLAS_TRANSPOSE tr = (transa == 'N' || transa == 'n') ? CblasNoTrans : CblasTrans;
+        CBLAS_DIAG d = (diag == 'N' || diag =='n') ? CblasNonUnit : CblasUnit;
+
+        cblas_strmm(layout, s, ul, 
+                    tr, d, m, n, alpha, a, lda, b, ldb);
+
+    }
+
+    template<>
     void 
     HostBlas<float>::syrk(bool matrix_layout, 
                           const char uplo, const char transa, 
@@ -624,6 +645,27 @@ namespace KokkosBlas {
 
     }
 
+
+    template<>
+    void
+    HostBlas<double>::trmm(bool matrix_layout,
+                           const char side, const char uplo, 
+                           const char transa, const char diag, 
+                           int m, int n,
+                           const double alpha, 
+                           const double *a, int lda, 
+                           /* */ double *b, int ldb) {
+
+        CBLAS_ORDER layout = (matrix_layout) ? CblasRowMajor : CblasColMajor;
+        CBLAS_SIDE s = (side == 'L' || side == 'l') ? CblasLeft : CblasRight;
+        CBLAS_UPLO ul = (uplo == 'U' || uplo == 'u') ? CblasUpper : CblasLower;
+        CBLAS_TRANSPOSE tr = (transa == 'N' || transa == 'n') ? CblasNoTrans : CblasTrans;
+        CBLAS_DIAG d = (diag == 'N' || diag =='n') ? CblasNonUnit : CblasUnit;
+
+        cblas_dtrmm(layout, s, ul, 
+                    tr, d, m, n, alpha, a, lda, b, ldb);
+
+    }
 
     template<>
     void 
@@ -787,6 +829,29 @@ namespace KokkosBlas {
                     reinterpret_cast</* */ __complex__ float*>( b ), ldb);
     }
 
+
+    template<>
+    void
+    HostBlas<std::complex<float>>::trmm(bool matrix_layout,
+                           const char side, const char uplo, 
+                           const char transa, const char diag, 
+                           int m, int n,
+                           const std::complex<float> alpha, 
+                           const std::complex<float> *a, int lda, 
+                           /* */ std::complex<float> *b, int ldb) {
+
+        CBLAS_ORDER layout = (matrix_layout) ? CblasRowMajor : CblasColMajor;
+        CBLAS_SIDE s = (side == 'L' || side == 'l') ? CblasLeft : CblasRight;
+        CBLAS_UPLO ul = (uplo == 'U' || uplo == 'u') ? CblasUpper : CblasLower;
+        CBLAS_TRANSPOSE tr = (transa == 'N' || transa == 'n') ? CblasNoTrans : CblasTrans;
+        CBLAS_DIAG d = (diag == 'N' || diag =='n') ? CblasNonUnit : CblasUnit;
+
+        cblas_ctrmm(layout, s, ul, 
+                    tr, d, m, n, 
+                    reinterpret_cast<const __complex__ float*>( &alpha ),
+                    reinterpret_cast<const __complex__ float*>( a ), lda, 
+                    reinterpret_cast</* */ __complex__ float*>( b ), ldb);
+    }
 
     template<>
     void 
@@ -957,6 +1022,30 @@ namespace KokkosBlas {
 
     }
 
+
+    template<>
+    void
+    HostBlas<std::complex<double>>::trmm(bool matrix_layout,
+                           const char side, const char uplo, 
+                           const char transa, const char diag, 
+                           int m, int n,
+                           const std::complex<double> alpha, 
+                           const std::complex<double>* a, int lda, 
+                           /* */ std::complex<double>* b, int ldb) {
+
+        CBLAS_ORDER layout = (matrix_layout) ? CblasRowMajor : CblasColMajor;
+        CBLAS_SIDE s = (side == 'L' || side == 'l') ? CblasLeft : CblasRight;
+        CBLAS_UPLO ul = (uplo == 'U' || uplo == 'u') ? CblasUpper : CblasLower;
+        CBLAS_TRANSPOSE tr = (transa == 'N' || transa == 'n') ? CblasNoTrans : CblasTrans;
+        CBLAS_DIAG d = (diag == 'N' || diag =='n') ? CblasNonUnit : CblasUnit;
+
+        cblas_ztrmm(layout, s, ul, 
+                    tr, d, m, n,
+                    reinterpret_cast<const __complex__ double*>( &alpha ),
+                    reinterpret_cast<const __complex__ double*>( a ), lda, 
+                    reinterpret_cast</* */ __complex__ double*>( b ), ldb);
+
+    }
 
     template<>
     void 

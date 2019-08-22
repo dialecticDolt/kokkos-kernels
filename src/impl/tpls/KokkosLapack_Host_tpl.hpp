@@ -50,7 +50,7 @@ namespace KokkosBlas{
     } //namespace Impl
 } //namespace KokkosBlas
 
-//#include "KokkosLapack_Host_tpl.cpp"
+#include "KokkosLapack_Host_tpl_impl.hpp"
 
 #endif //ENABLE BLAS/LAPACK
 

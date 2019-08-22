@@ -19,7 +19,7 @@ namespace KokkosBlas{
             const int N = V.extent(0);
 
             typedef typename ViewType::value_type::value_type numeric_t;
-            
+            typedef typename ViewType::execution_space ExecSpace; 
             numeric_t** outer;
             outer = (numeric_t**) Kokkos::kokkos_malloc(sizeof(numeric_t)*N);
 

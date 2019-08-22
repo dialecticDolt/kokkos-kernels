@@ -12,8 +12,9 @@ KOKKOSKERNELS_SPACES ?= $(KOKKOS_DEVICES),HostSpace
 KOKKOSKERNELS_ORDINALS ?= int,int64_t
 KOKKOSKERNELS_OFFSETS ?= int,size_t
 
-# mkl, blas, yaml, magma
-KOKKOSKERNELS_ENABLE_TPLS ?= "blas, lapack, magma"
+# mkl, blas, yaml, magma, lapack
+#KOKKOSKERNELS_ENABLE_TPLS ?= "blas, lapack"
+KOKKOSKERNELS_ENABLE_TPLS ?= "magma"
 
 # eti-only
 KOKKOSKERNELS_OPTIONS ?= ""
@@ -38,7 +39,7 @@ LAPACK_LIBS ?= -L${LAPACK_PATH} -llapack -lgfortran $(BLAS_LIBRARIES)
 MKL_PATH ?= ${SEMS_INTEL_ROOT}/mkl
 MKL_LIBS ?= -L${MKL_PATH}/lib/intel64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl -L${MKL_PATH}/../compiler/lib/intel64
 
-MAGMA_PATH ?= /ascldap/users/wruys/usr/local #${MAGMADIR}
+MAGMA_PATH ?= ${MAGMADIR}
 
 default-kokkos-kernels: kokkoskernels-build-lib
 	echo "Start Build"
@@ -337,7 +338,7 @@ ifeq (${KOKKOSKERNELS_INTERNAL_ENABLE_MAGMA}, 1)
   CUDA_PATH ?= $(KOKKOS_INTERNAL_NVCC_PATH:/bin/nvcc=)
   KOKKOSKERNELS_CPPFLAGS += -D${MAGMA_FORTRAN_MANGLING} -I${MAGMA_PATH}/include -I${MAGMA_PATH}/sparse/include -I${CUDA_PATH}/include
   KOKKOSKERNELS_LDFLAGS += -L${MAGMA_PATH}/lib -L${CUDA_PATH}/lib64 -L${BLAS_PATH}
-  KOKKOSKERNELS_LIBS += -lmagma_sparse -lmagma -lcublas -lcudart -lcusparse -fopenmp -lblas -llapack -lgfortran
+  KOKKOSKERNELS_LIBS += -lmagma_sparse -lmagma -lcublas -lcusolver -lcudart -lcusparse -fopenmp -lblas -llapack -lgfortran
 
   tmp := $(shell echo "\#define KOKKOSKERNELS_ENABLE_TPL_MAGMA" >> KokkosKernels_config.tmp )
 endif
