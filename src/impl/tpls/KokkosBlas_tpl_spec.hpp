@@ -64,6 +64,29 @@ struct CudaBlasSingleton {
 }
 #endif // KOKKOSKERNELS_ENABLE_TPL_CUBLAS
 
+
+#ifdef KOKKOSKERNELS_ENABLE_TPL_CUSOLVER && KOKKOSKERNELS_ENABLE_TPL_CUBLAS
+#include "cuda_runtime.h"
+#include "cublas_v2.h"
+#include "cusolverDn.h"
+#include "cusolver_common.h"
+
+namespace KokkosBlas {
+namespace Impl {
+
+struct CudaSolverSingleton {
+  cusolverDnHandle_t handle;
+
+  CudaSolverSingleton();
+
+  static CudaSolverSingleton & singleton();
+};
+
+}
+}
+#endif // KOKKOSKERNELS_ENABLE_TPL_CUSOLVER
+
+
 // If LAPACK TPL is enabled, it is preferred over magma's LAPACK
 #ifdef KOKKOSKERNELS_ENABLE_TPL_MAGMA
 #include "magma_v2.h"

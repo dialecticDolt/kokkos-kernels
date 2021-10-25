@@ -1,0 +1,403 @@
+#ifndef KOKKOSBLAS_UNMQR_TPL_SPEC_DECL_HPP_
+#define KOKKOSBLAS_UNMQR_TPL_SPEC_DECL_HPP_
+
+#if defined( KOKKOSKERNELS_ENABLE_TPL_BLAS ) && defined( KOKKOSKERNELS_ENABLE_TPL_LAPACK )
+#include "KokkosBlas_Host_tpl.hpp"
+#include "KokkosLapack_Host_tpl.hpp"
+#include <stdio.h>
+
+namespace KokkosBlas {
+    namespace Impl {
+
+    #define KOKKOSBLAS_DUNMQR_LAPACK(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    template<class ExecSpace> \
+    struct UNMQR< \
+        Kokkos::View<const double**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<const double*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<double**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<double*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        true, ETI_SPEC_AVAIL> { \
+        typedef double SCALAR; \
+        typedef int ORDINAL; \
+        typedef Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
+        typedef Kokkos::View<const SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
+        typedef Kokkos::View<SCALAR**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > CViewType; \
+        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
+        \
+        static void unmqr(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C, WViewType& workspace){ \
+        Kokkos::Profiling::pushRegion("KokkosLapack::unmqr[TPL_LAPACK, double]");\
+        int M = C.extent(0); \
+        int N = C.extent(1); \
+        bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
+        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
+        const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
+        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
+        const int lwork = workspace.extent(0); \
+        HostLapack<double>::unmqr(A_is_lr, side, trans, M, N, k, A.data(), LDA, tau.data(), C.data(), LDC, workspace.data(), lwork); \
+        Kokkos::Profiling::popRegion(); \
+        } \
+    };
+
+    #define KOKKOSBLAS_SUNMQR_LAPACK(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    template<class ExecSpace> \
+    struct UNMQR< \
+        Kokkos::View<const float**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<const float*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<float**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<float*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        true, ETI_SPEC_AVAIL> { \
+        typedef float SCALAR; \
+        typedef int ORDINAL; \
+        typedef Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
+        typedef Kokkos::View<const SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
+        typedef Kokkos::View<SCALAR**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > CViewType; \
+        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
+        \
+        static void unmqr(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C, WViewType& workspace){ \
+        Kokkos::Profiling::pushRegion("KokkosLapack::unmqr[TPL_LAPACK, float]");\
+        int M = C.extent(0); \
+        int N = C.extent(1); \
+        bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
+        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
+        const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
+        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
+        const int lwork = workspace.extent(0); \
+        HostLapack<float>::unmqr(A_is_lr, side, trans, M, N, k, A.data(), LDA, tau.data(), C.data(), LDC, workspace.data(), lwork); \
+        Kokkos::Profiling::popRegion(); \
+        } \
+    };
+
+    #define KOKKOSBLAS_ZUNMQR_LAPACK(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    template<class ExecSpace> \
+    struct UNMQR< \
+        Kokkos::View<const Kokkos::complex<double>**, \
+                    LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<const Kokkos::complex<double>*, \
+                    LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<Kokkos::complex<double>**, \
+                    LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<Kokkos::complex<double>*, \
+                    LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        true, ETI_SPEC_AVAIL> { \
+        typedef Kokkos::complex<double> SCALAR; \
+        typedef int ORDINAL; \
+        typedef Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
+        typedef Kokkos::View<const SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
+        typedef Kokkos::View<SCALAR**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > CViewType; \
+        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
+        static void unmqr(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C, WViewType& workspace){ \
+        Kokkos::Profiling::pushRegion("KokkosLapack::unmqr[TPL_LAPACK, complex<double>]");\
+        int M = C.extent(0); \
+        int N = C.extent(1); \
+        bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
+        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
+        const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
+        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
+        const int lwork = workspace.extent(0); \
+        HostLapack<std::complex<double>>::unmqr(A_is_lr, side, trans, M, N, k, \
+                reinterpret_cast<const std::complex<double>*>(A.data()), LDA, \
+                reinterpret_cast<const std::complex<double>*>(tau.data()), \
+                reinterpret_cast<std::complex<double>*>(C.data()), LDC, \
+                reinterpret_cast<std::complex<double>*>(workspace.data()), lwork); \
+        Kokkos::Profiling::popRegion(); \
+        } \
+    };
+
+    #define KOKKOSBLAS_CUNMQR_LAPACK(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    template<class ExecSpace> \
+    struct UNMQR< \
+        Kokkos::View<const Kokkos::complex<float>**, \
+                    LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<const Kokkos::complex<float>*, \
+                    LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<Kokkos::complex<float>**, \
+                    LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<Kokkos::complex<float>*, \
+                    LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        true, ETI_SPEC_AVAIL> { \
+        typedef Kokkos::complex<float> SCALAR; \
+        typedef int ORDINAL; \
+        typedef Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
+        typedef Kokkos::View<const SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
+        typedef Kokkos::View<SCALAR**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > CViewType; \
+        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
+        \
+        static void unmqr(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C, WViewType& workspace){ \
+        Kokkos::Profiling::pushRegion("KokkosLapack::unmqr[TPL_LAPACK, complex<float>]");\
+        int M = C.extent(0); \
+        int N = C.extent(1); \
+        bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
+        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
+        const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
+        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
+        const int lwork = workspace.extent(0); \
+        HostLapack<std::complex<float>>::unmqr(A_is_lr, side, trans, M, N, k, \
+                reinterpret_cast<const std::complex<float>*>(A.data()), LDA, \
+                reinterpret_cast<const std::complex<float>*>(tau.data()), \
+                reinterpret_cast<std::complex<float>*>(C.data()), LDC, \
+                reinterpret_cast<std::complex<float>*>(workspace.data()), lwork); \
+        Kokkos::Profiling::popRegion(); \
+        } \
+    };
+ 
+    KOKKOSBLAS_DUNMQR_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
+    KOKKOSBLAS_DUNMQR_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
+    KOKKOSBLAS_DUNMQR_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_DUNMQR_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+
+    KOKKOSBLAS_SUNMQR_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
+    KOKKOSBLAS_SUNMQR_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
+    KOKKOSBLAS_SUNMQR_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_SUNMQR_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+
+
+    KOKKOSBLAS_ZUNMQR_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
+    KOKKOSBLAS_ZUNMQR_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
+    KOKKOSBLAS_ZUNMQR_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_ZUNMQR_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+
+
+    KOKKOSBLAS_CUNMQR_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
+    KOKKOSBLAS_CUNMQR_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
+    KOKKOSBLAS_CUNMQR_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_CUNMQR_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+
+    } // namespace Impl
+} //namespace KokkosBlas
+
+#endif //ENABLE BLAS/LAPACK
+
+
+//CUSOLVER
+
+#ifdef KOKKOSKERNELS_ENABLE_TPL_CUSOLVER
+#include<KokkosBlas_tpl_spec.hpp>
+
+namespace KokkosBlas{
+    namespace Impl{
+
+    #define KOKKOSBLAS_DUNMQR_CUSOLVER(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    template<class ExecSpace> \
+    struct UNMQR< \
+        Kokkos::View<const double**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<const double*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<double**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<double*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        true, ETI_SPEC_AVAIL> { \
+        typedef double SCALAR; \
+        typedef int ORDINAL; \
+        typedef Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
+        typedef Kokkos::View<const SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
+        typedef Kokkos::View<SCALAR**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > CViewType; \
+        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
+        \
+        static void unmqr(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C, WViewType& workspace){ \
+        Kokkos::Profiling::pushRegion("KokkosBlas::unmqr[TPL_CUSOLVER, double]");\
+        int devinfo = 0; \
+        int M = C.extent(0);  \
+        int N = C.extent(1);  \
+        bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
+        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
+        const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
+        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
+        cublasSideMode_t m_side   = (side  == 'L' || side  == 'l') ? CUBLAS_SIDE_LEFT : CUBLAS_SIDE_RIGHT;\
+        cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_T: CUBLAS_OP_N; \
+        KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
+        cusolverDnDormqr(s.handle, m_side, m_trans, M, N, k, A.data(), LDA, tau.data(), C.data(), LDC, workspace.data(), lwork, &devinfo); \
+        Kokkos::Profiling::popRegion(); \
+        } \
+    };
+
+
+    #define KOKKOSBLAS_SUNMQR_CUSOLVER(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    template<class ExecSpace> \
+    struct UNMQR< \
+        Kokkos::View<const float**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<const float*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<float**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<float*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        true, ETI_SPEC_AVAIL> { \
+        typedef float SCALAR; \
+        typedef int ORDINAL; \
+        typedef Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
+        typedef Kokkos::View<const SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
+        typedef Kokkos::View<SCALAR**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > CViewType; \
+        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
+        \
+        static void unmqr(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C, WViewType& workspace){ \
+        Kokkos::Profiling::pushRegion("KokkosBlas::unmqr[TPL_CUSOLVER, double]");\
+        int devinfo = 0; \
+        int M = C.extent(0);  \
+        int N = C.extent(1);  \
+        bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
+        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
+        const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
+        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
+        cublasSideMode_t m_side   = (side  == 'L' || side  == 'l') ? CUBLAS_SIDE_LEFT : CUBLAS_SIDE_RIGHT;\
+        cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_T: CUBLAS_OP_N; \
+        KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
+        cusolverDnSormqr(s.handle, m_side, m_trans, M, N, k, A.data(), LDA, tau.data(), C.data(), LDC, workspace.data(), lwork, &devinfo); \
+        Kokkos::Profiling::popRegion(); \
+        } \
+    };
+
+    #define KOKKOSBLAS_ZUNMQR_CUSOLVER(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    template<class ExecSpace> \
+    struct UNMQR< \
+        Kokkos::View<const Kokkos::complex<double>**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<const Kokkos::complex<double>*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<Kokkos::complex<double>**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<Kokkos::complex<double>*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        true, ETI_SPEC_AVAIL> { \
+        typedef Kokkos::complex<double> SCALAR; \
+        typedef double PRECISION; \
+        typedef int ORDINAL; \
+        typedef Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
+        typedef Kokkos::View<const SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
+        typedef Kokkos::View<SCALAR**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > CViewType; \
+        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
+        \
+        static void unmqr(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C, WViewType& workspace){ \
+        Kokkos::Profiling::pushRegion("KokkosBlas::unmqr[TPL_CUSOLVER, Kokkos::complex<double>]");\
+        int devinfo = 0; \
+        int M = C.extent(0);  \
+        int N = C.extent(1);  \
+        bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
+        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
+        const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
+        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
+        cublasSideMode_t m_side   = (side  == 'L' || side  == 'l') ? CUBLAS_SIDE_LEFT : CUBLAS_SIDE_RIGHT;\
+        cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_T: CUBLAS_OP_N; \
+        KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
+        cusolverDnZunmqr(s.handle, m_side, m_trans, M, N, k, \
+            reinterpret_cast<cuDoubleComplex*>(A.data()), LDA, \
+            reinterpret_cast<cuDoubleComplex*>(tau.data()), \
+            reinterpret_cast<cuDoubleComplex*>(C.data()), LDC, \
+            reinterpret_cast<cuDoubleComplex*>(workspace.data()), \
+            lwork, &devinfo); \
+        Kokkos::Profiling::popRegion(); \
+        } \
+    };
+
+    #define KOKKOSBLAS_ZUNMQR_CUSOLVER(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    template<class ExecSpace> \
+    struct UNMQR< \
+        Kokkos::View<const Kokkos::complex<float>**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<const Kokkos::complex<float>*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<Kokkos::complex<float>**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<Kokkos::complex<float>*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        true, ETI_SPEC_AVAIL> { \
+        typedef Kokkos::complex<float> SCALAR; \
+        typedef float PRECISION; \
+        typedef int ORDINAL; \
+        typedef Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
+        typedef Kokkos::View<const SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
+        typedef Kokkos::View<SCALAR**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > CViewType; \
+        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                            Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
+        \
+        static void unmqr(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C, WViewType& workspace){ \
+        Kokkos::Profiling::pushRegion("KokkosBlas::unmqr[TPL_CUSOLVER, Kokkos::complex<float>]");\
+        int devinfo = 0; \
+        int M = C.extent(0);  \
+        int N = C.extent(1);  \
+        bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
+        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
+        const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
+        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
+        cublasSideMode_t m_side   = (side  == 'L' || side  == 'l') ? CUBLAS_SIDE_LEFT : CUBLAS_SIDE_RIGHT;\
+        cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_T: CUBLAS_OP_N; \
+        KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
+        cusolverDnCunmqr(s.handle, m_side, m_trans, M, N, k, \
+            reinterpret_cast<cuComplex*>(A.data()), LDA, \
+            reinterpret_cast<cuComplex*>(tau.data()), \
+            reinterpret_cast<cuComplex*>(C.data()), LDC, \
+            reinterpret_cast<cuComplex*>(workspace.data()), \
+            lwork, &devinfo); \
+        Kokkos::Profiling::popRegion(); \
+        } \
+    };
+
+    KOKKOSBLAS_DUNMQR_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
+    KOKKOSBLAS_DUNMQR_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
+
+
+    KOKKOSBLAS_SUNMQR_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
+    KOKKOSBLAS_SUNMQR_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
+
+    KOKKOSBLAS_ZUNMQR_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
+    KOKKOSBLAS_ZUNMQR_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
+
+    KOKKOSBLAS_CUNMQR_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
+    KOKKOSBLAS_CUNMQR_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
+
+    } //namespace Impl
+} //namespace KokkosBlas
+
+#endif //IF CUSOLVER && CUBLAS
+
+#endif //KOKKOSBLAS_UNMQR_TPL_SPEC_DECL_HPP_
+
