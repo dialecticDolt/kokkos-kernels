@@ -206,6 +206,7 @@ namespace KokkosBlas{
         int N = A.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
+        const int lwork = workspace.extent(0); \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnDgeqrf(s.handle, M, N, A.data(), LDA, tau.data(), workspace.data(), lwork, &devinfo); \
         Kokkos::Profiling::popRegion(); \
@@ -239,6 +240,7 @@ namespace KokkosBlas{
         int N = A.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
+        const int lwork = workspace.extent(0); \
         cusolverDnSgeqrf(s.handle, M, N, A.data(), LDA, tau.data(), workspace.data(), lwork, &devinfo); \
         Kokkos::Profiling::popRegion(); \
         } \
@@ -272,6 +274,7 @@ namespace KokkosBlas{
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
+        const int lwork = workspace.extent(0); \
         cusolverDnZgeqrf(s.handle, M, N,\
             reinterpret_cast<cuDoubleComplex*>(A.data()), LDA, \
             reinterpret_cast<cuDoubleComplex*>(tau.data()), \
@@ -308,6 +311,7 @@ namespace KokkosBlas{
         int N = A.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
+        const int lwork = workspace.extent(0); \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnCgeqrf(s.handle, M, N, \
             reinterpret_cast<cuComplex*>(A.data()), LDA, \
