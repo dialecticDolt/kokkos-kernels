@@ -23,45 +23,41 @@ namespace KokkosBlas{
                   T* a, int lda);
 
             static 
-            void
-            geqp3(bool matrix_layout,
+            void geqp3(bool matrix_layout,
                         int m, int n, 
                         T* a, int lda, 
                         int* jpvt,
                         T* tau);
 
             static 
-            void
-            geqrf(bool matrix_layout,
+            void geqrf(bool matrix_layout,
                         int m, int n, 
                         T* a, int lda, 
                         T* tau, 
                         T* work, int lwork);
 
             static
-            void
-            unmqr(bool matrix_layout,
+            void unmqr(bool matrix_layout,
                        char side, char trans,
                        int m, int n, int k,
                        const T* a, int lda, 
                        const T* tau,
-                       T* c, int ldc, T* work, int lwork);
+                       /* */ T* c, int ldc,
+                       /* */ T* work, int lwork);
 
             static
-            void
-            ormqr(bool matrix_layout, 
+            void ormqr(bool matrix_layout, 
                        char side, char trans,
                        int m, int n, int k,
                        const T* a, int lda,
                        const T* tau, 
-                       T*c, int ldc, T* work, int lwork);
+                       /* */ T*c, int ldc,
+                       /* */ T* work, int lwork);
 
-        };
+        }; //HostLapack
 
     } //namespace Impl
 } //namespace KokkosBlas
-
-#include "KokkosLapack_Host_tpl_impl.hpp"
 
 #endif //ENABLE BLAS/LAPACK
 

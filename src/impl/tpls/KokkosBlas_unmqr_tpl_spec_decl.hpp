@@ -335,7 +335,7 @@ namespace KokkosBlas{
         } \
     };
 
-    #define KOKKOSBLAS_ZUNMQR_CUSOLVER(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_CUNMQR_CUSOLVER(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct UNMQR< \
         Kokkos::View<const Kokkos::complex<float>**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
@@ -383,7 +383,6 @@ namespace KokkosBlas{
 
     KOKKOSBLAS_DUNMQR_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
     KOKKOSBLAS_DUNMQR_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
-
 
     KOKKOSBLAS_SUNMQR_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
     KOKKOSBLAS_SUNMQR_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)

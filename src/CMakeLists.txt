@@ -51,7 +51,7 @@ ENDIF()
 #Include LAPACKE host wrapper
 IF (KOKKOSKERNELS_ENABLE_TPL_LAPACKE)
   #Do NOT add this to include path
-  APPEND_GLOB(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/impl/tpls/KokkosLapack_Host_tpl_impl.hpp)
+  APPEND_GLOB(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/impl/tpls/KokkosLapack_Host_tpl.cpp)
 ENDIF()
 
 include(kokkoskernels_eti.cmake)
@@ -410,7 +410,7 @@ LIST(APPEND HEADERS ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h)
 LIST(APPEND SOURCES
  batched/KokkosBatched_Util.cpp
  impl/tpls/KokkosBlas_Host_tpl.cpp
- impl/tpls/KokkosLapack_Host_tpl_impl.hpp
+ impl/tpls/KokkosLapack_Host_tpl.cpp
  impl/tpls/KokkosBlas_Cuda_tpl.cpp
  impl/tpls/KokkosKernels_tpl_handles.cpp
 )

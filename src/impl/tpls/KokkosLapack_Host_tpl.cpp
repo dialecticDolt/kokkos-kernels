@@ -35,8 +35,7 @@ namespace KokkosBlas {
         void
         HostLapack<float>::geqrf(bool matrix_layout, 
                                  int m, int n,
-                                 float* a, int lda, 
-                                 int* jpvt, 
+                                 float* a, int lda,  
                                  float* tau, 
                                  float* work, int lwork){
             if (matrix_layout){
@@ -117,7 +116,6 @@ namespace KokkosBlas {
         HostLapack<double>::geqrf(bool matrix_layout, 
                                  int m, int n,
                                  double* a, int lda, 
-                                 int* jpvt, 
                                  double* tau, 
                                  double* work, int lwork){
             if (matrix_layout){
@@ -205,7 +203,6 @@ namespace KokkosBlas {
         HostLapack<std::complex<float>>::geqrf(bool matrix_layout, 
                                  int m, int n,
                                  std::complex<float>* a, int lda, 
-                                 int* jpvt, 
                                  std::complex<float>* tau, 
                                  std::complex<float>* work, int lwork){
             if (matrix_layout){
@@ -237,7 +234,7 @@ namespace KokkosBlas {
                         reinterpret_cast <const __complex__ float*>(a), lda, 
                         reinterpret_cast <const __complex__ float*>(tau), 
                         reinterpret_cast < __complex__ float*>(c), ldc,
-                        reinterpret_cast< __complex__ float*>(work), lwork);
+                        reinterpret_cast < __complex__ float*>(work), lwork);
             }
             else {
                 LAPACKE_cunmqr_work(LAPACK_COL_MAJOR, side, trans, m, n, k, 
@@ -316,7 +313,6 @@ namespace KokkosBlas {
         HostLapack<std::complex<double>>::geqrf(bool matrix_layout, 
                                  int m, int n,
                                  std::complex<double>* a, int lda, 
-                                 int* jpvt, 
                                  std::complex<double>* tau, 
                                  std::complex<double>* work, int lwork){
             if (matrix_layout){
