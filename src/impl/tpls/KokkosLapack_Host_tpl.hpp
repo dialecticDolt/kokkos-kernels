@@ -30,6 +30,14 @@ namespace KokkosBlas{
                         int* jpvt,
                         T* tau);
 
+            static 
+            void
+            geqrf(bool matrix_layout,
+                        int m, int n, 
+                        T* a, int lda, 
+                        T* tau, 
+                        T* work, int lwork);
+
             static
             void
             unmqr(bool matrix_layout,

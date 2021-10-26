@@ -168,7 +168,7 @@ namespace KokkosBlas {
         HostLapack<double>::potrf(bool matrix_layout, 
                                  char uplo, int n, 
                                  double* a, int lda){
-            int info;
+            int info = 0;
             if(matrix_layout) {
                 info = LAPACKE_dpotrf(LAPACK_ROW_MAJOR, uplo, n, a, lda);
             }

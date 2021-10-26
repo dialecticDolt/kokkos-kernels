@@ -42,7 +42,7 @@ namespace KokkosBlas {
         //Unification Layer
 
         template<
-            class AVT, class TVT, class CVT, 
+            class AVT, class TVT, class WVT, 
             bool tpl_spec_avail = geqrf_tpl_spec_avail<AVT, TVT, WVT>::value,
             bool eti_spec_avail = geqrf_eti_spec_avail<AVT, TVT, WVT>::value
         >
