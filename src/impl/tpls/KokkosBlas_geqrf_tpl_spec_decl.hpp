@@ -144,27 +144,27 @@ namespace KokkosBlas {
         } \
     };
  
-    KOKKOSBLAS_DGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
-    KOKKOSBLAS_DGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
-    KOKKOSBLAS_DGEQRF_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
-    KOKKOSBLAS_DGEQRF_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+    KOKKOSBLAS_DGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::HostSpace, true)
+    KOKKOSBLAS_DGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::HostSpace, false)
+    KOKKOSBLAS_DGEQRF_LAPACK(Kokkos::LayoutRight,Kokkos::HostSpace, true)
+    KOKKOSBLAS_DGEQRF_LAPACK(Kokkos::LayoutRight,Kokkos::HostSpace, false)
 
-    KOKKOSBLAS_SGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
-    KOKKOSBLAS_SGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
-    KOKKOSBLAS_SGEQRF_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
-    KOKKOSBLAS_SGEQRF_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
-
-
-    KOKKOSBLAS_ZGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
-    KOKKOSBLAS_ZGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
-    KOKKOSBLAS_ZGEQRF_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
-    KOKKOSBLAS_ZGEQRF_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+    KOKKOSBLAS_SGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::HostSpace, true)
+    KOKKOSBLAS_SGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::HostSpace, false)
+    KOKKOSBLAS_SGEQRF_LAPACK(Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_SGEQRF_LAPACK(Kokkos::LayoutRight, Kokkos::HostSpace, false)
 
 
-    KOKKOSBLAS_CGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, true)
-    KOKKOSBLAS_CGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::HostSpace, false)
-    KOKKOSBLAS_CGEQRF_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, true)
-    KOKKOSBLAS_CGEQRF_LAPACK(Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::LayoutRight, Kokkos::HostSpace, false)
+    KOKKOSBLAS_ZGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::HostSpace, true)
+    KOKKOSBLAS_ZGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::HostSpace, false)
+    KOKKOSBLAS_ZGEQRF_LAPACK(Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_ZGEQRF_LAPACK(Kokkos::LayoutRight, Kokkos::HostSpace, false)
+
+
+    KOKKOSBLAS_CGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::HostSpace, true)
+    KOKKOSBLAS_CGEQRF_LAPACK(Kokkos::LayoutLeft, Kokkos::HostSpace, false)
+    KOKKOSBLAS_CGEQRF_LAPACK(Kokkos::LayoutRight, Kokkos::HostSpace, true)
+    KOKKOSBLAS_CGEQRF_LAPACK(Kokkos::LayoutRight, Kokkos::HostSpace, false)
 
     } // namespace Impl
 } //namespace KokkosBlas
