@@ -166,12 +166,11 @@ namespace KokkosBlas {
         HostLapack<double>::potrf(bool matrix_layout, 
                                  char uplo, int n, 
                                  double* a, int lda){
-            int info = 0;
             if(matrix_layout) {
-                info = LAPACKE_dpotrf(LAPACK_ROW_MAJOR, uplo, n, a, lda);
+                LAPACKE_dpotrf(LAPACK_ROW_MAJOR, uplo, n, a, lda);
             }
             else {
-                info = LAPACKE_dpotrf(LAPACK_COL_MAJOR, uplo, n, a, lda);
+                LAPACKE_dpotrf(LAPACK_COL_MAJOR, uplo, n, a, lda);
             }
         }
 
@@ -222,13 +221,13 @@ namespace KokkosBlas {
 
         template<>
         void 
-        HostLapack<std::complex<float>>::unmqr(bool matrix_layout,
+        HostLapack< std::complex<float> >::unmqr(bool matrix_layout,
                                   char side, char trans,
                                   int m, int n, int k,
                                   const std::complex<float>* a, int lda,
                                   const std::complex<float>* tau, 
-                                  std::complex<float>* c, int ldc
-                                  std::complex<float>* work, int lwork){
+                                  std::complex<float>* c, int ldc,
+                                  std::complex<float>* work, int lwork ){
             if(matrix_layout) {
                 LAPACKE_cunmqr_work(LAPACK_ROW_MAJOR, side, trans, m, n, k, 
                         reinterpret_cast <const __complex__ float*>(a), lda, 
