@@ -242,6 +242,7 @@ namespace KokkosBlas{
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         cublasSideMode_t m_side   = (side  == 'L' || side  == 'l') ? CUBLAS_SIDE_LEFT : CUBLAS_SIDE_RIGHT;\
         cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_T: CUBLAS_OP_N; \
+        const int lwork = workspace.extent(0); \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnDormqr(s.handle, m_side, m_trans, M, N, k, A.data(), LDA, tau.data(), C.data(), LDC, workspace.data(), lwork, &devinfo); \
         Kokkos::Profiling::popRegion(); \
@@ -283,6 +284,7 @@ namespace KokkosBlas{
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         cublasSideMode_t m_side   = (side  == 'L' || side  == 'l') ? CUBLAS_SIDE_LEFT : CUBLAS_SIDE_RIGHT;\
         cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_T: CUBLAS_OP_N; \
+        const int lwork = workspace.extent(0); \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnSormqr(s.handle, m_side, m_trans, M, N, k, A.data(), LDA, tau.data(), C.data(), LDC, workspace.data(), lwork, &devinfo); \
         Kokkos::Profiling::popRegion(); \
@@ -324,6 +326,7 @@ namespace KokkosBlas{
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         cublasSideMode_t m_side   = (side  == 'L' || side  == 'l') ? CUBLAS_SIDE_LEFT : CUBLAS_SIDE_RIGHT;\
         cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_T: CUBLAS_OP_N; \
+        const int lwork = workspace.extent(0); \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnZunmqr(s.handle, m_side, m_trans, M, N, k, \
             reinterpret_cast<cuDoubleComplex*>(A.data()), LDA, \
@@ -370,6 +373,7 @@ namespace KokkosBlas{
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         cublasSideMode_t m_side   = (side  == 'L' || side  == 'l') ? CUBLAS_SIDE_LEFT : CUBLAS_SIDE_RIGHT;\
         cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_T: CUBLAS_OP_N; \
+        const int lwork = workspace.extent(0); \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnCunmqr(s.handle, m_side, m_trans, M, N, k, \
             reinterpret_cast<cuComplex*>(A.data()), LDA, \
