@@ -35,7 +35,7 @@ namespace KokkosBlas {
     > { enum : bool { value = true }; };
 
 #include<KokkosBlas_geqrf_tpl_spec_avail.hpp>
-#include<generated_specializations_hpp/KokkosBlas_geqrfr_eti_spec_avail.hpp>
+#include<generated_specializations_hpp/KokkosBlas_geqrf_eti_spec_avail.hpp>
 
 namespace KokkosBlas {
     namespace Impl {
