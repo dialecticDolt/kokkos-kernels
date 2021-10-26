@@ -48,6 +48,12 @@ IF (KOKKOSKERNELS_ENABLE_TPL_BLAS OR KOKKOSKERNELS_ENABLE_TPL_MKL)
   APPEND_GLOB(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/impl/tpls/KokkosBlas_Host_tpl.cpp)
 ENDIF()
 
+#Include LAPACKE host wrapper
+IF (KOKKOSKERNELS_ENABLE_TPL_LAPACKE)
+  #Do NOT add this to include path
+  APPEND_GLOB(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/impl/tpls/KokkosLapack_Host_tpl_impl.hpp)
+ENDIF()
+
 include(kokkoskernels_eti.cmake)
 SET(ETI_HEADERS)
 
@@ -279,6 +285,20 @@ KOKKOSKERNELS_GENERATE_ETI(Blas_trtri trtri
   TYPE_LISTS  FLOATS LAYOUTS DEVICES
 )
 
+KOKKOSKERNELS_GENERATE_ETI(Blas_geqrf geqrf
+  COMPONENTS  blas
+  HEADER_LIST ETI_HEADERS
+  SOURCE_LIST SOURCES
+  TYPE_LISTS  FLOATS LAYOUTS DEVICES
+)
+
+KOKKOSKERNELS_GENERATE_ETI(Blas_unmqr unmqr
+  COMPONENTS  blas
+  HEADER_LIST ETI_HEADERS
+  SOURCE_LIST SOURCES
+  TYPE_LISTS  FLOATS LAYOUTS DEVICES
+)
+
 KOKKOSKERNELS_GENERATE_ETI(Sparse_sptrsv_solve sptrsv_solve
   COMPONENTS  sparse
   HEADER_LIST ETI_HEADERS
@@ -390,6 +410,7 @@ LIST(APPEND HEADERS ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}_config.h)
 LIST(APPEND SOURCES
  batched/KokkosBatched_Util.cpp
  impl/tpls/KokkosBlas_Host_tpl.cpp
+ impl/tpls/KokkosLapack_Host_tpl_impl.hpp
  impl/tpls/KokkosBlas_Cuda_tpl.cpp
  impl/tpls/KokkosKernels_tpl_handles.cpp
 )

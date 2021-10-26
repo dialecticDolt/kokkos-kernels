@@ -1,7 +1,7 @@
 #ifndef KOKKOSBLAS_GEQRF_TPL_SPEC_DECL_HPP_
 #define KOKKOSBLAS_GEQRF_TPL_SPEC_DECL_HPP_
 
-#if defined( KOKKOSKERNELS_ENABLE_TPL_BLAS ) && defined( KOKKOSKERNELS_ENABLE_TPL_LAPACK )
+#if defined( KOKKOSKERNELS_ENABLE_TPL_BLAS ) && defined( KOKKOSKERNELS_ENABLE_TPL_LAPACKE )
 #include "KokkosBlas_Host_tpl.hpp"
 #include "KokkosLapack_Host_tpl.hpp"
 #include <stdio.h>

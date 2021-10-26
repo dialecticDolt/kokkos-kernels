@@ -4,7 +4,7 @@
 #include "KokkosKernels_config.h"
 #include "Kokkos_ArithTraits.hpp"
 
-#if defined( KOKKOSKERNELS_ENABLE_TPL_BLAS ) && defined( KOKKOSKERNELS_ENABLE_TPL_LAPACK )
+#if defined( KOKKOSKERNELS_ENABLE_TPL_BLAS ) && defined( KOKKOSKERNELS_ENABLE_TPL_LAPACKE )
 #include <lapacke.h>
 #include <cblas.h>
 
