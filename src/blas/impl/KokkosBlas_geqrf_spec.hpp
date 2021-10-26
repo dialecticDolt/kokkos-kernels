@@ -52,6 +52,7 @@ namespace KokkosBlas {
 
 #include<KokkosBlas_geqrf_tpl_spec_avail.hpp>
 #include<generated_specializations_hpp/KokkosBlas_geqrf_eti_spec_avail.hpp>
+#include<generated_specializations_hpp/KokkosBlas_geqrf_workspace_eti_spec_avail.hpp>
 
 namespace KokkosBlas {
     namespace Impl {
@@ -147,5 +148,6 @@ namespace KokkosBlas {
 
 #include<KokkosBlas_geqrf_tpl_spec_decl.hpp>
 #include<generated_specializations_hpp/KokkosBlas_geqrf_eti_spec_decl.hpp>
+#include<generated_specializations_hpp/KokkosBlas_geqrf_workspace_eti_spec_decl.hpp>
 
 #endif //KOKKOSBLAS_IMPL_GEQRF_HPP_
