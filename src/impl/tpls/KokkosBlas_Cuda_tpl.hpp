@@ -21,12 +21,12 @@ CudaBlasSingleton::CudaBlasSingleton()
 CudaBlasSingleton & CudaBlasSingleton::singleton()
 { static CudaBlasSingleton s ; return s ; }
 
-}
-}
+} //namespace Impl
+} //namespace KokkosBlas
 #endif
 
 
-#if defined(KOKKOSKERNELS_ENABLE_TPL_CUBLAS) && defined (KOKKOSKERNELS_ENABLE_TPL_CUSOLVER)
+#if defined (KOKKOSKERNELS_ENABLE_TPL_CUSOLVER)
 #include<KokkosBlas_tpl_spec.hpp>
 
 namespace KokkosBlas {
@@ -34,7 +34,7 @@ namespace Impl {
 
 CudaSolverSingleton::CudaSolverSingleton()
 {
-    cuSolverStatus_t stat = cusolverDnCreate(&handle);
+    auto stat = cusolverDnCreate(&handle);
     if (stat != CUSOLVER_STATUS_SUCCESS)
         Kokkos::abort("CUSOLVER initialization failed\n");
 
@@ -46,8 +46,8 @@ CudaSolverSingleton::CudaSolverSingleton()
 CudaSolverSingleton & CudaSolverSingleton::singleton()
 { static CudaSolverSingleton s ; return s ; }
 
-}
-}
+} //namespace Impl
+} //namespace KokkosBlas
 #endif //KOKKOS_KERNELS_ENABLE_TPL_CUSOLVER
 
 
@@ -72,8 +72,8 @@ MagmaSingleton::MagmaSingleton()
 MagmaSingleton & MagmaSingleton::singleton()
 { static MagmaSingleton s ; return s ; }
 
-}
-}
+} //namespace Impl
+} //namespace KokkosBlas
 #endif
 
 #endif
