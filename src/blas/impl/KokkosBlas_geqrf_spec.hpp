@@ -12,7 +12,7 @@
 namespace KokkosBlas {
     namespace Impl {
         
-        template<class AVT, class TVT, class CVT, class WVT>
+        template<class AVT, class TVT, class WVT>
         struct geqrf_eti_spec_avail {
             enum : bool {value = false };
         };
