@@ -496,7 +496,7 @@ namespace KokkosBlas{
         typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
         \
-        static void geqrf_workspace(AViewType& A, TauViewType& tau){ \
+        static int64_t geqrf_workspace(AViewType& A, TauViewType& tau){ \
         Kokkos::Profiling::pushRegion("KokkosBlas::geqrf[TPL_CUSOLVER, double]");\
         int devinfo = 0; \
         int M = A.extent(0);  \
