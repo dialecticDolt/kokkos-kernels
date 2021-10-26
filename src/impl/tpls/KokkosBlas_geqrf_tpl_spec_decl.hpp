@@ -235,7 +235,7 @@ namespace KokkosBlas {
                 reinterpret_cast<SCALAR*>(tau.data()), \
                 reinterpret_cast<SCALAR*>(&query), lwork); \
         Kokkos::Profiling::popRegion(); \
-        return (int64_t) query; \
+        return (int64_t) query.real(); \
         } \
     };
 
@@ -269,7 +269,7 @@ namespace KokkosBlas {
                 reinterpret_cast<SCALAR*>(tau.data()), \
                 reinterpret_cast<SCALAR*>(&query), lwork); \
         Kokkos::Profiling::popRegion(); \
-        return (int64_t) query; \
+        return (int64_t) query.real(); \
         } \
     };
 
