@@ -31,7 +31,7 @@ namespace KokkosBlas {
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         Kokkos::View<SCALAR_TYPE**, LAYOUT_TYPE, \
                     Kokkos::Device<EXEC_SPACE_TYPE, MEM_SPACE_TYPE>, \
-                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >. \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         Kokkos::View<SCALAR_TYPE*, LAYOUT_TYPE, \
                     Kokkos::Device<EXEC_SPACE_TYPE, MEM_SPACE_TYPE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> > \
