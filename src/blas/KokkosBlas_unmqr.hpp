@@ -199,6 +199,44 @@ namespace KokkosBlas {
 
  } //function unmqr  
 
+ template<class AViewType, class TauViewType, class CViewType>
+ int64_t unmqr(const char side[], const char trans[], int k, AViewType& A, TauViewType& tau, CviewType& C){
+
+        //return if degenerate matrix provided 
+        if((A.extent(0)==0) || (A.extent(1)==0))
+            return 0;
+        if((C.extent(0)==0) || (C.extent(1)==0))
+            return 0;
+        if((k==0))
+            return 0;
+
+        //standardize particular View specializations 
+        typedef Kokkos::View<typename AViewType::const_value_type**,
+                typename AViewType::array_layout,
+                typename AViewType::device_type,
+                Kokkos::MemoryTraits<Kokkos::Unmanaged> > AVT;
+
+        typedef Kokkos::View<typename TauViewType::const_value_type*,
+                typename TauViewType::array_layout,
+                typename TauViewType::device_type,
+                Kokkos::MemoryTraits<Kokkos::Unmanaged> > TVT;
+
+        typedef Kokkos::View<typename CViewType::non_const_value_type**,
+                typename CViewType::array_layout,
+                typename CViewType::device_type,
+                Kokkos::MemoryTraits<Kokkos::Unmanaged> > CVT;
+
+        AVT A_i = A;
+        TVT tau_i = tau;
+        CVT C_i = C;
+
+        typedef KokkosBlas::Impl::UNMQR_WORKSPACE<AVT, TVT, CVT> impl_type;
+        return impl_type::unmqr_workspace(side[0], trans[0], k, A_i, tau_i, C_i);
+
+ } //function unmqr_workspace  
+
+
+
 } //namespace KokkosBlas
 
 #endif //KOKKOSBLAS_UNMQR_HPP_

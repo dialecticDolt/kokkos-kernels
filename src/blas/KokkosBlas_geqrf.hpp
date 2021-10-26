@@ -127,6 +127,33 @@ namespace KokkosBlas {
 
  } //function geqrf  
 
+ template<class AViewType, class TauViewType>
+ int64_t geqrf_workspace(AViewType& A, TauViewType& tau){
+
+        //return if degenerate matrix provided 
+        if((A.extent(0)==0) || (A.extent(1)==0))
+            return 0;
+
+        //standardize particular View specializations 
+        typedef Kokkos::View<typename CViewType::non_const_value_type**,
+                typename CViewType::array_layout,
+                typename CViewType::device_type,
+                Kokkos::MemoryTraits<Kokkos::Unmanaged> > AVT;
+
+        typedef Kokkos::View<typename TauViewType::non_const_value_type*,
+                typename TauViewType::array_layout,
+                typename TauViewType::device_type,
+                Kokkos::MemoryTraits<Kokkos::Unmanaged> > TVT;
+
+        AVT A_i = A;
+        TVT tau_i = tau;
+
+        typedef KokkosBlas::Impl::GEQRF_WORKSPACE<AVT, TVT> impl_type;
+        return impl_type::geqrf_workspace(A_i, tau_i);
+
+ } //function geqrf_workspace
+
+
 } //namespace KokkosBlas
 
 #endif //KOKKOSBLAS_GEQRF_HPP_

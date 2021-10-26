@@ -60,8 +60,8 @@ struct CudaBlasSingleton {
   static CudaBlasSingleton & singleton();
 };
 
-}
-}
+} //namespace Impl
+} //namespace KokkosBlas
 #endif // KOKKOSKERNELS_ENABLE_TPL_CUBLAS
 
 
@@ -82,8 +82,8 @@ struct CudaSolverSingleton {
   static CudaSolverSingleton & singleton();
 };
 
-}
-}
+} //namespace Impl
+} //namespace KokkosBlas
 #endif // KOKKOSKERNELS_ENABLE_TPL_CUSOLVER
 
 
@@ -102,8 +102,8 @@ struct MagmaSingleton {
   static MagmaSingleton & singleton();
 };
 
-}
-}
+} //namespace Impl
+} //namespace KokkosBlas
 #endif // KOKKOSKERNELS_ENABLE_TPL_MAGMA
 
 #endif // KOKKOSBLAS_TPL_SPEC_HPP_
