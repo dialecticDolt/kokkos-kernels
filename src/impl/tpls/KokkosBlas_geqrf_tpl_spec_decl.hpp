@@ -30,12 +30,12 @@ namespace KokkosBlas {
         \
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
         Kokkos::Profiling::pushRegion("KokkosLapack::geqrf[TPL_LAPACK, double]");\
-        int M = C.extent(0); \
-        int N = C.extent(1); \
+        int M = A.extent(0); \
+        int N = A.extent(1); \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         const int lwork = workspace.extent(0); \
-        HostLapack<double>::geqrf(M, N, A.data(), LDA, tau.data(), workspace.data(), lwork); \
+        HostLapack<double>::geqrf(A_is_lr, M, N, A.data(), LDA, tau.data(), workspace.data(), lwork); \
         Kokkos::Profiling::popRegion(); \
         } \
     };
@@ -61,12 +61,12 @@ namespace KokkosBlas {
         \
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
         Kokkos::Profiling::pushRegion("KokkosLapack::geqrf[TPL_LAPACK, float]");\
-        int M = C.extent(0); \
-        int N = C.extent(1); \
+        int M = A.extent(0); \
+        int N = A.extent(1); \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         const int lwork = workspace.extent(0); \
-        HostLapack<float>::geqrf(M, N, A.data(), LDA, tau.data(), workspace.data(), lwork); \
+        HostLapack<float>::geqrf(A_is_lr, M, N, A.data(), LDA, tau.data(), workspace.data(), lwork); \
         Kokkos::Profiling::popRegion(); \
         } \
     };
@@ -94,12 +94,12 @@ namespace KokkosBlas {
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
         Kokkos::Profiling::pushRegion("KokkosLapack::geqrf[TPL_LAPACK, complex<double>]");\
-        int M = C.extent(0); \
-        int N = C.extent(1); \
+        int M = A.extent(0); \
+        int N = A.extent(1); \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         const int lwork = workspace.extent(0); \
-        HostLapack<std::complex<double>>::geqrf(M, N,  \
+        HostLapack<std::complex<double>>::geqrf(A_is_lr, M, N,  \
                 reinterpret_cast<std::complex<double>*>(A.data()), LDA, \
                 reinterpret_cast<std::complex<double>*>(tau.data()), \
                 reinterpret_cast<std::complex<double>*>(workspace.data()), lwork); \
@@ -131,12 +131,12 @@ namespace KokkosBlas {
         \
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
         Kokkos::Profiling::pushRegion("KokkosLapack::geqrf[TPL_LAPACK, complex<float>]");\
-        int M = C.extent(0); \
-        int N = C.extent(1); \
+        int M = A.extent(0); \
+        int N = A.extent(1); \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         const int lwork = workspace.extent(0); \
-        HostLapack<std::complex<float>>::geqrf(M, N, \
+        HostLapack<std::complex<float>>::geqrf(A_is_lr, M, N, \
                 reinterpret_cast<std::complex<float>*>(A.data()), LDA, \
                 reinterpret_cast<std::complex<float>*>(tau.data()), \
                 reinterpret_cast<std::complex<float>*>(workspace.data()), lwork); \
@@ -202,8 +202,8 @@ namespace KokkosBlas{
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
         Kokkos::Profiling::pushRegion("KokkosBlas::geqrf[TPL_CUSOLVER, double]");\
         int devinfo = 0; \
-        int M = C.extent(0);  \
-        int N = C.extent(1);  \
+        int M = A.extent(0);  \
+        int N = A.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
@@ -235,8 +235,8 @@ namespace KokkosBlas{
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
         Kokkos::Profiling::pushRegion("KokkosBlas::geqrf[TPL_CUSOLVER, double]");\
         int devinfo = 0; \
-        int M = C.extent(0);  \
-        int N = C.extent(1);  \
+        int M = A.extent(0);  \
+        int N = A.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnSgeqrf(s.handle, M, N, A.data(), LDA, tau.data(), workspace.data(), lwork, &devinfo); \
@@ -267,12 +267,12 @@ namespace KokkosBlas{
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
         Kokkos::Profiling::pushRegion("KokkosBlas::geqrf[TPL_CUSOLVER, Kokkos::complex<double>]");\
         int devinfo = 0; \
-        int M = C.extent(0);  \
-        int N = C.extent(1);  \
+        int M = A.extent(0);  \
+        int N = A.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
-        cusolverDnZgeqrf(s.handle, m_side, m_trans, M, N, k, \
+        cusolverDnZgeqrf(s.handle, M, N,\
             reinterpret_cast<cuDoubleComplex*>(A.data()), LDA, \
             reinterpret_cast<cuDoubleComplex*>(tau.data()), \
             reinterpret_cast<cuDoubleComplex*>(workspace.data()), \
@@ -304,12 +304,12 @@ namespace KokkosBlas{
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
         Kokkos::Profiling::pushRegion("KokkosBlas::geqrf[TPL_CUSOLVER, Kokkos::complex<float>]");\
         int devinfo = 0; \
-        int M = C.extent(0);  \
-        int N = C.extent(1);  \
+        int M = A.extent(0);  \
+        int N = A.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
-        cusolverDnCgeqrf(s.handle, m_side, m_trans, M, N, k, \
+        cusolverDnCgeqrf(s.handle, M, N, \
             reinterpret_cast<cuComplex*>(A.data()), LDA, \
             reinterpret_cast<cuComplex*>(tau.data()), \
             reinterpret_cast<cuComplex*>(workspace.data()), \
