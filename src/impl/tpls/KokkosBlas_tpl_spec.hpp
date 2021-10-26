@@ -65,7 +65,7 @@ struct CudaBlasSingleton {
 #endif // KOKKOSKERNELS_ENABLE_TPL_CUBLAS
 
 
-#ifdef defined(KOKKOSKERNELS_ENABLE_TPL_CUSOLVER) && defined(KOKKOSKERNELS_ENABLE_TPL_CUBLAS)
+#if defined(KOKKOSKERNELS_ENABLE_TPL_CUSOLVER) && defined(KOKKOSKERNELS_ENABLE_TPL_CUBLAS)
 #include "cuda_runtime.h"
 #include "cublas_v2.h"
 #include "cusolverDn.h"

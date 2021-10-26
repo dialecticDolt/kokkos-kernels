@@ -26,7 +26,7 @@ CudaBlasSingleton & CudaBlasSingleton::singleton()
 #endif
 
 
-#if defined (KOKKOSKERNELS_ENABLE_TPL_CUSOLVER)
+#if defined(KOKKOSKERNELS_ENABLE_TPL_CUBLAS) && defined (KOKKOSKERNELS_ENABLE_TPL_CUSOLVER)
 #include<KokkosBlas_tpl_spec.hpp>
 
 namespace KokkosBlas {

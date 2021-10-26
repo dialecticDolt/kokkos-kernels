@@ -12,7 +12,7 @@ namespace KokkosBlas {
         //Hostspace LAPACKE(netlib) or MKL
         //TODO: Check if these have the same syntax
 
-        #ifdef defined(KOKKOSKERNELS_ENABLE_TPL_BLAS) && defined(KOKKOSKERNELS_ENABLE_TPL_LAPACKE)
+        #if defined(KOKKOSKERNELS_ENABLE_TPL_BLAS) && defined(KOKKOSKERNELS_ENABLE_TPL_LAPACKE)
 
         #define KOKKOSBLAS_UNMQR_TPL_SPEC_AVAIL_LAPACK(SCALAR, LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE) \
         template<class ExecSpace> \
@@ -72,7 +72,7 @@ namespace KokkosBlas {
 
         //CUSOLVER
         //
-        #ifdef defined(KOKKOSKERNELS_ENABLE_TPL_CUBLAS) && defined(KOKKOSKERNELS_ENABLE_TPL_CUSOLVER)
+        #if defined(KOKKOSKERNELS_ENABLE_TPL_CUBLAS) && defined(KOKKOSKERNELS_ENABLE_TPL_CUSOLVER)
 
 
         #define KOKKOSBLAS_UNMQR_TPL_SPEC_AVAIL_CUSOLVER(SCALAR, LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE) \
