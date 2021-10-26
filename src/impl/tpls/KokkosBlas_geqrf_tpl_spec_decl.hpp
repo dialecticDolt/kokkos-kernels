@@ -9,23 +9,23 @@
 namespace KokkosBlas {
     namespace Impl {
 
-    #define KOKKOSBLAS_DGEQRF_LAPACK(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_DGEQRF_LAPACK(LAYOUTA, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct GEQRF< \
         Kokkos::View<double**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-        Kokkos::View<double*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        Kokkos::View<double*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-        Kokkos::View<double*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        Kokkos::View<double*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef double SCALAR; \
         typedef int ORDINAL; \
         typedef Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
         \
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
@@ -33,32 +33,30 @@ namespace KokkosBlas {
         int M = C.extent(0); \
         int N = C.extent(1); \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
-        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
-        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         const int lwork = workspace.extent(0); \
         HostLapack<double>::geqrf(M, N, A.data(), LDA, tau.data(), workspace.data(), lwork); \
         Kokkos::Profiling::popRegion(); \
         } \
     };
 
-    #define KOKKOSBLAS_SGEQRF_LAPACK(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_SGEQRF_LAPACK(LAYOUTA, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct GEQRF< \
         Kokkos::View<float**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-        Kokkos::View<float*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        Kokkos::View<float*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-        Kokkos::View<float*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        Kokkos::View<float*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef float SCALAR; \
         typedef int ORDINAL; \
         typedef Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
         \
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
@@ -66,44 +64,40 @@ namespace KokkosBlas {
         int M = C.extent(0); \
         int N = C.extent(1); \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
-        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
-        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         const int lwork = workspace.extent(0); \
         HostLapack<float>::geqrf(M, N, A.data(), LDA, tau.data(), workspace.data(), lwork); \
         Kokkos::Profiling::popRegion(); \
         } \
     };
 
-    #define KOKKOSBLAS_ZGEQRF_LAPACK(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_ZGEQRF_LAPACK(LAYOUTA, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct GEQRF< \
         Kokkos::View<Kokkos::complex<double>**, \
                     LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         Kokkos::View<Kokkos::complex<double>*, \
-                    LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         Kokkos::View<Kokkos::complex<double>*, \
-                    LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef Kokkos::complex<double> SCALAR; \
         typedef int ORDINAL; \
         typedef Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
         Kokkos::Profiling::pushRegion("KokkosLapack::geqrf[TPL_LAPACK, complex<double>]");\
         int M = C.extent(0); \
         int N = C.extent(1); \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
-        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
-        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         const int lwork = workspace.extent(0); \
         HostLapack<std::complex<double>>::geqrf(M, N,  \
                 reinterpret_cast<std::complex<double>*>(A.data()), LDA, \
@@ -113,26 +107,26 @@ namespace KokkosBlas {
         } \
     };
 
-    #define KOKKOSBLAS_CGEQRF_LAPACK(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_CGEQRF_LAPACK(LAYOUTA, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct GEQRF< \
         Kokkos::View<Kokkos::complex<float>**, \
                     LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         Kokkos::View<Kokkos::complex<float>*, \
-                    LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         Kokkos::View<Kokkos::complex<float>*, \
-                    LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                    LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef Kokkos::complex<float> SCALAR; \
         typedef int ORDINAL; \
         typedef Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
         \
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
@@ -140,9 +134,7 @@ namespace KokkosBlas {
         int M = C.extent(0); \
         int N = C.extent(1); \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
-        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
-        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         const int lwork = workspace.extent(0); \
         HostLapack<std::complex<float>>::geqrf(M, N, \
                 reinterpret_cast<std::complex<float>*>(A.data()), LDA, \
@@ -188,23 +180,23 @@ namespace KokkosBlas {
 namespace KokkosBlas{
     namespace Impl{
 
-    #define KOKKOSBLAS_DGEQRF_CUSOLVER(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_DGEQRF_CUSOLVER(LAYOUTA,MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct GEQRF< \
         Kokkos::View<double**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-        Kokkos::View<double*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        Kokkos::View<double*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-        Kokkos::View<double*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        Kokkos::View<double*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef double SCALAR; \
         typedef int ORDINAL; \
         typedef Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
         \
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
@@ -213,9 +205,7 @@ namespace KokkosBlas{
         int M = C.extent(0);  \
         int N = C.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
-        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
-        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnDgeqrf(s.handle, M, N, A.data(), LDA, tau.data(), workspace.data(), lwork, &devinfo); \
         Kokkos::Profiling::popRegion(); \
@@ -223,23 +213,23 @@ namespace KokkosBlas{
     };
 
 
-    #define KOKKOSBLAS_SGEQRF_CUSOLVER(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_SGEQRF_CUSOLVER(LAYOUTA, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct GEQRF< \
         Kokkos::View<float**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-        Kokkos::View<float*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        Kokkos::View<float*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-        Kokkos::View<float*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        Kokkos::View<float*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef float SCALAR; \
         typedef int ORDINAL; \
         typedef Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
         \
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
@@ -248,21 +238,20 @@ namespace KokkosBlas{
         int M = C.extent(0);  \
         int N = C.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
-        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnSgeqrf(s.handle, M, N, A.data(), LDA, tau.data(), workspace.data(), lwork, &devinfo); \
         Kokkos::Profiling::popRegion(); \
         } \
     };
 
-    #define KOKKOSBLAS_ZGEQRF_CUSOLVER(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_ZGEQRF_CUSOLVER(LAYOUTA, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct GEQRF< \
         Kokkos::View<Kokkos::complex<double>**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-        Kokkos::View<Kokkos::complex<double>*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        Kokkos::View<Kokkos::complex<double>*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-        Kokkos::View<Kokkos::complex<double>*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        Kokkos::View<Kokkos::complex<double>*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef Kokkos::complex<double> SCALAR; \
@@ -270,9 +259,9 @@ namespace KokkosBlas{
         typedef int ORDINAL; \
         typedef Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
         \
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
@@ -281,9 +270,7 @@ namespace KokkosBlas{
         int M = C.extent(0);  \
         int N = C.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
-        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
-        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnZgeqrf(s.handle, m_side, m_trans, M, N, k, \
             reinterpret_cast<cuDoubleComplex*>(A.data()), LDA, \
@@ -294,14 +281,14 @@ namespace KokkosBlas{
         } \
     };
 
-    #define KOKKOSBLAS_ZGEQRF_CUSOLVER(LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE, ETI_SPEC_AVAIL) \
+    #define KOKKOSBLAS_CGEQRF_CUSOLVER(LAYOUTA, MEMSPACE, ETI_SPEC_AVAIL) \
     template<class ExecSpace> \
     struct GEQRF< \
         Kokkos::View<Kokkos::complex<float>**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-        Kokkos::View<Kokkos::complex<float>*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        Kokkos::View<Kokkos::complex<float>*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
-        Kokkos::View<Kokkos::complex<float>*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        Kokkos::View<Kokkos::complex<float>*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef Kokkos::complex<float> SCALAR; \
@@ -309,9 +296,9 @@ namespace KokkosBlas{
         typedef int ORDINAL; \
         typedef Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > TauViewType; \
-        typedef Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+        typedef Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > WViewType; \
         \
         static void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){ \
@@ -320,9 +307,7 @@ namespace KokkosBlas{
         int M = C.extent(0);  \
         int N = C.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
-        bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
-        const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnCgeqrf(s.handle, m_side, m_trans, M, N, k, \
             reinterpret_cast<cuComplex*>(A.data()), LDA, \
@@ -333,18 +318,18 @@ namespace KokkosBlas{
         } \
     };
 
-    KOKKOSBLAS_DGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
-    KOKKOSBLAS_DGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
+    KOKKOSBLAS_DGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
+    KOKKOSBLAS_DGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
 
 
-    KOKKOSBLAS_SGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
-    KOKKOSBLAS_SGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
+    KOKKOSBLAS_SGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
+    KOKKOSBLAS_SGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
 
-    KOKKOSBLAS_ZGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
-    KOKKOSBLAS_ZGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
+    KOKKOSBLAS_ZGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
+    KOKKOSBLAS_ZGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
 
-    KOKKOSBLAS_CGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
-    KOKKOSBLAS_CGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
+    KOKKOSBLAS_CGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::CudaSpace, true)
+    KOKKOSBLAS_CGEQRF_CUSOLVER(Kokkos::LayoutLeft, Kokkos::CudaSpace, false)
 
     } //namespace Impl
 } //namespace KokkosBlas
