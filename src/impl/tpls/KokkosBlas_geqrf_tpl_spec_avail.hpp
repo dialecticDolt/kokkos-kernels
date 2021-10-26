@@ -106,7 +106,7 @@ namespace KokkosBlas {
 
         #define KOKKOSBLAS_GEQRF_WORKSPACE_TPL_SPEC_AVAIL_CUSOLVER(SCALAR, LAYOUTA, MEMSPACE) \
         template<class ExecSpace> \
-        struct geqrf_tpl_spec_avail< \
+        struct geqrf_workspace_tpl_spec_avail< \
             Kokkos::View<SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
             Kokkos::View<SCALAR*, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
