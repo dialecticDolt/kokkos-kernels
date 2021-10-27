@@ -17,6 +17,11 @@ namespace KokkosBlas {
             enum : bool {value = false };
         };
 
+        template<class AVT, class TVT, class CVT>
+        struct unmqr_workspace_eti_spec_avail {
+            enum : bool {value = false };
+        };
+
     } //namespace Impl
 } //namespace KokkosBlas
 
@@ -33,6 +38,20 @@ namespace KokkosBlas {
                     Kokkos::Device<EXEC_SPACE_TYPE, MEM_SPACE_TYPE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         Kokkos::View<SCALAR_TYPE*, LAYOUT_TYPE, \
+                    Kokkos::Device<EXEC_SPACE_TYPE, MEM_SPACE_TYPE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> > \
+    > { enum : bool { value = true }; };
+
+#define KOKKOSBLAS_UNMQR_WORKSPACE_ETI_SPEC_AVAIL(SCALAR_TYPE, LAYOUT_TYPE, EXEC_SPACE_TYPE, MEM_SPACE_TYPE)\
+    template<> \
+    struct unmqr_workspace_eti_spec_avail< \
+        Kokkos::View<const SCALAR_TYPE**, LAYOUT_TYPE, \
+                    Kokkos::Device<EXEC_SPACE_TYPE, MEM_SPACE_TYPE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<const SCALAR_TYPE*, LAYOUT_TYPE, \
+                    Kokkos::Device<EXEC_SPACE_TYPE, MEM_SPACE_TYPE>, \
+                    Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+        Kokkos::View<SCALAR_TYPE**, LAYOUT_TYPE, \
                     Kokkos::Device<EXEC_SPACE_TYPE, MEM_SPACE_TYPE>, \
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> > \
     > { enum : bool { value = true }; };
@@ -54,7 +73,14 @@ namespace KokkosBlas {
             static void unmqr(const char side, const char trans, int k, AVT& A, TVT& tau, CVT& C, WVT& workspace);
         };
 
-
+        template<
+            class AVT, class TVT, class CVT,
+            bool tpl_spec_avail = unmqr_workspace_tpl_spec_avail<AVT, TVT, CVT>::value,
+            bool eti_spec_avail = unmqr_workspace_eti_spec_avail<AVT, TVT, CVT>::value
+        >
+        struct UNMQR_WORKSPACE{
+            static void unmqr_workspace(const char side, const char trans, int k, AVT& A, TVT& tau, CVT& C);
+        };
 
         #if !defined(KOKKOSKERNELS_ETI_ONLY) || KOKKOSKERNELS_IMPL_COMPILE_LIBRARY
         //specialization layer for no TPL
@@ -62,6 +88,13 @@ namespace KokkosBlas {
         struct UNMQR<AVT, TVT, CVT, WVT, false, KOKKOSKERNELS_IMPL_COMPILE_LIBRARY>{
             static void unmqr(const char side, const char trans, int k, AVT& A, TVT& tau, CVT& C, WVT& workspace){
                 execute_unmqr<AVT, TVT, CVT, WVT>(side, trans, k, A, tau, C, workspace);
+            }
+        };
+
+        template<class AVT, class TVT, class CVT>
+        struct UNMQR<AVT, TVT, CVT, false, KOKKOSKERNELS_IMPL_COMPILE_LIBRARY>{
+            static void unmqr_workspace(const char side, const char trans, int k, AVT& A, TVT& tau, CVT& C){
+                execute_unmqr_workspace<AVT, TVT, CVT>(side, trans, k, A, tau, C);
             }
         };
         #endif
@@ -86,6 +119,19 @@ namespace KokkosBlas {
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
             false, true>; \
 
+#define KOKKOSBLAS_UNMQR_WORKSPACE_ETI_SPEC_DECL(SCALAR_TYPE, LAYOUT_TYPE, EXEC_SPACE_TYPE, MEM_SPACE_TYPE) \
+    extern template struct \
+    UNMQR< Kokkos::View<const SCALAR_TYPE **, LAYOUT_TYPE, \
+                        Kokkos::Device<EXEC_SPACE_TYPE, MEM_SPACE_TYPE>, \
+                        Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+           Kokkos::View<const SCALAR_TYPE*, LAYOUT_TYPE, \
+                        Kokkos::Device<EXEC_SPACE_TYPE, MEM_SPACE_TYPE>, \
+                        Kokkos::MemoryTraits<Kokkos::Unmanaged> > , \
+           Kokkos::View<SCALAR_TYPE**, LAYOUT_TYPE, \
+                        Kokkos::Device<EXEC_SPACE_TYPE, MEM_SPACE_TYPE>, \
+                        Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+            false, true>; \
+
 #define KOKKOSBLAS_UNMQR_ETI_SPEC_INST(SCALAR_TYPE, LAYOUT_TYPE, EXEC_SPACE_TYPE, MEM_SPACE_TYPE) \
     template struct \
     UNMQR< Kokkos::View<const SCALAR_TYPE**, LAYOUT_TYPE, \
@@ -98,6 +144,19 @@ namespace KokkosBlas {
                         Kokkos::Device<EXEC_SPACE_TYPE, MEM_SPACE_TYPE>, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
            Kokkos::View<SCALAR_TYPE*, LAYOUT_TYPE, \
+                        Kokkos::Device<EXEC_SPACE_TYPE, MEM_SPACE_TYPE>, \
+                        Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+           false, true>;
+
+#define KOKKOSBLAS_UNMQR_WORKSPACE_ETI_SPEC_INST(SCALAR_TYPE, LAYOUT_TYPE, EXEC_SPACE_TYPE, MEM_SPACE_TYPE) \
+    template struct \
+    UNMQR< Kokkos::View<const SCALAR_TYPE**, LAYOUT_TYPE, \
+                        Kokkos::Device<EXEC_SPACE_TYPE, MEM_SPACE_TYPE>, \
+                        Kokkos::MemoryTraits<Kokkos::Unmanaged> > , \
+           Kokkos::View<const SCALAR_TYPE*, LAYOUT_TYPE, \
+                        Kokkos::Device<EXEC_SPACE_TYPE, MEM_SPACE_TYPE>, \
+                        Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+           Kokkos::View<SCALAR_TYPE**, LAYOUT_TYPE, \
                         Kokkos::Device<EXEC_SPACE_TYPE, MEM_SPACE_TYPE>, \
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
            false, true>;

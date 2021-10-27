@@ -14,7 +14,14 @@ namespace KokkosBlas {
         template<class AVT, class TVT, class CVT, class WVT>
         void execute_unmqr(char side, char trans, int k, AVT& A, TVT& tau, CVT& C, WVT& workspace){
             std::ostringstream os;
-            os << "There is no ETI implementation of UNMQR. Compile with TPL (LAPACK or CUSOLVER).\n";
+            os << "There is no ETI implementation of UNMQR. Compile with TPL (LAPACKE or CUSOLVER).\n";
+            Kokkos::Impl::throw_runtime_exception(os.str());
+        }
+
+        template<class AVT, class TVT, class CVT>
+        void execute_unmqr_workspace(char side, char trans, int k, AVT& A, TVT& tau, CVT& C){
+            std::ostringstream os;
+            os << "There is no ETI implementation of UNMQR Workspace. Compile with TPL (LAPACKE or CUSOLVER).\n";
             Kokkos::Impl::throw_runtime_exception(os.str());
         }
 
