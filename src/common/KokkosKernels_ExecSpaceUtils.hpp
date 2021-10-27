@@ -48,10 +48,9 @@
 #ifndef _KOKKOSKERNELSUTILSEXECSPACEUTILS_HPP
 #define _KOKKOSKERNELSUTILSEXECSPACEUTILS_HPP
 
+namespace KokkosKernels {
 
-namespace KokkosKernels{
-
-namespace Impl{
+namespace Impl {
 
 enum ExecSpaceType {
   Exec_SERIAL,
@@ -63,34 +62,34 @@ enum ExecSpaceType {
   Exec_SYCL
 };
 template <typename ExecutionSpace>
-KOKKOS_FORCEINLINE_FUNCTION ExecSpaceType kk_get_exec_space_type(){
+KOKKOS_FORCEINLINE_FUNCTION ExecSpaceType kk_get_exec_space_type() {
   ExecSpaceType exec_space = Exec_SERIAL;
-#if defined( KOKKOS_ENABLE_SERIAL )
-  if (std::is_same< Kokkos::Serial , ExecutionSpace >::value){
+#if defined(KOKKOS_ENABLE_SERIAL)
+  if (std::is_same<Kokkos::Serial, ExecutionSpace>::value) {
     exec_space = Exec_SERIAL;
   }
 #endif
 
-#if defined( KOKKOS_ENABLE_THREADS )
-  if (std::is_same< Kokkos::Threads , ExecutionSpace >::value){
-    exec_space =  Exec_PTHREADS;
+#if defined(KOKKOS_ENABLE_THREADS)
+  if (std::is_same<Kokkos::Threads, ExecutionSpace>::value) {
+    exec_space = Exec_PTHREADS;
   }
 #endif
 
-#if defined( KOKKOS_ENABLE_OPENMP )
-  if (std::is_same< Kokkos::OpenMP, ExecutionSpace >::value){
+#if defined(KOKKOS_ENABLE_OPENMP)
+  if (std::is_same<Kokkos::OpenMP, ExecutionSpace>::value) {
     exec_space = Exec_OMP;
   }
 #endif
 
-#if defined( KOKKOS_ENABLE_CUDA )
-  if (std::is_same<Kokkos::Cuda, ExecutionSpace >::value){
+#if defined(KOKKOS_ENABLE_CUDA)
+  if (std::is_same<Kokkos::Cuda, ExecutionSpace>::value) {
     exec_space = Exec_CUDA;
   }
 #endif
 
-#if defined( KOKKOS_ENABLE_HIP )
-  if (std::is_same<Kokkos::Experimental::HIP, ExecutionSpace >::value){
+#if defined(KOKKOS_ENABLE_HIP)
+  if (std::is_same<Kokkos::Experimental::HIP, ExecutionSpace>::value) {
     exec_space = Exec_HIP;
   }
 #endif
@@ -101,14 +100,17 @@ KOKKOS_FORCEINLINE_FUNCTION ExecSpaceType kk_get_exec_space_type(){
   }
 #endif
 
-#if defined( KOKKOS_ENABLE_QTHREAD)
-  if (std::is_same< Kokkos::Qthread, ExecutionSpace >::value){
+#if defined(KOKKOS_ENABLE_QTHREAD)
+  if (std::is_same<Kokkos::Qthread, ExecutionSpace>::value) {
     exec_space = Exec_QTHREADS;
   }
 #endif
   return exec_space;
-
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// GPU Exec Space Utils
+////////////////////////////////////////////////////////////////////////////////
 
 template <typename ExecutionSpace>
 constexpr KOKKOS_INLINE_FUNCTION bool kk_is_gpu_exec_space() {
@@ -124,7 +126,8 @@ constexpr KOKKOS_INLINE_FUNCTION bool kk_is_gpu_exec_space<Kokkos::Cuda>() {
 
 #ifdef KOKKOS_ENABLE_HIP
 template <>
-constexpr KOKKOS_INLINE_FUNCTION bool kk_is_gpu_exec_space<Kokkos::Experimental::HIP>() {
+constexpr KOKKOS_INLINE_FUNCTION bool
+kk_is_gpu_exec_space<Kokkos::Experimental::HIP>() {
   return true;
 }
 #endif
@@ -137,93 +140,118 @@ kk_is_gpu_exec_space<Kokkos::Experimental::SYCL>() {
 }
 #endif
 
-//Host function to determine free and total device memory.
-//Will throw if execution space doesn't support this.
+////////////////////////////////////////////////////////////////////////////////
+// x86_64 Memory Space Utils
+////////////////////////////////////////////////////////////////////////////////
+
+template <typename ExecutionSpace>
+constexpr KOKKOS_INLINE_FUNCTION bool kk_is_x86_64_mem_space() {
+  return false;
+}
+
+#if __x86_64__
+template <>
+constexpr KOKKOS_INLINE_FUNCTION bool
+kk_is_x86_64_mem_space<Kokkos::HostSpace>() {
+  return true;
+}
+#endif  // x86_64 architectures
+
+////////////////////////////////////////////////////////////////////////////////
+// A64FX Memory Space Utils
+////////////////////////////////////////////////////////////////////////////////
+
+template <typename ExecutionSpace>
+constexpr KOKKOS_INLINE_FUNCTION bool kk_is_a64fx_mem_space() {
+  return false;
+}
+
+#if defined(__ARM_ARCH_ISA_A64)
+template <>
+constexpr KOKKOS_INLINE_FUNCTION bool
+kk_is_a64fx_mem_space<Kokkos::HostSpace>() {
+  return true;
+}
+#endif  // a64fx architectures
+
+// Host function to determine free and total device memory.
+// Will throw if execution space doesn't support this.
 template <typename MemorySpace>
-inline void kk_get_free_total_memory(size_t& free_mem, size_t& total_mem)
-{
+inline void kk_get_free_total_memory(size_t& /* free_mem */,
+                                     size_t& /* total_mem */) {
   std::ostringstream oss;
-  oss << "Error: memory space " << MemorySpace::name() << " does not support querying free/total memory.";
+  oss << "Error: memory space " << MemorySpace::name()
+      << " does not support querying free/total memory.";
   throw std::runtime_error(oss.str());
 }
 
 #ifdef KOKKOS_ENABLE_CUDA
 template <>
-inline void kk_get_free_total_memory<Kokkos::CudaSpace>(size_t& free_mem, size_t& total_mem)
-{
+inline void kk_get_free_total_memory<Kokkos::CudaSpace>(size_t& free_mem,
+                                                        size_t& total_mem) {
   cudaMemGetInfo(&free_mem, &total_mem);
 }
 template <>
-inline void kk_get_free_total_memory<Kokkos::CudaUVMSpace>(size_t& free_mem, size_t& total_mem)
-{
+inline void kk_get_free_total_memory<Kokkos::CudaUVMSpace>(size_t& free_mem,
+                                                           size_t& total_mem) {
   cudaMemGetInfo(&free_mem, &total_mem);
 }
 template <>
-inline void kk_get_free_total_memory<Kokkos::CudaHostPinnedSpace>(size_t& free_mem, size_t& total_mem)
-{
+inline void kk_get_free_total_memory<Kokkos::CudaHostPinnedSpace>(
+    size_t& free_mem, size_t& total_mem) {
   cudaMemGetInfo(&free_mem, &total_mem);
 }
 #endif
 
 #ifdef KOKKOS_ENABLE_HIP
 template <>
-inline void kk_get_free_total_memory<Kokkos::Experimental::HIPSpace>(size_t& free_mem, size_t& total_mem)
-{
+inline void kk_get_free_total_memory<Kokkos::Experimental::HIPSpace>(
+    size_t& free_mem, size_t& total_mem) {
   hipMemGetInfo(&free_mem, &total_mem);
 }
 #endif
 
-inline int kk_get_suggested_vector_size(
-    const size_t nr, const  size_t nnz, const ExecSpaceType exec_space){
+inline int kk_get_suggested_vector_size(const size_t nr, const size_t nnz,
+                                        const ExecSpaceType exec_space) {
   int suggested_vector_size_ = 1;
-  switch (exec_space){
-  default:
-    break;
-  case Exec_SERIAL:
-  case Exec_OMP:
-  case Exec_PTHREADS:
-  case Exec_QTHREADS:
-    break;
-  case Exec_CUDA:
-  case Exec_HIP:
-    if (nr > 0)
-      suggested_vector_size_ = nnz / double (nr) + 0.5;
-    if (suggested_vector_size_ < 3){
-      suggested_vector_size_ = 2;
-    }
-    else if (suggested_vector_size_ <= 6){
-      suggested_vector_size_ = 4;
-    }
-    else if (suggested_vector_size_ <= 12){
-      suggested_vector_size_ = 8;
-    }
-    else if (suggested_vector_size_ <= 24){
-      suggested_vector_size_ = 16;
-    }
-    else {
-      if(exec_space == Exec_CUDA || suggested_vector_size_ <= 48) {
-        //use full CUDA warp, or half a HIP wavefront
-        suggested_vector_size_ = 32;
+  switch (exec_space) {
+    default: break;
+    case Exec_SERIAL:
+    case Exec_OMP:
+    case Exec_PTHREADS:
+    case Exec_QTHREADS: break;
+    case Exec_CUDA:
+    case Exec_HIP:
+      if (nr > 0) suggested_vector_size_ = nnz / double(nr) + 0.5;
+      if (suggested_vector_size_ < 3) {
+        suggested_vector_size_ = 2;
+      } else if (suggested_vector_size_ <= 6) {
+        suggested_vector_size_ = 4;
+      } else if (suggested_vector_size_ <= 12) {
+        suggested_vector_size_ = 8;
+      } else if (suggested_vector_size_ <= 24) {
+        suggested_vector_size_ = 16;
+      } else {
+        if (exec_space == Exec_CUDA || suggested_vector_size_ <= 48) {
+          // use full CUDA warp, or half a HIP wavefront
+          suggested_vector_size_ = 32;
+        } else {
+          // use full HIP wavefront
+          suggested_vector_size_ = 64;
+        }
       }
-      else {
-        //use full HIP wavefront
-        suggested_vector_size_ = 64;
-      }
-    }
-    break;
+      break;
   }
   return suggested_vector_size_;
-
 }
 
-
-inline int kk_get_suggested_team_size(const int vector_size, const ExecSpaceType exec_space){
+inline int kk_get_suggested_team_size(const int vector_size,
+                                      const ExecSpaceType exec_space) {
   if (exec_space == Exec_CUDA || exec_space == Exec_HIP) {
-    //TODO: where this is used, tune the target value for
-    //threads per block (but 256 is probably OK for CUDA and HIP)
+    // TODO: where this is used, tune the target value for
+    // threads per block (but 256 is probably OK for CUDA and HIP)
     return 256 / vector_size;
-  }
-  else {
+  } else {
     return 1;
   }
 }
@@ -275,15 +303,15 @@ struct SpaceInstance<Kokkos::Experimental::HIP> {
     hipStreamDestroy(stream);
   }
   static bool overlap() {
-    //TODO: does HIP have an equivalent for CUDA_LAUNCH_BLOCKING?
+    // TODO: does HIP have an equivalent for CUDA_LAUNCH_BLOCKING?
     return true;
   }
 };
 #endif
 
-}
+}  // namespace Experimental
 
-}
-}
+}  // namespace Impl
+}  // namespace KokkosKernels
 
 #endif

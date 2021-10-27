@@ -1,25 +1,24 @@
 #ifndef KOKKOSBLAS_CUDA_TPL_HPP_
 #define KOKKOSBLAS_CUDA_TPL_HPP_
 
-#if defined (KOKKOSKERNELS_ENABLE_TPL_CUBLAS)
-#include<KokkosBlas_tpl_spec.hpp>
+#if defined(KOKKOSKERNELS_ENABLE_TPL_CUBLAS)
+#include <KokkosBlas_tpl_spec.hpp>
 
 namespace KokkosBlas {
 namespace Impl {
 
-CudaBlasSingleton::CudaBlasSingleton()
-{
-    cublasStatus_t stat = cublasCreate(&handle);
-    if (stat != CUBLAS_STATUS_SUCCESS)
-        Kokkos::abort("CUBLAS initialization failed\n");
+CudaBlasSingleton::CudaBlasSingleton() {
+  cublasStatus_t stat = cublasCreate(&handle);
+  if (stat != CUBLAS_STATUS_SUCCESS)
+    Kokkos::abort("CUBLAS initialization failed\n");
 
-    Kokkos::push_finalize_hook ([&] () { 
-        cublasDestroy(handle);
-    });
+  Kokkos::push_finalize_hook([&]() { cublasDestroy(handle); });
 }
 
-CudaBlasSingleton & CudaBlasSingleton::singleton()
-{ static CudaBlasSingleton s ; return s ; }
+CudaBlasSingleton & CudaBlasSingleton::singleton() {
+  static CudaBlasSingleton s;
+  return s;
+}
 
 } //namespace Impl
 } //namespace KokkosBlas
@@ -31,7 +30,6 @@ CudaBlasSingleton & CudaBlasSingleton::singleton()
 
 namespace KokkosBlas {
 namespace Impl {
-
 CudaSolverSingleton::CudaSolverSingleton()
 {
     auto stat = cusolverDnCreate(&handle);
@@ -43,37 +41,37 @@ CudaSolverSingleton::CudaSolverSingleton()
     });
 }
 
-CudaSolverSingleton & CudaSolverSingleton::singleton()
-{ static CudaSolverSingleton s ; return s ; }
+CudaSolverSingleton & CudaSolverSingleton::singleton(){
+  static CudaSolverSingleton s;
+  return s; 
+}
 
 } //namespace Impl
 } //namespace KokkosBlas
 #endif //KOKKOS_KERNELS_ENABLE_TPL_CUSOLVER
 
 
-
-#if defined (KOKKOSKERNELS_ENABLE_TPL_MAGMA)
-#include<KokkosBlas_tpl_spec.hpp>
+#if defined(KOKKOSKERNELS_ENABLE_TPL_MAGMA)
+#include <KokkosBlas_tpl_spec.hpp>
 
 namespace KokkosBlas {
 namespace Impl {
 
-MagmaSingleton::MagmaSingleton()
-{
-    magma_int_t stat = magma_init();
-    if (stat != MAGMA_SUCCESS)
-        Kokkos::abort("MAGMA initialization failed\n");
+MagmaSingleton::MagmaSingleton() {
+  magma_int_t stat = magma_init();
+  if (stat != MAGMA_SUCCESS) Kokkos::abort("MAGMA initialization failed\n");
 
-    Kokkos::push_finalize_hook ([&] () { 
-        magma_finalize();
-    });
+  Kokkos::push_finalize_hook([&]() { magma_finalize(); });
 }
 
-MagmaSingleton & MagmaSingleton::singleton()
-{ static MagmaSingleton s ; return s ; }
+MagmaSingleton& MagmaSingleton::singleton() {
+  static MagmaSingleton s;
+  return s;
+}
 
-} //namespace Impl
-} //namespace KokkosBlas
-#endif
+}  // namespace Impl
+}  // namespace KokkosBlas
 
-#endif
+#endif  // defined(KOKKOSKERNELS_ENABLE_TPL_MAGMA)
+
+#endif  // KOKKOSBLAS_CUDA_TPL_HPP_
