@@ -564,7 +564,7 @@ namespace KokkosBlas{
         Kokkos::Profiling::popRegion(); \
         } \
 
-
+    };
 
     //WORKSPACE QUERIES
 
