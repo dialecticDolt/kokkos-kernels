@@ -664,7 +664,7 @@ namespace KokkosBlas{
         typedef Kokkos::View<SCALAR**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > CViewType; \
         \
-        static void unmqr_workspace(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C){ \
+        static int64_t unmqr_workspace(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C){ \
         Kokkos::Profiling::pushRegion("KokkosBlas::unmqr[TPL_CUSOLVER, Kokkos::complex<double>]");\
         int devinfo = 0; \
         int M = C.extent(0);  \

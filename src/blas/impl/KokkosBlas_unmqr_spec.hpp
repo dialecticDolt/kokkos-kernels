@@ -79,7 +79,7 @@ namespace KokkosBlas {
             bool eti_spec_avail = unmqr_workspace_eti_spec_avail<AVT, TVT, CVT>::value
         >
         struct UNMQR_WORKSPACE{
-            static void unmqr_workspace(const char side, const char trans, int k, AVT& A, TVT& tau, CVT& C);
+            static int64_t unmqr_workspace(const char side, const char trans, int k, AVT& A, TVT& tau, CVT& C);
         };
 
         #if !defined(KOKKOSKERNELS_ETI_ONLY) || KOKKOSKERNELS_IMPL_COMPILE_LIBRARY
@@ -93,7 +93,7 @@ namespace KokkosBlas {
 
         template<class AVT, class TVT, class CVT>
         struct UNMQR_WORKSPACE<AVT, TVT, CVT, false, KOKKOSKERNELS_IMPL_COMPILE_LIBRARY>{
-            static void unmqr_workspace(const char side, const char trans, int k, AVT& A, TVT& tau, CVT& C){
+            static int64_t unmqr_workspace(const char side, const char trans, int k, AVT& A, TVT& tau, CVT& C){
                 execute_unmqr_workspace<AVT, TVT, CVT>(side, trans, k, A, tau, C);
             }
         };
