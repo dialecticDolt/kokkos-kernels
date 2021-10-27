@@ -200,7 +200,7 @@ namespace KokkosBlas {
  } //function unmqr  
 
  template<class AViewType, class TauViewType, class CViewType>
- int64_t unmqr(const char side[], const char trans[], int k, AViewType& A, TauViewType& tau, CviewType& C){
+ int64_t unmqr_workspace(const char side[], const char trans[], int k, AViewType& A, TauViewType& tau, CviewType& C){
 
         //return if degenerate matrix provided 
         if((A.extent(0)==0) || (A.extent(1)==0))

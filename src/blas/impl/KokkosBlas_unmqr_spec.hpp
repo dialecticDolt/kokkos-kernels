@@ -39,6 +39,7 @@ namespace KokkosBlas {
 
 #include<KokkosBlas_unmqr_tpl_spec_avail.hpp>
 #include<generated_specializations_hpp/KokkosBlas_unmqr_eti_spec_avail.hpp>
+#include<generated_specializations_hpp/KokkosBlas_unmqr_workspace_eti_spec_avail.hpp>
 
 namespace KokkosBlas {
     namespace Impl {
@@ -103,5 +104,6 @@ namespace KokkosBlas {
 
 #include<KokkosBlas_unmqr_tpl_spec_decl.hpp>
 #include<generated_specializations_hpp/KokkosBlas_unmqr_eti_spec_decl.hpp>
+#include<generated_specializations_hpp/KokkosBlas_unmqr_workspace_eti_spec_decl.hpp>
 
 #endif //KOKKOSBLAS_IMPL_UNMQR_HPP_

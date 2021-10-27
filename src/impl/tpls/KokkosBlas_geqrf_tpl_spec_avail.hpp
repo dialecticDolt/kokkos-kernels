@@ -14,7 +14,6 @@ namespace KokkosBlas {
             enum : bool {value = false};
         };
 
-
         #if defined(KOKKOSKERNELS_ENABLE_TPL_BLAS) && defined(KOKKOSKERNELS_ENABLE_TPL_LAPACKE)
 
         #define KOKKOSBLAS_GEQRF_TPL_SPEC_AVAIL_LAPACK(SCALAR, LAYOUTA, MEMSPACE) \
