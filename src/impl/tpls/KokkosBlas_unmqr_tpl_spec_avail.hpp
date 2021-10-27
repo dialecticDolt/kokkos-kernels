@@ -98,8 +98,21 @@ namespace KokkosBlas {
         //
         #if defined(KOKKOSKERNELS_ENABLE_TPL_CUSOLVER)
 
-
         #define KOKKOSBLAS_UNMQR_TPL_SPEC_AVAIL_CUSOLVER(SCALAR, LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE) \
+        template<class ExecSpace> \
+        struct unmqr_tpl_spec_avail< \
+            Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                        Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+            Kokkos::View<const SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                        Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+            Kokkos::View<SCALAR**, LAYOUTC, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                        Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
+            Kokkos::View<SCALAR*, LAYOUTB, Kokkos::Device<ExecSpace, MEMSPACE>, \
+                        Kokkos::MemoryTraits<Kokkos::Unmanaged> > \
+            > {enum : bool {value = true}; };
+
+
+        #define KOKKOSBLAS_UNMQR_WORKSPACE_TPL_SPEC_AVAIL_CUSOLVER(SCALAR, LAYOUTA, LAYOUTB, LAYOUTC, MEMSPACE) \
         template<class ExecSpace> \
         struct unmqr_workspace_tpl_spec_avail< \
             Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \

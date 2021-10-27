@@ -80,7 +80,7 @@ namespace KokkosBlas {
  void unmqr(const char side[], const char trans[], int k, AViewType& A, TauViewType& tau, CviewType& C, WViewType& workspace){
 
         #if (KOKKOSKERNELS_DEBUG_LEVEL >0)
-        static_assert(Kokkos::Impl::is_view<AViewType>::value, "KokkosBlas::umnqr: A must be a Kokkos::View");
+        static_assert(Kokkos::Impl::is_view<AViewType>::value, "KokkosBlas::unmqr: A must be a Kokkos::View");
         static_assert(Kokkos::Impl::is_view<TauViewType>::value, "KokkosBlas::unmqr: tau must be a Kokkos::View");
         static_assert(Kokkos::Impl::is_view<CViewType>::value, "KokkosBlas::unmqr: C must be a Kokkos::View");
         static_assert(Kokkos::Impl::is_view<WViewType>::value, "KokkosBlas::unmqr: workspace must be a Kokkos::View")
