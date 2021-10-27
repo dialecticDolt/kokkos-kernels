@@ -103,9 +103,9 @@ namespace KokkosBlas {
             return;
 
         //standardize particular View specializations 
-        typedef Kokkos::View<typename CViewType::non_const_value_type**,
-                typename CViewType::array_layout,
-                typename CViewType::device_type,
+        typedef Kokkos::View<typename AViewType::non_const_value_type**,
+                typename AViewType::array_layout,
+                typename AViewType::device_type,
                 Kokkos::MemoryTraits<Kokkos::Unmanaged> > AVT;
 
         typedef Kokkos::View<typename TauViewType::non_const_value_type*,
@@ -135,9 +135,9 @@ namespace KokkosBlas {
             return 0;
 
         //standardize particular View specializations 
-        typedef Kokkos::View<typename CViewType::non_const_value_type**,
-                typename CViewType::array_layout,
-                typename CViewType::device_type,
+        typedef Kokkos::View<typename AViewType::non_const_value_type**,
+                typename AViewType::array_layout,
+                typename AViewType::device_type,
                 Kokkos::MemoryTraits<Kokkos::Unmanaged> > AVT;
 
         typedef Kokkos::View<typename TauViewType::non_const_value_type*,

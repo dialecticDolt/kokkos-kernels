@@ -498,7 +498,6 @@ namespace KokkosBlas{
         \
         static int64_t geqrf_workspace(AViewType& A, TauViewType& tau){ \
         Kokkos::Profiling::pushRegion("KokkosBlas::geqrf[TPL_CUSOLVER, double]");\
-        int devinfo = 0; \
         int M = A.extent(0);  \
         int N = A.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
@@ -529,7 +528,6 @@ namespace KokkosBlas{
         \
         static int64_t geqrf_workspace(AViewType& A, TauViewType& tau){ \
         Kokkos::Profiling::pushRegion("KokkosBlas::geqrf[TPL_CUSOLVER, double]");\
-        int devinfo = 0; \
         int M = A.extent(0);  \
         int N = A.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
@@ -560,7 +558,6 @@ namespace KokkosBlas{
         \
         static int64_t geqrf_workspace(AViewType& A, TauViewType& tau){ \
         Kokkos::Profiling::pushRegion("KokkosBlas::geqrf[TPL_CUSOLVER, Kokkos::complex<double>]");\
-        int devinfo = 0; \
         int M = A.extent(0);  \
         int N = A.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
@@ -593,7 +590,6 @@ namespace KokkosBlas{
         \
         static int64_t geqrf_workspace(AViewType& A, TauViewType& tau){ \
         Kokkos::Profiling::pushRegion("KokkosBlas::geqrf[TPL_CUSOLVER, Kokkos::complex<float>]");\
-        int devinfo = 0; \
         int M = A.extent(0);  \
         int N = A.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
