@@ -94,7 +94,7 @@ namespace KokkosBlas {
         template<class AVT, class TVT, class CVT>
         struct UNMQR_WORKSPACE<AVT, TVT, CVT, false, KOKKOSKERNELS_IMPL_COMPILE_LIBRARY>{
             static int64_t unmqr_workspace(const char side, const char trans, int k, AVT& A, TVT& tau, CVT& C){
-                execute_unmqr_workspace<AVT, TVT, CVT>(side, trans, k, A, tau, C);
+                return execute_unmqr_workspace<AVT, TVT, CVT>(side, trans, k, A, tau, C);
             }
         };
         #endif
