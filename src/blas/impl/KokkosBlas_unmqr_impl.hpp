@@ -23,6 +23,7 @@ namespace KokkosBlas {
             std::ostringstream os;
             os << "There is no ETI implementation of UNMQR Workspace. Compile with TPL (LAPACKE or CUSOLVER).\n";
             Kokkos::Impl::throw_runtime_exception(os.str());
+            return 0;
         }
 
     } //namespace Impl

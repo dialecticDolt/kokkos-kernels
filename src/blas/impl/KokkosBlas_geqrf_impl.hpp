@@ -19,10 +19,11 @@ namespace KokkosBlas {
         }
 
         template<class AVT, class TVT>
-        void execute_geqrf_workspace(AVT& A, TVT& tau){
+        int64_t execute_geqrf_workspace(AVT& A, TVT& tau){
             std::ostringstream os;
             os << "There is no ETI implementation of GEQRF (Workspace Query). Compile with TPL (LAPACKE or CUSOLVER).\n";
             Kokkos::Impl::throw_runtime_exception(os.str());
+            return 0;
         }
 
     } //namespace Impl
