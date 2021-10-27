@@ -602,7 +602,7 @@ namespace KokkosBlas{
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnDormqr_bufferSize(s.handle, m_side, m_trans, M, N, k, A.data(), LDA, tau.data(), C.data(), LDC, &lwork); \
         Kokkos::Profiling::popRegion(); \
-        return (int64_t) lwork;
+        return (int64_t) lwork; \
         } \
     };
 
