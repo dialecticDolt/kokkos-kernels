@@ -144,7 +144,7 @@ void unmqr(const char side[], const char trans[], int k, AViewType& A,
          << "k: " << k;
       Kokkos::Impl::throw_runtime_exception(os.str());
     }
-    if ((A0 >= C0)) {
+    if ((A0 != C0)) {
       std::ostringstream os;
       os << "KokkosBlas::unmqr: A must be of size M x k: "
          << "A: " << A0 << " x " << A1 << " "
@@ -159,7 +159,7 @@ void unmqr(const char side[], const char trans[], int k, AViewType& A,
          << "k: " << k;
       Kokkos::Impl::throw_runtime_exception(os.str());
     }
-    if ((A0 >= C1)) {
+    if ((A0 != C1)) {
       std::ostringstream os;
       os << "KokkosBlas::unmqr: A must be of size N x k: "
          << "A: " << A0 << " x " << A1 << " "
