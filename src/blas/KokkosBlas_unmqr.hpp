@@ -42,7 +42,6 @@
 //@HEADER
 */
 
-
 #ifndef KOKKOSBLAS_UNMQR_HPP_
 #define KOKKOSBLAS_UNMQR_HPP_
 
@@ -55,188 +54,195 @@
 #include <type_traits>
 
 namespace KokkosBlas {
- 
- /// \brief Multiply rectangular matrix C by Q or Q^H (where Q is the unitary output of QR by geqrf or geqp3)
 
- /// \tparam AViewType Input matrix M-by-k matrix       , as a 2-D Kokkos::View
- /// \tparam CViewType Input (RHS)/Output (Solution) M-by-N matrix, as a 2-D Kokkos::View
- /// \tparam TauViewType Input k vector     , as a 1-D Kokkos::View
- /// \tparam WViewType Input Workspace, as a 1-D Kokkos::View
- ///
- /// \param side [in] "L" or "l" indicates matrix Q is applied on the left of C
- ///                   "R" or "r" indicates matrix Q is applied on the right of C
- /// \param transpose [in] Specifies what op does to Q:
- //                    "N" or "n" for non-transpose, 
- //                    "T" or "t" for transpose
- /// \param k [in]     Number of elementary reflectors that define Q
- /// \param A [in]     Input matrix, as a 2-D Kokkos::View, output of geqrf or geqp3.
- /// \param tau [in] Input vector, as a 1-D Kokkos::View. Scalar factors of reflectors.
- /// \param C [in,out] Input/Output matrix, as a 2-D Kokkos::View 
- ///                   On entry, M-by-N matrix
- ///                   On exit, overwritten with the solution.
- /// \param workspace [in] Input vector, as a 1-D Kokkos::View. Scratchspace for calculations.
+/// \brief Multiply rectangular matrix C by Q or Q^H (where Q is the unitary
+/// output of QR by geqrf or geqp3)
 
- template<class AViewType, class TauViewType, class CViewType, class WViewType>
- void unmqr(const char side[], const char trans[], int k, AViewType& A, TauViewType& tau, CviewType& C, WViewType& workspace){
+/// \tparam AViewType Input matrix M-by-k matrix       , as a 2-D Kokkos::View
+/// \tparam CViewType Input (RHS)/Output (Solution) M-by-N matrix, as a 2-D
+/// Kokkos::View \tparam TauViewType Input k vector     , as a 1-D Kokkos::View
+/// \tparam WViewType Input Workspace, as a 1-D Kokkos::View
+///
+/// \param side [in] "L" or "l" indicates matrix Q is applied on the left of C
+///                   "R" or "r" indicates matrix Q is applied on the right of C
+/// \param transpose [in] Specifies what op does to Q:
+//                    "N" or "n" for non-transpose,
+//                    "T" or "t" for transpose
+/// \param k [in]     Number of elementary reflectors that define Q
+/// \param A [in]     Input matrix, as a 2-D Kokkos::View, output of geqrf or
+/// geqp3. \param tau [in] Input vector, as a 1-D Kokkos::View. Scalar factors
+/// of reflectors. \param C [in,out] Input/Output matrix, as a 2-D Kokkos::View
+///                   On entry, M-by-N matrix
+///                   On exit, overwritten with the solution.
+/// \param workspace [in] Input vector, as a 1-D Kokkos::View. Scratchspace for
+/// calculations.
 
-        #if (KOKKOSKERNELS_DEBUG_LEVEL >0)
-        static_assert(Kokkos::Impl::is_view<AViewType>::value, "KokkosBlas::unmqr: A must be a Kokkos::View");
-        static_assert(Kokkos::Impl::is_view<TauViewType>::value, "KokkosBlas::unmqr: tau must be a Kokkos::View");
-        static_assert(Kokkos::Impl::is_view<CViewType>::value, "KokkosBlas::unmqr: C must be a Kokkos::View");
-        static_assert(Kokkos::Impl::is_view<WViewType>::value, "KokkosBlas::unmqr: workspace must be a Kokkos::View")
+template <class AViewType, class TauViewType, class CViewType, class WViewType>
+void unmqr(const char side[], const char trans[], int k, AViewType& A,
+           TauViewType& tau, CViewType& C, WViewType& workspace) {
+#if (KOKKOSKERNELS_DEBUG_LEVEL > 0)
+  static_assert(Kokkos::Impl::is_view<AViewType>::value,
+                "KokkosBlas::unmqr: A must be a Kokkos::View");
+  static_assert(Kokkos::Impl::is_view<TauViewType>::value,
+                "KokkosBlas::unmqr: tau must be a Kokkos::View");
+  static_assert(Kokkos::Impl::is_view<CViewType>::value,
+                "KokkosBlas::unmqr: C must be a Kokkos::View");
+  static_assert(Kokkos::Impl::is_view<WViewType>::value,
+                "KokkosBlas::unmqr: workspace must be a Kokkos::View");
 
-        static_assert(static_cast<int> (AViewType::rank)==2, "KokkosBlas::unmqr: A must have rank 2");
-        static_assert(static_cast<int> (TauViewType::rank)==1, "KokkosBlas::unmqr: Tau must have rank 1");
-        static_assert(static_cast<int> (CViewType::rank)==2, "KokkosBlas::unmqr: C must have rank 2");
-        static_assert(static_cast<int> (WViewType::rank)==1, "KokkosBlas::unmqr: Workspace must have rank 1");
-       
-        //Check validity of side argument
-        bool valid_side = (side[0] == 'L') || (side[0]=='l') || 
-                          (side[0] == 'R') || (side[0]=='r');
+  static_assert(static_cast<int>(AViewType::rank) == 2,
+                "KokkosBlas::unmqr: A must have rank 2");
+  static_assert(static_cast<int>(TauViewType::rank) == 1,
+                "KokkosBlas::unmqr: Tau must have rank 1");
+  static_assert(static_cast<int>(CViewType::rank) == 2,
+                "KokkosBlas::unmqr: C must have rank 2");
+  static_assert(static_cast<int>(WViewType::rank) == 1,
+                "KokkosBlas::unmqr: Workspace must have rank 1");
 
-        bool valid_trans = (trans[0] == 'T') || (trans[0]=='t') || 
-                           (trans[0] == 'N') || (trans[0]=='n');
+  // Check validity of side argument
+  bool valid_side = (side[0] == 'L') || (side[0] == 'l') || (side[0] == 'R') ||
+                    (side[0] == 'r');
 
-        if(!(valid_side)) {
-            std::ostringstream os;
-            os << "KokkosBlas::unmqr: side[0] = '" << side[0] << "'. " <<
-            "Valid values include 'L' or 'l' (Left), 'R' or 'r' (Right).";
-            Kokkos::Impl::throw_runtime_exception (os.str ());
-        }
-        if(!(valid_trans)) {
-            std::ostringstream os;
-            os << "KokkosBlas::unmqr: trans[0] = '" << trans[0] << "'. " <<
-            "Valid values include 'T' or 't' (Transpose), 'N' or 'n' (No transpose).";
-            Kokkos::Impl::throw_runtime_exception (os.str ());
-        }
+  bool valid_trans = (trans[0] == 'T') || (trans[0] == 't') ||
+                     (trans[0] == 'N') || (trans[0] == 'n');
 
-        int64_t A0 = A.extent(0); // M if 'L', N if 'R'
-        int64_t A1 = A.extent(1); // > k
-        int64_t C0 = C.extent(0); // M
-        int64_t C1 = C.extent(1); // N
-        int64_t tau0 = tau.extent(0); 
+  if (!(valid_side)) {
+    std::ostringstream os;
+    os << "KokkosBlas::unmqr: side[0] = '" << side[0] << "'. "
+       << "Valid values include 'L' or 'l' (Left), 'R' or 'r' (Right).";
+    Kokkos::Impl::throw_runtime_exception(os.str());
+  }
+  if (!(valid_trans)) {
+    std::ostringstream os;
+    os << "KokkosBlas::unmqr: trans[0] = '" << trans[0] << "'. "
+       << "Valid values include 'T' or 't' (Transpose), 'N' or 'n' (No "
+          "transpose).";
+    Kokkos::Impl::throw_runtime_exception(os.str());
+  }
 
-        //Check validity of Tau
-        if (tau0 < k){
-            std::ostringstream os;
-            os  << "KokkosBlas::unmqr: Dimensions of tau and k do not match (require len(tau) >=k ): "
-                << "k: " << k
-                << "Tau: " << tau0;
-            Kokkos::Impl::throw_runtime_exception(os.str());
-        }
+  int64_t A0   = A.extent(0);  // M if 'L', N if 'R'
+  int64_t A1   = A.extent(1);  // > k
+  int64_t C0   = C.extent(0);  // M
+  int64_t C1   = C.extent(1);  // N
+  int64_t tau0 = tau.extent(0);
 
-        //Check validity of k
-        if( (side[0] == 'L') || (side[0] == 'l') ){
-            if( (k>C0) || (k<0) ){
-                std::ostringstream os;
-                os  << "KokkosBlas::unmqr: Number of reflectors k must not exceed M. "
-                    << "M: " << C0
-                    << "k: " << k;
-                Kokkos::Impl::throw_runtime_exception(os.str());
-            }
-            if( (A0 >= C0) ){
-                std::ostringstream os;
-                os  << "KokkosBlas::unmqr: A must be of size M x k: "
-                    << "A: " << A0 << " x " << A1
-                    << "M: " << C0;
-                Kokkos::Impl::throw_runtime_exception(os.str());
-            }
-        }
-        else{
-            if( (k>C1) || (k<0) ){
-                std::ostringstream os;
-                os  << "KokkosBlas::unmqr: Number of reflectors k must not exceed N. "
-                    << "N: " << C1
-                    << "k: " << k;
-                Kokkos::Impl::throw_runtime_exception(os.str());
-            }
-            if( (A0 >= C0) ){
-                std::ostringstream os;
-                os  << "KokkosBlas::unmqr: A must be of size N x k: "
-                    << "A: " << A0 << " x " << A1
-                    << "N: " << C1;
-                Kokkos::Impl::throw_runtime_exception(os.str());
-            }
-        }
-        #endif //KOKKOSKERNELS_DEBUG_LEVEL > 0 
+  // Check validity of Tau
+  if (tau0 < k) {
+    std::ostringstream os;
+    os << "KokkosBlas::unmqr: Dimensions of tau and k do not match (require "
+          "len(tau) >=k ): "
+       << "k: " << k << "Tau: " << tau0;
+    Kokkos::Impl::throw_runtime_exception(os.str());
+  }
 
-        //return if degenerate matrix provided 
-        if((A.extent(0)==0) || (A.extent(1)==0))
-            return;
-        if((C.extent(0)==0) || (C.extent(1)==0))
-            return;
-        if((k==0))
-            return;
+  // Check validity of k
+  if ((side[0] == 'L') || (side[0] == 'l')) {
+    if ((k > C0) || (k < 0)) {
+      std::ostringstream os;
+      os << "KokkosBlas::unmqr: Number of reflectors k must not exceed M. "
+         << "M: " << C0 << " "
+         << "k: " << k;
+      Kokkos::Impl::throw_runtime_exception(os.str());
+    }
+    if ((A0 >= C0)) {
+      std::ostringstream os;
+      os << "KokkosBlas::unmqr: A must be of size M x k: "
+         << "A: " << A0 << " x " << A1 << " "
+         << "M: " << C0;
+      Kokkos::Impl::throw_runtime_exception(os.str());
+    }
+  } else {
+    if ((k > C1) || (k < 0)) {
+      std::ostringstream os;
+      os << "KokkosBlas::unmqr: Number of reflectors k must not exceed N. "
+         << "N: " << C1 << " "
+         << "k: " << k;
+      Kokkos::Impl::throw_runtime_exception(os.str());
+    }
+    if ((A0 >= C1)) {
+      std::ostringstream os;
+      os << "KokkosBlas::unmqr: A must be of size N x k: "
+         << "A: " << A0 << " x " << A1 << " "
+         << "N: " << C1;
+      Kokkos::Impl::throw_runtime_exception(os.str());
+    }
+  }
+#endif  // KOKKOSKERNELS_DEBUG_LEVEL > 0
 
-        //standardize particular View specializations 
-        typedef Kokkos::View<typename AViewType::const_value_type**,
-                typename AViewType::array_layout,
-                typename AViewType::device_type,
-                Kokkos::MemoryTraits<Kokkos::Unmanaged> > AVT;
+  // return if degenerate matrix provided
+  if ((A.extent(0) == 0) || (A.extent(1) == 0)) return;
+  if ((C.extent(0) == 0) || (C.extent(1) == 0)) return;
+  if ((k == 0)) return;
 
-        typedef Kokkos::View<typename TauViewType::const_value_type*,
-                typename TauViewType::array_layout,
-                typename TauViewType::device_type,
-                Kokkos::MemoryTraits<Kokkos::Unmanaged> > TVT;
+  // standardize particular View specializations
+  typedef Kokkos::View<
+      typename AViewType::const_value_type**, typename AViewType::array_layout,
+      typename AViewType::device_type, Kokkos::MemoryTraits<Kokkos::Unmanaged> >
+      AVT;
 
-        typedef Kokkos::View<typename CViewType::non_const_value_type**,
-                typename CViewType::array_layout,
-                typename CViewType::device_type,
-                Kokkos::MemoryTraits<Kokkos::Unmanaged> > CVT;
+  typedef Kokkos::View<typename TauViewType::const_value_type*,
+                       typename TauViewType::array_layout,
+                       typename TauViewType::device_type,
+                       Kokkos::MemoryTraits<Kokkos::Unmanaged> >
+      TVT;
 
-        typedef Kokkos::View<typename WViewType::non_const_value_type*,
-                typename TauViewType::array_layout,
-                typename TauViewType::device_type,
-                Kokkos::MemoryTraits<Kokkos::Unmanaged> > WVT;
+  typedef Kokkos::View<typename CViewType::non_const_value_type**,
+                       typename CViewType::array_layout,
+                       typename CViewType::device_type,
+                       Kokkos::MemoryTraits<Kokkos::Unmanaged> >
+      CVT;
 
-        AVT A_i = A;
-        TVT tau_i = tau;
-        CVT C_i = C;
-        WVT W_i = workspace;
+  typedef Kokkos::View<typename WViewType::non_const_value_type*,
+                       typename TauViewType::array_layout,
+                       typename TauViewType::device_type,
+                       Kokkos::MemoryTraits<Kokkos::Unmanaged> >
+      WVT;
 
-        typedef KokkosBlas::Impl::UNMQR<AVT, TVT, CVT, WVT> impl_type;
-        impl_type::unmqr(side[0], trans[0], k, A_i, tau_i, C_i, W_i);
+  AVT A_i   = A;
+  TVT tau_i = tau;
+  CVT C_i   = C;
+  WVT W_i   = workspace;
 
- } //function unmqr  
+  typedef KokkosBlas::Impl::UNMQR<AVT, TVT, CVT, WVT> impl_type;
+  impl_type::unmqr(side[0], trans[0], k, A_i, tau_i, C_i, W_i);
 
- template<class AViewType, class TauViewType, class CViewType>
- int64_t unmqr_workspace(const char side[], const char trans[], int k, AViewType& A, TauViewType& tau, CViewType& C){
+}  // function unmqr
 
-        //return if degenerate matrix provided 
-        if((A.extent(0)==0) || (A.extent(1)==0))
-            return 0;
-        if((C.extent(0)==0) || (C.extent(1)==0))
-            return 0;
-        if((k==0))
-            return 0;
+template <class AViewType, class TauViewType, class CViewType>
+int64_t unmqr_workspace(const char side[], const char trans[], int k,
+                        AViewType& A, TauViewType& tau, CViewType& C) {
+  // return if degenerate matrix provided
+  if ((A.extent(0) == 0) || (A.extent(1) == 0)) return 0;
+  if ((C.extent(0) == 0) || (C.extent(1) == 0)) return 0;
+  if ((k == 0)) return 0;
 
-        //standardize particular View specializations 
-        typedef Kokkos::View<typename AViewType::const_value_type**,
-                typename AViewType::array_layout,
-                typename AViewType::device_type,
-                Kokkos::MemoryTraits<Kokkos::Unmanaged> > AVT;
+  // standardize particular View specializations
+  typedef Kokkos::View<
+      typename AViewType::const_value_type**, typename AViewType::array_layout,
+      typename AViewType::device_type, Kokkos::MemoryTraits<Kokkos::Unmanaged> >
+      AVT;
 
-        typedef Kokkos::View<typename TauViewType::const_value_type*,
-                typename TauViewType::array_layout,
-                typename TauViewType::device_type,
-                Kokkos::MemoryTraits<Kokkos::Unmanaged> > TVT;
+  typedef Kokkos::View<typename TauViewType::const_value_type*,
+                       typename TauViewType::array_layout,
+                       typename TauViewType::device_type,
+                       Kokkos::MemoryTraits<Kokkos::Unmanaged> >
+      TVT;
 
-        typedef Kokkos::View<typename CViewType::non_const_value_type**,
-                typename CViewType::array_layout,
-                typename CViewType::device_type,
-                Kokkos::MemoryTraits<Kokkos::Unmanaged> > CVT;
+  typedef Kokkos::View<typename CViewType::non_const_value_type**,
+                       typename CViewType::array_layout,
+                       typename CViewType::device_type,
+                       Kokkos::MemoryTraits<Kokkos::Unmanaged> >
+      CVT;
 
-        AVT A_i = A;
-        TVT tau_i = tau;
-        CVT C_i = C;
+  AVT A_i   = A;
+  TVT tau_i = tau;
+  CVT C_i   = C;
 
-        typedef KokkosBlas::Impl::UNMQR_WORKSPACE<AVT, TVT, CVT> impl_type;
-        return impl_type::unmqr_workspace(side[0], trans[0], k, A_i, tau_i, C_i);
+  typedef KokkosBlas::Impl::UNMQR_WORKSPACE<AVT, TVT, CVT> impl_type;
+  return impl_type::unmqr_workspace(side[0], trans[0], k, A_i, tau_i, C_i);
 
- } //function unmqr_workspace  
+}  // function unmqr_workspace
 
+}  // namespace KokkosBlas
 
-
-} //namespace KokkosBlas
-
-#endif //KOKKOSBLAS_UNMQR_HPP_
+#endif  // KOKKOSBLAS_UNMQR_HPP_

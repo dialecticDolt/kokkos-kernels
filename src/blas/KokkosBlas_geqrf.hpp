@@ -42,7 +42,6 @@
 //@HEADER
 */
 
-
 #ifndef KOKKOSBLAS_GEQRF_HPP_
 #define KOKKOSBLAS_GEQRF_HPP_
 
@@ -55,105 +54,112 @@
 #include <type_traits>
 
 namespace KokkosBlas {
- 
- /// \brief Compute the QR factorization of M x N matrix A. (geqrf)
 
- /// \tparam AViewType Input(A) / Output (Solution) M x N matrix       , as a 2-D Kokkos::View
- /// \tparam TauViewType Input k vector     , as a 1-D Kokkos::View
- /// \tparam WViewType Input Workspace, as a 1-D Kokkos::View
- ///
- /// \param A [in, out]     Input matrix, as a 2-D Kokkos::View
- ///                   On entry, M-by-N matrix
- ///                   On exit, overwritten with the solution.
- /// \param tau [in] Input vector, as a 1-D Kokkos::View. Scalar factors of reflectors.
- /// \param workspace [in] Input vector, as a 1-D Kokkos::View. Scratchspace for calculations.
+/// \brief Compute the QR factorization of M x N matrix A. (geqrf)
 
- template<class AViewType, class TauViewType, class WViewType>
- void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace){
+/// \tparam AViewType Input(A) / Output (Solution) M x N matrix       , as a 2-D
+/// Kokkos::View \tparam TauViewType Input k vector     , as a 1-D Kokkos::View
+/// \tparam WViewType Input Workspace, as a 1-D Kokkos::View
+///
+/// \param A [in, out]     Input matrix, as a 2-D Kokkos::View
+///                   On entry, M-by-N matrix
+///                   On exit, overwritten with the solution.
+/// \param tau [in] Input vector, as a 1-D Kokkos::View. Scalar factors of
+/// reflectors. \param workspace [in] Input vector, as a 1-D Kokkos::View.
+/// Scratchspace for calculations.
 
-        #if (KOKKOSKERNELS_DEBUG_LEVEL >0)
-        static_assert(Kokkos::Impl::is_view<AViewType>::value, "KokkosBlas::geqrf: A must be a Kokkos::View");
-        static_assert(Kokkos::Impl::is_view<TauViewType>::value, "KokkosBlas::geqrf: tau must be a Kokkos::View");
-        static_assert(Kokkos::Impl::is_view<WViewType>::value, "KokkosBlas::geqrf: workspace must be a Kokkos::View")
+template <class AViewType, class TauViewType, class WViewType>
+void geqrf(AViewType& A, TauViewType& tau, WViewType& workspace) {
+#if (KOKKOSKERNELS_DEBUG_LEVEL > 0)
+  static_assert(Kokkos::Impl::is_view<AViewType>::value,
+                "KokkosBlas::geqrf: A must be a Kokkos::View");
+  static_assert(Kokkos::Impl::is_view<TauViewType>::value,
+                "KokkosBlas::geqrf: tau must be a Kokkos::View");
+  static_assert(Kokkos::Impl::is_view<WViewType>::value,
+                "KokkosBlas::geqrf: workspace must be a Kokkos::View");
 
-        static_assert(static_cast<int> (AViewType::rank)==2, "KokkosBlas::geqrf: A must have rank 2");
-        static_assert(static_cast<int> (TauViewType::rank)==1, "KokkosBlas::geqrf: Tau must have rank 1");
-        static_assert(static_cast<int> (WViewType::rank)==1, "KokkosBlas::geqrf: Workspace must have rank 1");
-       
-        int64_t A0 = A.extent(0); // M
-        int64_t A1 = A.extent(1); // N
-        int64_t minmn = (A0 > A1)? A0 : A1;
+  static_assert(static_cast<int>(AViewType::rank) == 2,
+                "KokkosBlas::geqrf: A must have rank 2");
+  static_assert(static_cast<int>(TauViewType::rank) == 1,
+                "KokkosBlas::geqrf: Tau must have rank 1");
+  static_assert(static_cast<int>(WViewType::rank) == 1,
+                "KokkosBlas::geqrf: Workspace must have rank 1");
 
-        int64_t tau0 = tau.extent(0);
-        int64_t lwork = workspace.extent(0);
+  int64_t A0    = A.extent(0);  // M
+  int64_t A1    = A.extent(1);  // N
+  int64_t minmn = (A0 < A1) ? A0 : A1;
 
-        //Check validity of Tau
-        if (tau0 < minmn){
-            std::ostringstream os;
-            os  << "KokkosBlas::geqrf: Dimensions of tau and MIN(M, N) do not match (require len(tau) >= min(M, N) ): "
-                << "min(M, N): " << minmn
-                << "Tau: " << tau0;
-            Kokkos::Impl::throw_runtime_exception(os.str());
-        }
+  int64_t tau0  = tau.extent(0);
+  int64_t lwork = workspace.extent(0);
 
-        #endif //KOKKOSKERNELS_DEBUG_LEVEL > 0 
+  // Check validity of Tau
+  if (tau0 < minmn) {
+    std::ostringstream os;
+    os << "KokkosBlas::geqrf: Dimensions of tau and MIN(M, N) do not match "
+          "(require len(tau) >= min(M, N) ): "
+       << "min(M, N): " << minmn << "Tau: " << tau0;
+    Kokkos::Impl::throw_runtime_exception(os.str());
+  }
 
-        //return if degenerate matrix provided 
-        if((A.extent(0)==0) || (A.extent(1)==0))
-            return;
+#endif  // KOKKOSKERNELS_DEBUG_LEVEL > 0
 
-        //standardize particular View specializations 
-        typedef Kokkos::View<typename AViewType::non_const_value_type**,
-                typename AViewType::array_layout,
-                typename AViewType::device_type,
-                Kokkos::MemoryTraits<Kokkos::Unmanaged> > AVT;
+  // return if degenerate matrix provided
+  if ((A.extent(0) == 0) || (A.extent(1) == 0)) return;
 
-        typedef Kokkos::View<typename TauViewType::non_const_value_type*,
-                typename TauViewType::array_layout,
-                typename TauViewType::device_type,
-                Kokkos::MemoryTraits<Kokkos::Unmanaged> > TVT;
+  // standardize particular View specializations
+  typedef Kokkos::View<typename AViewType::non_const_value_type**,
+                       typename AViewType::array_layout,
+                       typename AViewType::device_type,
+                       Kokkos::MemoryTraits<Kokkos::Unmanaged> >
+      AVT;
 
-        typedef Kokkos::View<typename WViewType::non_const_value_type*,
-                typename TauViewType::array_layout,
-                typename TauViewType::device_type,
-                Kokkos::MemoryTraits<Kokkos::Unmanaged> > WVT;
+  typedef Kokkos::View<typename TauViewType::non_const_value_type*,
+                       typename TauViewType::array_layout,
+                       typename TauViewType::device_type,
+                       Kokkos::MemoryTraits<Kokkos::Unmanaged> >
+      TVT;
 
-        AVT A_i = A;
-        TVT tau_i = tau;
-        WVT W_i = workspace;
+  typedef Kokkos::View<typename WViewType::non_const_value_type*,
+                       typename TauViewType::array_layout,
+                       typename TauViewType::device_type,
+                       Kokkos::MemoryTraits<Kokkos::Unmanaged> >
+      WVT;
 
-        typedef KokkosBlas::Impl::GEQRF<AVT, TVT, WVT> impl_type;
-        impl_type::geqrf(A_i, tau_i, W_i);
+  AVT A_i   = A;
+  TVT tau_i = tau;
+  WVT W_i   = workspace;
 
- } //function geqrf  
+  typedef KokkosBlas::Impl::GEQRF<AVT, TVT, WVT> impl_type;
+  impl_type::geqrf(A_i, tau_i, W_i);
 
- template<class AViewType, class TauViewType>
- int64_t geqrf_workspace(AViewType& A, TauViewType& tau){
+}  // function geqrf
 
-        //return if degenerate matrix provided 
-        if((A.extent(0)==0) || (A.extent(1)==0))
-            return 0;
+template <class AViewType, class TauViewType>
+int64_t geqrf_workspace(AViewType& A, TauViewType& tau) {
+  // return if degenerate matrix provided
+  if ((A.extent(0) == 0) || (A.extent(1) == 0)) return 0;
 
-        //standardize particular View specializations 
-        typedef Kokkos::View<typename AViewType::non_const_value_type**,
-                typename AViewType::array_layout,
-                typename AViewType::device_type,
-                Kokkos::MemoryTraits<Kokkos::Unmanaged> > AVT;
+  // standardize particular View specializations
+  typedef Kokkos::View<typename AViewType::non_const_value_type**,
+                       typename AViewType::array_layout,
+                       typename AViewType::device_type,
+                       Kokkos::MemoryTraits<Kokkos::Unmanaged> >
+      AVT;
 
-        typedef Kokkos::View<typename TauViewType::non_const_value_type*,
-                typename TauViewType::array_layout,
-                typename TauViewType::device_type,
-                Kokkos::MemoryTraits<Kokkos::Unmanaged> > TVT;
+  typedef Kokkos::View<typename TauViewType::non_const_value_type*,
+                       typename TauViewType::array_layout,
+                       typename TauViewType::device_type,
+                       Kokkos::MemoryTraits<Kokkos::Unmanaged> >
+      TVT;
 
-        AVT A_i = A;
-        TVT tau_i = tau;
+  AVT A_i   = A;
+  TVT tau_i = tau;
 
-        typedef KokkosBlas::Impl::GEQRF_WORKSPACE<AVT, TVT> impl_type;
-        return impl_type::geqrf_workspace(A_i, tau_i);
+  typedef KokkosBlas::Impl::GEQRF_WORKSPACE<AVT, TVT> impl_type;
+  return impl_type::geqrf_workspace(A_i, tau_i);
 
- } //function geqrf_workspace
+}  // function geqrf_workspace
 
+}  // namespace KokkosBlas
 
-} //namespace KokkosBlas
-
-#endif //KOKKOSBLAS_GEQRF_HPP_
+#endif  // KOKKOSBLAS_GEQRF_HPP_
