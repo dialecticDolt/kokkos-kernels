@@ -123,29 +123,17 @@ namespace KokkosBlas {
                         Kokkos::MemoryTraits<Kokkos::Unmanaged> > \
             > {enum : bool {value = true}; };
 
-        #if defined (KOKKOSKERNELS_INST_DOUBLE)\
-         && defined (KOKKOSKERNELS_INST_LAYOUTLEFT)
         KOKKOSBLAS_UNMQR_WORKSPACE_TPL_SPEC_AVAIL_CUSOLVER(double, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace)
         KOKKOSBLAS_UNMQR_TPL_SPEC_AVAIL_CUSOLVER(double, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace)
-        #endif
 
-        #if defined (KOKKOSKERNELS_INST_FLOAT) \
-         && defined (KOKKOSKERNELS_INST_LAYOUTLEFT)
         KOKKOSBLAS_UNMQR_WORKSPACE_TPL_SPEC_AVAIL_CUSOLVER(float, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace)
         KOKKOSBLAS_UNMQR_TPL_SPEC_AVAIL_CUSOLVER(float, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace)
-        #endif
 
-        #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_DOUBLE_) \
-         && defined (KOKKOSKERNELS_INST_LAYOUTLEFT)
         KOKKOSBLAS_UNMQR_WORKSPACE_TPL_SPEC_AVAIL_CUSOLVER(Kokkos::complex<double>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace)
         KOKKOSBLAS_UNMQR_TPL_SPEC_AVAIL_CUSOLVER(Kokkos::complex<double>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace)
-        #endif
 
-        #if defined (KOKKOSKERNELS_INST_KOKKOS_COMPLEX_FLOAT_) \
-         && defined (KOKKOSKERNELS_INST_LAYOUTLEFT)
         KOKKOSBLAS_UNMQR_WORKSPACE_TPL_SPEC_AVAIL_CUSOLVER(Kokkos::complex<float>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace)
         KOKKOSBLAS_UNMQR_TPL_SPEC_AVAIL_CUSOLVER(Kokkos::complex<float>, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::LayoutLeft, Kokkos::CudaSpace)
-        #endif
 
         #endif //if CUBLAS && CUSOLVER
 
