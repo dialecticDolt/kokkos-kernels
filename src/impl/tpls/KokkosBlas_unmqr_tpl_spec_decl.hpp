@@ -509,8 +509,8 @@ namespace KokkosBlas{
         const int lwork = workspace.extent(0); \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnZunmqr(s.handle, m_side, m_trans, M, N, k, \
-            reinterpret_cast<cuDoubleComplex*>(A.data()), LDA, \
-            reinterpret_cast<cuDoubleComplex*>(tau.data()), \
+            reinterpret_cast<const cuDoubleComplex*>(A.data()), LDA, \
+            reinterpret_cast<const cuDoubleComplex*>(tau.data()), \
             reinterpret_cast<cuDoubleComplex*>(C.data()), LDC, \
             reinterpret_cast<cuDoubleComplex*>(workspace.data()), \
             lwork, &devinfo); \
@@ -556,8 +556,8 @@ namespace KokkosBlas{
         const int lwork = workspace.extent(0); \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnCunmqr(s.handle, m_side, m_trans, M, N, k, \
-            reinterpret_cast<cuComplex*>(A.data()), LDA, \
-            reinterpret_cast<cuComplex*>(tau.data()), \
+            reinterpret_cast<const cuComplex*>(A.data()), LDA, \
+            reinterpret_cast<const cuComplex*>(tau.data()), \
             reinterpret_cast<cuComplex*>(C.data()), LDC, \
             reinterpret_cast<cuComplex*>(workspace.data()), \
             lwork, &devinfo); \
