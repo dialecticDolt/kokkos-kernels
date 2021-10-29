@@ -278,7 +278,7 @@ namespace KokkosBlas {
         bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
-        char complex_change = (trans == "T" || trans == "t") ? "C" : trans; \
+        const char[] complex_change = (trans == "T" || trans == "t") ? "C" : trans; \
         int lwork = -1; \
         SCALAR query = 0; \
         HostLapack<S2>::unmqr(A_is_lr, side, complex_change, M, N, k, \
@@ -322,7 +322,7 @@ namespace KokkosBlas {
         bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
-        char complex_change = (trans == "T" || trans == "t") ? "C" : trans; \
+        const char[] complex_change = (trans == "T" || trans == "t") ? "C" : trans; \
         int lwork = -1; \
         SCALAR query = 0; \
         HostLapack<S2>::unmqr(A_is_lr, side, complex_change, M, N, k, \
