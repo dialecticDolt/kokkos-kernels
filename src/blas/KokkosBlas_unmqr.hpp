@@ -104,6 +104,7 @@ void unmqr(const char side[], const char trans[], int k, AViewType& A,
                     (side[0] == 'r');
 
   bool valid_trans = (trans[0] == 'T') || (trans[0] == 't') ||
+                     (trans[0] == 'C') || (trans[0] == 'c') ||
                      (trans[0] == 'N') || (trans[0] == 'n');
 
   if (!(valid_side)) {
