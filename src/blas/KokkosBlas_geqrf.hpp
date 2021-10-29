@@ -160,6 +160,16 @@ int64_t geqrf_workspace(AViewType& A, TauViewType& tau) {
 
 }  // function geqrf_workspace
 
+template <class AViewType, class TauViewType>
+void geqrf(AViewType& A, TauViewType& tau) {
+  int64_t lwork = geqrf_workspace(A, tau);
+  TauViewType workspace("KokkosBlas::temporary_geqrf_workspace", lwork);
+  geqrf(A, tau, workspace);
+
+}  // function geqrf with temp workspace
+
+
+
 }  // namespace KokkosBlas
 
 #endif  // KOKKOSBLAS_GEQRF_HPP_
