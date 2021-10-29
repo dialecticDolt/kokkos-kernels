@@ -102,7 +102,7 @@ namespace KokkosBlas {
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         const int lwork = workspace.extent(0); \
-        HostLapack<SCALAR>::geqrf(A_is_lr, M, N,  \
+        HostLapack<S2>::geqrf(A_is_lr, M, N,  \
                 reinterpret_cast<S2*>(A.data()), LDA, \
                 reinterpret_cast<S2*>(tau.data()), \
                 reinterpret_cast<S2*>(workspace.data()), lwork); \
@@ -140,7 +140,7 @@ namespace KokkosBlas {
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         const int lwork = workspace.extent(0); \
-        HostLapack<SCALAR>::geqrf(A_is_lr, M, N, \
+        HostLapack<S2>::geqrf(A_is_lr, M, N, \
                 reinterpret_cast<S2*>(A.data()), LDA, \
                 reinterpret_cast<S2*>(tau.data()), \
                 reinterpret_cast<S2*>(workspace.data()), lwork); \
@@ -233,7 +233,7 @@ namespace KokkosBlas {
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         int lwork = -1; \
         SCALAR query = 0; \
-        HostLapack<SCALAR>::geqrf(A_is_lr, M, N,  \
+        HostLapack<S2>::geqrf(A_is_lr, M, N,  \
                 reinterpret_cast<S2*>(A.data()), LDA, \
                 reinterpret_cast<S2*>(tau.data()), \
                 reinterpret_cast<S2*>(&query), lwork); \
@@ -268,7 +268,7 @@ namespace KokkosBlas {
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         int lwork = -1; \
         SCALAR query = 0; \
-        HostLapack<SCALAR>::geqrf(A_is_lr, M, N, \
+        HostLapack<S2>::geqrf(A_is_lr, M, N, \
                 reinterpret_cast<S2*>(A.data()), LDA, \
                 reinterpret_cast<S2*>(tau.data()), \
                 reinterpret_cast<S2*>(&query), lwork); \
