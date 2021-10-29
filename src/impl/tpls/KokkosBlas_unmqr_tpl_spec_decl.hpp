@@ -588,7 +588,6 @@ namespace KokkosBlas{
         \
         static int64_t unmqr_workspace(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C){ \
         Kokkos::Profiling::pushRegion("KokkosBlas::unmqr[TPL_CUSOLVER, double]");\
-        int devinfo = 0; \
         int M = C.extent(0);  \
         int N = C.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
@@ -627,7 +626,6 @@ namespace KokkosBlas{
         \
         static int64_t unmqr_workspace(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C){ \
         Kokkos::Profiling::pushRegion("KokkosBlas::unmqr[TPL_CUSOLVER, double]");\
-        int devinfo = 0; \
         int M = C.extent(0);  \
         int N = C.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
@@ -666,7 +664,6 @@ namespace KokkosBlas{
         \
         static int64_t unmqr_workspace(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C){ \
         Kokkos::Profiling::pushRegion("KokkosBlas::unmqr[TPL_CUSOLVER, Kokkos::complex<double>]");\
-        int devinfo = 0; \
         int M = C.extent(0);  \
         int N = C.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
@@ -678,8 +675,8 @@ namespace KokkosBlas{
         int lwork = 0; \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnZunmqr_bufferSize(s.handle, m_side, m_trans, M, N, k, \
-            reinterpret_cast<cuDoubleComplex*>(A.data()), LDA, \
-            reinterpret_cast<cuDoubleComplex*>(tau.data()), \
+            reinterpret_cast<const cuDoubleComplex*>(A.data()), LDA, \
+            reinterpret_cast<const cuDoubleComplex*>(tau.data()), \
             reinterpret_cast<cuDoubleComplex*>(C.data()), LDC, \
             &lwork); \
         Kokkos::Profiling::popRegion(); \
@@ -709,7 +706,6 @@ namespace KokkosBlas{
         \
         static int64_t unmqr_workspace(char side, char trans, int k, AViewType& A, TauViewType& tau, CViewType& C){ \
         Kokkos::Profiling::pushRegion("KokkosBlas::unmqr[TPL_CUSOLVER, Kokkos::complex<float>]");\
-        int devinfo = 0; \
         int M = C.extent(0);  \
         int N = C.extent(1);  \
         bool A_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTA>::value; \
@@ -721,8 +717,8 @@ namespace KokkosBlas{
         int lwork = 0; \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnCunmqr_bufferSize(s.handle, m_side, m_trans, M, N, k, \
-            reinterpret_cast<cuComplex*>(A.data()), LDA, \
-            reinterpret_cast<cuComplex*>(tau.data()), \
+            reinterpret_cast<const cuComplex*>(A.data()), LDA, \
+            reinterpret_cast<const cuComplex*>(tau.data()), \
             reinterpret_cast<cuComplex*>(C.data()), LDC, \
             &lwork); \
         Kokkos::Profiling::popRegion(); \

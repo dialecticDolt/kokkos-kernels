@@ -71,7 +71,6 @@ namespace Test {
       Kokkos::parallel_for(Kokkos::TeamThreadRange(team,N), [&] (const int& j) {
         //printf("A (%i %i) (%i %i) (%i %i)\n",C.extent(0),C.extent(1),C2.extent(0),C2.extent(1),i,j);
         const int i = team.league_rank();
-        const ScalarC one = 1.0;
         const ScalarC zero = 0.0;
         if(j < i){
           C(i,j) = zero;
@@ -124,7 +123,7 @@ namespace Test {
     Kokkos::parallel_for("KokkosBlas::Test::CopyUpper", Kokkos::TeamPolicy<execution_space>(M,Kokkos::AUTO,16), copy_upper);
 
     //Fill Iref with Identity
-    struct Identity_QR<ViewTypeA, execution_space> copy_upper;
+    struct Identity_QR<ViewTypeA, execution_space> make_id;
     make_id.C = Iref;
     make_id.N = N;
     Kokkos::parallel_for("KokkosBlas::Test::Identity", Kokkos::TeamPolicy<execution_space>(M,Kokkos::AUTO,16), make_id);
@@ -138,7 +137,7 @@ namespace Test {
 
     //Compare Aref with R
     mag_type diff = 0;
-    struct DiffGEMM_QR<ViewTypeC,execution_space> diffgemm;
+    struct DiffGEMM_QR<ViewTypeA,execution_space> diffgemm;
     diffgemm.N = N;
     diffgemm.C = Aref;
     diffgemm.C2 = R;
