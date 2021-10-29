@@ -4,9 +4,8 @@
 #include "Test_Blas_gesv.hpp"
 #include "Test_Blas_trtri.hpp"
 
-//LAPACKE
-#include "Test_Blas_geqrf.hpp"
-#include "Test_Blas_unmqr.hpp"
+//LAPACK
+#include "Test_Blas_gr.hpp"
 
 // Blas 1
 #include "Test_Blas1_abs.hpp"
