@@ -278,9 +278,10 @@ namespace KokkosBlas {
         bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
+        char complex_change = (trans == "T" || trans == "t") ? "C" : trans; \
         int lwork = -1; \
         SCALAR query = 0; \
-        HostLapack<S2>::unmqr(A_is_lr, side, trans, M, N, k, \
+        HostLapack<S2>::unmqr(A_is_lr, side, complex_change, M, N, k, \
                 reinterpret_cast<const S2*>(A.data()), LDA, \
                 reinterpret_cast<const S2*>(tau.data()), \
                 reinterpret_cast<S2*>(C.data()), LDC, \
@@ -321,9 +322,10 @@ namespace KokkosBlas {
         bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
+        char complex_change = (trans == "T" || trans == "t") ? "C" : trans; \
         int lwork = -1; \
         SCALAR query = 0; \
-        HostLapack<S2>::unmqr(A_is_lr, side, trans, M, N, k, \
+        HostLapack<S2>::unmqr(A_is_lr, side, complex_change, M, N, k, \
                 reinterpret_cast<const S2*>(A.data()), LDA, \
                 reinterpret_cast<const S2*>(tau.data()), \
                 reinterpret_cast<S2*>(C.data()), LDC, \
@@ -509,7 +511,7 @@ namespace KokkosBlas{
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         cublasSideMode_t m_side   = (side  == 'L' || side  == 'l') ? CUBLAS_SIDE_LEFT : CUBLAS_SIDE_RIGHT;\
-        cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_T: CUBLAS_OP_N; \
+        cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_C: CUBLAS_OP_N; \
         const int lwork = workspace.extent(0); \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnZunmqr(s.handle, m_side, m_trans, M, N, k, \
@@ -556,7 +558,7 @@ namespace KokkosBlas{
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         cublasSideMode_t m_side   = (side  == 'L' || side  == 'l') ? CUBLAS_SIDE_LEFT : CUBLAS_SIDE_RIGHT;\
-        cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_T: CUBLAS_OP_N; \
+        cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_C: CUBLAS_OP_N; \
         const int lwork = workspace.extent(0); \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnCunmqr(s.handle, m_side, m_trans, M, N, k, \
@@ -675,7 +677,7 @@ namespace KokkosBlas{
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         cublasSideMode_t m_side   = (side  == 'L' || side  == 'l') ? CUBLAS_SIDE_LEFT : CUBLAS_SIDE_RIGHT;\
-        cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_T: CUBLAS_OP_N; \
+        cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_C: CUBLAS_OP_N; \
         int lwork = 0; \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnZunmqr_bufferSize(s.handle, m_side, m_trans, M, N, k, \
@@ -717,7 +719,7 @@ namespace KokkosBlas{
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         cublasSideMode_t m_side   = (side  == 'L' || side  == 'l') ? CUBLAS_SIDE_LEFT : CUBLAS_SIDE_RIGHT;\
-        cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_T: CUBLAS_OP_N; \
+        cublasOperation_t m_trans = (trans == 'T' || trans == 't') ? CUBLAS_OP_C: CUBLAS_OP_N; \
         int lwork = 0; \
         KokkosBlas::Impl::CudaSolverSingleton & s = KokkosBlas::Impl::CudaSolverSingleton::singleton(); \
         cusolverDnCunmqr_bufferSize(s.handle, m_side, m_trans, M, N, k, \
