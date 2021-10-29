@@ -100,6 +100,7 @@ namespace KokkosBlas {
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef Kokkos::complex<double> SCALAR; \
+        typedef std::complex<double> S2; \
         typedef int ORDINAL; \
         typedef Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
@@ -119,10 +120,10 @@ namespace KokkosBlas {
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         const int lwork = workspace.extent(0); \
         HostLapack<std::complex<double>>::unmqr(A_is_lr, side, trans, M, N, k, \
-                reinterpret_cast<const std::complex<double>*>(A.data()), LDA, \
-                reinterpret_cast<const std::complex<double>*>(tau.data()), \
-                reinterpret_cast<std::complex<double>*>(C.data()), LDC, \
-                reinterpret_cast<std::complex<double>*>(workspace.data()), lwork); \
+                reinterpret_cast<const S2*>(A.data()), LDA, \
+                reinterpret_cast<const S2*>(tau.data()), \
+                reinterpret_cast<S2*>(C.data()), LDC, \
+                reinterpret_cast<S2*>(workspace.data()), lwork); \
         Kokkos::Profiling::popRegion(); \
         } \
     };
@@ -144,6 +145,7 @@ namespace KokkosBlas {
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef Kokkos::complex<float> SCALAR; \
+        typedef std::complex<float> S2; \
         typedef int ORDINAL; \
         typedef Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
@@ -164,10 +166,10 @@ namespace KokkosBlas {
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         const int lwork = workspace.extent(0); \
         HostLapack<std::complex<float>>::unmqr(A_is_lr, side, trans, M, N, k, \
-                reinterpret_cast<const std::complex<float>*>(A.data()), LDA, \
-                reinterpret_cast<const std::complex<float>*>(tau.data()), \
-                reinterpret_cast<std::complex<float>*>(C.data()), LDC, \
-                reinterpret_cast<std::complex<float>*>(workspace.data()), lwork); \
+                reinterpret_cast<const S2*>(A.data()), LDA, \
+                reinterpret_cast<const S2*>(tau.data()), \
+                reinterpret_cast<S2*>(C.data()), LDC, \
+                reinterpret_cast<S2*>(workspace.data()), lwork); \
         Kokkos::Profiling::popRegion(); \
         } \
     };
@@ -258,6 +260,7 @@ namespace KokkosBlas {
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef Kokkos::complex<double> SCALAR; \
+        typedef std::complex<double> S2; \
         typedef int ORDINAL; \
         typedef Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
@@ -278,10 +281,10 @@ namespace KokkosBlas {
         int lwork = -1; \
         SCALAR query = 0; \
         HostLapack<SCALAR>::unmqr(A_is_lr, side, trans, M, N, k, \
-                reinterpret_cast<const SCALAR*>(A.data()), LDA, \
-                reinterpret_cast<const SCALAR*>(tau.data()), \
-                reinterpret_cast<SCALAR*>(C.data()), LDC, \
-                reinterpret_cast<SCALAR*>(&query), lwork); \
+                reinterpret_cast<const S2*>(A.data()), LDA, \
+                reinterpret_cast<const S2*>(tau.data()), \
+                reinterpret_cast<S2*>(C.data()), LDC, \
+                reinterpret_cast<S2*>(&query), lwork); \
         Kokkos::Profiling::popRegion(); \
         return (int64_t) query.real(); \
         } \
@@ -301,6 +304,7 @@ namespace KokkosBlas {
                     Kokkos::MemoryTraits<Kokkos::Unmanaged> >, \
         true, ETI_SPEC_AVAIL> { \
         typedef Kokkos::complex<float> SCALAR; \
+        typedef std::complex<float> S2; \
         typedef int ORDINAL; \
         typedef Kokkos::View<const SCALAR**, LAYOUTA, Kokkos::Device<ExecSpace, MEMSPACE>, \
                             Kokkos::MemoryTraits<Kokkos::Unmanaged> > AViewType; \
@@ -320,10 +324,10 @@ namespace KokkosBlas {
         int lwork = -1; \
         SCALAR query = 0; \
         HostLapack<SCALAR>::unmqr(A_is_lr, side, trans, M, N, k, \
-                reinterpret_cast<const SCALAR*>(A.data()), LDA, \
-                reinterpret_cast<const SCALAR*>(tau.data()), \
-                reinterpret_cast<SCALAR*>(C.data()), LDC, \
-                reinterpret_cast<SCALAR*>(&query), lwork); \
+                reinterpret_cast<const S2*>(A.data()), LDA, \
+                reinterpret_cast<const S2*>(tau.data()), \
+                reinterpret_cast<S2*>(C.data()), LDC, \
+                reinterpret_cast<S2*>(&query), lwork); \
         Kokkos::Profiling::popRegion(); \
         return (int64_t) query.real(); \
         } \
