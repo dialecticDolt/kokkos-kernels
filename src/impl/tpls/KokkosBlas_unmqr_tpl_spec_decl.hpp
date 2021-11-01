@@ -321,7 +321,6 @@ namespace KokkosBlas {
         bool C_is_lr = std::is_same<Kokkos::LayoutRight, LAYOUTC>::value; \
         const int AST = A_is_lr?A.stride(0):A.stride(1), LDA = AST == 0 ? 1:AST; \
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
-        const char[] t2 = trans[0]; \
         int lwork = -1; \
         HostLapack<S2>::unmqr(A_is_lr, side, trans, M, N, k, \
                 reinterpret_cast<const S2*>(A.data()), LDA, \
