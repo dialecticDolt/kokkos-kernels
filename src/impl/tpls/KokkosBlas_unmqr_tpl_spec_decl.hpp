@@ -323,7 +323,8 @@ namespace KokkosBlas {
         const int CST = C_is_lr?C.stride(0):C.stride(1), LDC = CST == 0 ? 1:CST; \
         int lwork = -1; \
         SCALAR query = 0; \
-        HostLapack<S2>::unmqr(A_is_lr, side, trans, M, N, k, \
+        char type = trans[0]; \
+        HostLapack<S2>::unmqr(A_is_lr, side, type, M, N, k, \
                 reinterpret_cast<const S2*>(A.data()), LDA, \
                 reinterpret_cast<const S2*>(tau.data()), \
                 reinterpret_cast<S2*>(C.data()), LDC, \
