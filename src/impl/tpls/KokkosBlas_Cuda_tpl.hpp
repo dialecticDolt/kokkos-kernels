@@ -15,41 +15,36 @@ CudaBlasSingleton::CudaBlasSingleton() {
   Kokkos::push_finalize_hook([&]() { cublasDestroy(handle); });
 }
 
-CudaBlasSingleton & CudaBlasSingleton::singleton() {
+CudaBlasSingleton& CudaBlasSingleton::singleton() {
   static CudaBlasSingleton s;
   return s;
 }
 
-} //namespace Impl
-} //namespace KokkosBlas
+}  // namespace Impl
+}  // namespace KokkosBlas
 #endif
 
-
-#if defined (KOKKOSKERNELS_ENABLE_TPL_CUSOLVER)
-#include<KokkosBlas_tpl_spec.hpp>
+#if defined(KOKKOSKERNELS_ENABLE_TPL_CUSOLVER)
+#include <KokkosBlas_tpl_spec.hpp>
 
 namespace KokkosBlas {
 namespace Impl {
-CudaSolverSingleton::CudaSolverSingleton()
-{
-    auto stat = cusolverDnCreate(&handle);
-    if (stat != CUSOLVER_STATUS_SUCCESS)
-        Kokkos::abort("CUSOLVER initialization failed\n");
+CudaSolverSingleton::CudaSolverSingleton() {
+  auto stat = cusolverDnCreate(&handle);
+  if (stat != CUSOLVER_STATUS_SUCCESS)
+    Kokkos::abort("CUSOLVER initialization failed\n");
 
-    Kokkos::push_finalize_hook ([&] () { 
-        cusolverDnDestroy(handle);
-    });
+  Kokkos::push_finalize_hook([&]() { cusolverDnDestroy(handle); });
 }
 
-CudaSolverSingleton & CudaSolverSingleton::singleton(){
+CudaSolverSingleton& CudaSolverSingleton::singleton() {
   static CudaSolverSingleton s;
-  return s; 
+  return s;
 }
 
-} //namespace Impl
-} //namespace KokkosBlas
-#endif //KOKKOS_KERNELS_ENABLE_TPL_CUSOLVER
-
+}  // namespace Impl
+}  // namespace KokkosBlas
+#endif  // KOKKOS_KERNELS_ENABLE_TPL_CUSOLVER
 
 #if defined(KOKKOSKERNELS_ENABLE_TPL_MAGMA)
 #include <KokkosBlas_tpl_spec.hpp>

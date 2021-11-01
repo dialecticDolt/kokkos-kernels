@@ -149,14 +149,13 @@ namespace Test {
       // Expected Result: Random Walk in the least significant bit (i.e. ~ sqrt(K)*eps
       // eps scales with the total sum and has a factor in it for the accuracy of the operations ->
       // eps = K * 75 * machine_eps * 7
-      double diff_expected = machine_eps;
-      printf("Result: %e %e\n",diff_average,diff_expected);
+      double diff_expected = 5*machine_eps;
 
-      if ( (diff_average >= 5*diff_expected ) ) {
+      if ( (diff_average >= diff_expected ) ) {
         printf("Result: %e %e\n",diff_average,diff_expected);
       }
 
-      EXPECT_TRUE( (diff_average < 5*diff_expected ) );
+      EXPECT_TRUE( (diff_average < diff_expected ) );
     }
 
     //Compute QI = Q

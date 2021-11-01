@@ -245,12 +245,12 @@ int64_t unmqr_workspace(const char side[], const char trans[], int k,
 }  // function unmqr_workspace
 
 template <class AViewType, class TauViewType, class CViewType>
-void unmqr(const char side[], const char trans[], int k, AViewType& A, TauViewType& tau, CViewType& C) {
+void unmqr(const char side[], const char trans[], int k, AViewType& A,
+           TauViewType& tau, CViewType& C) {
   int64_t lwork = unmqr_workspace(side, trans, k, A, tau, C);
   TauViewType workspace("KokkosBlas::temporary_geqrf_workspace", lwork);
   unmqr(side, trans, k, A, tau, C, workspace);
 }  // function unmqr with temp workspace
-
 
 }  // namespace KokkosBlas
 

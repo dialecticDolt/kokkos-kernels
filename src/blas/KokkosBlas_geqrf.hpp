@@ -168,8 +168,6 @@ void geqrf(AViewType& A, TauViewType& tau) {
 
 }  // function geqrf with temp workspace
 
-
-
 }  // namespace KokkosBlas
 
 #endif  // KOKKOSBLAS_GEQRF_HPP_
