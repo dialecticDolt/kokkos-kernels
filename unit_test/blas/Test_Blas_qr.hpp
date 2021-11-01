@@ -125,7 +125,7 @@ namespace Test {
     //Fill Iref with Identity
     struct Identity_QR<ViewTypeA, execution_space> make_id;
     make_id.C = Iref;
-    make_id.N = N;
+    make_id.N = M;
     Kokkos::parallel_for("KokkosBlas::Test::Identity", Kokkos::TeamPolicy<execution_space>(M,Kokkos::AUTO,16), make_id);
     Kokkos::deep_copy(host_Iref, Iref);
 
@@ -152,7 +152,7 @@ namespace Test {
       double diff_expected = machine_eps;
       printf("Result: %e %e\n",diff_average,diff_expected);
 
-      if ( (diff_average >= 1.05*diff_expected ) ) {
+      if ( (diff_average >= 5*diff_expected ) ) {
         printf("Result: %e %e\n",diff_average,diff_expected);
       }
 
@@ -169,7 +169,7 @@ namespace Test {
     Kokkos::deep_copy(host_Q, Q);
     bool test_flag = true;
     for (int i = 0; i < M; i++) {
-      for (int j = 0; j < N; j++) {
+      for (int j = 0; j < M; j++) {
         if (APT::abs(host_Iref(i, j) - host_Q(i, j)) > eps) {
           test_flag = false;
           break;
@@ -191,7 +191,7 @@ namespace Test {
     Kokkos::deep_copy(host_Q, Q);
 
     for (int i = 0; i < M; i++) {
-      for (int j = 0; j < N; j++) {
+      for (int j = 0; j < M; j++) {
         if (APT::abs(host_Iref(i, j) - host_Q(i, j)) > eps) {
           test_flag = false;
           break;
